@@ -8,6 +8,9 @@ using System.Xml;
 
 namespace syntaxi
 {
+    /// <summary>
+    /// Groupe de paramètres
+    /// </summary>
     public class ParamGroup
     {
         public ParamGroup(string type, Regex value, Regex param)
@@ -19,6 +22,9 @@ namespace syntaxi
         public string type;
         public Regex value,param;
     }
+    /// <summary>
+    /// Paramètre
+    /// </summary>
     public class Param
     {
         public Param(string name, string value)
@@ -29,6 +35,9 @@ namespace syntaxi
         public string name;
         public string value;
     }
+    /// <summary>
+    /// Objet
+    /// </summary>
     public class Object
     {
         public string type;
@@ -37,6 +46,9 @@ namespace syntaxi
         public string id;
         public List<Param> objParams = new List<Param>();
     }
+    /// <summary>
+    /// Syntaxe d'objet
+    /// </summary>
     public class Syntax
     {
         public Syntax(string type,Regex content, Regex param)
@@ -54,6 +66,9 @@ namespace syntaxi
         public Regex content, param;
         public static Regex persitant_param;
     }
+    /// <summary>
+    /// Programme
+    /// </summary>
     class Program
     {
         public class AppArguments
@@ -68,6 +83,10 @@ namespace syntaxi
             public string title = "Default";
             public string action = null;
 
+            /// <summary>
+            /// Lit les argument depuis la ligne de commande
+            /// </summary>
+            /// <param name="args">Ligne de commande</param>
             public void ReadArguments(string[] args)
             {
                 for (int c = 0; c < args.Count(); c++)
@@ -110,6 +129,12 @@ namespace syntaxi
                 }
             }
         }
+        /// <summary>
+        /// Lit les paramètres
+        /// </summary>
+        /// <param name="text">Texte de l'objet</param>
+        /// <param name="o">Objet parent</param>
+        /// <param name="reg_param">Syntaxe d'un paramètre</param>
         static void ReadParam(string text, Object o, Regex reg_param)
         {
             //parametres
@@ -120,6 +145,12 @@ namespace syntaxi
                 o.objParams.Add(new Param(paramMatch.Groups["type"].Value, paramMatch.Groups["content"].Value));
             }
         }
+        /// <summary>
+        /// Lit un groupe de paramètres
+        /// </summary>
+        /// <param name="text">Texte de l'objet</param>
+        /// <param name="o">Objet parent</param>
+        /// <param name="group">Définit du group</param>
         static void ReadGroupParam(string text, Object o, ParamGroup group)
         {
             MatchCollection matches = group.value.Matches(text);
@@ -135,12 +166,26 @@ namespace syntaxi
                 }
             }
         }
+        /// <summary>
+        /// Ajoute un attribut à un élément XML
+        /// </summary>
+        /// <param name="doc">Document parent</param>
+        /// <param name="node">Noeud de l'élément</param>
+        /// <param name="name">Nom de l'attribut</param>
+        /// <param name="value">Valeur de l'attribut</param>
         static void AppendAttribute(XmlDocument doc, XmlNode node, string name, string value)
         {
             XmlAttribute att = doc.CreateAttribute(name);
             att.Value = value;
             node.Attributes.Append(att);
         }
+        /// <summary>
+        /// Exporte les objets dans un document XML
+        /// </summary>
+        /// <param name="fileName">Nom du fichier XML</param>
+        /// <param name="title">Titre de la librairie</param>
+        /// <param name="version">Version de la librairie</param>
+        /// <param name="objets">Objets à exporter</param>
         static void ExportToXML(string fileName, string title, string version, List<Object> objets)
         {
             // initialise le document
@@ -194,7 +239,7 @@ namespace syntaxi
         }
 
         /// <summary>
-        /// Fabrique un/plusieurs objets à partir d'un texte
+        /// Lit les objets d'un code source
         /// </summary>
         /// <param name="text">Texte du code à analyser</param>
         /// <param name="filePath">Chemin d'accès relatif au fichier analysé</param>
@@ -243,7 +288,10 @@ namespace syntaxi
             }
         }
 
-        // Ajoute les objets à la librairie
+        /// <summary>
+        /// Ajoute le contenu de la documentation à une librairie existante
+        /// </summary>
+        /// <param name="options">Options de la ligne de commande</param>
         static void Action_Add(AppArguments options)
         {
             // Scan les groupes
@@ -281,7 +329,10 @@ namespace syntaxi
             ExportToXML(options.outputFile, options.title, options.version, objets);
         }
 
-        // Initialise la librairie
+        /// <summary>
+        /// Initialise la librairie
+        /// </summary>
+        /// <param name="options">Options de la ligne de commande</param>
         static void Action_Init(AppArguments options)
         {
             // initialise le document
@@ -313,7 +364,10 @@ namespace syntaxi
             // sauvegarde les modifs
             doc.Save(options.outputFile);
         }
-
+        /// <summary>
+        /// Point d'entrée
+        /// </summary>
+        /// <param name="args">Arguments de la ligne de commande</param>
         static void Main(string[] args)
         {
             // lit les arguments
