@@ -23,6 +23,9 @@ $(document).ready(function () {
             ListVersion();
             ListObjects();
 
+            // Initialise la navigation
+            InitTreeNavigation();
+
             // evenements
             $("#library").change(ListVersion);
             $("#version").change(function () {
@@ -33,7 +36,6 @@ $(document).ready(function () {
             $("#object_list").change(function () {
                 var id = $(this).val();
                 ShowObject(id);
-                SelectTreeNavigationObject(id);
             });
             $("#GO").click(function () {
                 ShowObject(GetSelectedObjectId());
@@ -50,9 +52,6 @@ $(document).ready(function () {
                 console.log(queryParams);
                 ShowObject(queryParams["id"]);
             }
-
-            // Initialise la navigation
-            InitTreeNavigation();
         }
     });
 
@@ -83,7 +82,7 @@ function InitTreeNavigation() {
         var desc = $(this).find('param[name="brief"]').first().html();
         var name = $(this).find('param[name="name"]').first().html();
 
-        menu.append("<li id='tree_" + $(this).attr('id') + "' data-jstree='{type:file}'><a href='" + link + "'>" + name + "</a></li>");
+        menu.append("<li id='tree_" + $(this).attr('id') + "'><a href='" + link + "'>" + name + "</a></li>");
     };
 
     // liste les procedures SQL
@@ -132,8 +131,6 @@ function InitTreeNavigation() {
         if (link && link != "#")
             document.location = link;
     });
-
-    $('#jstree').jstree('select_node', 'tree_'+GetSelectedObjectId());
 }
 
 
@@ -227,6 +224,8 @@ function MakeObjectTemplate(object, selector) {
 
 // Affiche le template de l'objet
 function ShowObject(id) {
+    console.log("ShowObject " + id);
+
     $("#templates>*").hide();
 
     // obtient l'objet
@@ -291,8 +290,12 @@ function ShowObject(id) {
 
         $('#infos').append(content);
     });
-    //
+
+    // Affiche le template
     template.show();
+
+    // selectionne l'objet dans l'arbre de navigation
+    SelectTreeNavigationObject(id);
 }
 
 /*
