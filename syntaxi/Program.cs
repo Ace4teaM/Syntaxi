@@ -258,14 +258,14 @@ namespace syntaxi
                 o.id = Guid.NewGuid().ToString("N");
                 string objet_text = match.Groups["content"].Value;
 //                Console.WriteLine(String.Format("Find in {0}", objet_text));
-                Console.WriteLine(String.Format("Begin object {0}", o.type));
+                Log(String.Format("Begin object {0}", o.type));
                 //ajoute les groupes comme parametres
                 foreach (string groupName in syntax.content.GetGroupNames())
                 {
                     if (groupName != "content" && groupName != "0")
                     {
                         o.objParams.Add(new Param(groupName, match.Groups[groupName].Value));
-                        Console.WriteLine(String.Format("\tAdd param '{0}' as '{1}'", groupName, match.Groups[groupName].Value));
+                        Log(String.Format("\tAdd param '{0}' as '{1}'", groupName, match.Groups[groupName].Value));
                     }
                 }
                 //groupe de parametres
@@ -310,6 +310,7 @@ namespace syntaxi
             foreach (var filePath in srcPaths)
             {
                 Console.WriteLine(String.Format("Scan file: {0}", filePath));
+                Log(String.Format("Scan file: {0}", filePath));
                 string relativeFileName = filePath.Substring(options.inputDir.Length);
                 string text = string.Empty;
                 using (StreamReader streamReader = new StreamReader(filePath, Encoding.UTF8))
@@ -318,6 +319,7 @@ namespace syntaxi
                 }
 
                 // Scan les objets
+                int objCnt = objets.Count;
                 Syntax curSyntax = new Syntax();
                 string[] filePaths = Directory.GetFiles(options.defDir, "*");
                 foreach (var syntaxFile in filePaths)
@@ -325,6 +327,9 @@ namespace syntaxi
                     ReadObjectSyntax(syntaxFile, ref curSyntax);
                     MakeObject(text, relativeFileName, curSyntax, groups.ToArray(), objets);
                 }
+                objCnt = objets.Count - objCnt;
+
+                Console.WriteLine(String.Format("{0} objets traités", objCnt));
             }
             ExportToXML(options.outputFile, options.title, options.version, objets);
         }
@@ -363,6 +368,9 @@ namespace syntaxi
 
             // sauvegarde les modifs
             doc.Save(options.outputFile);
+        }
+        static void Log(string text)
+        {
         }
         /// <summary>
         /// Point d'entrée
