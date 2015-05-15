@@ -1,2 +1,0 @@
-^(?:\s*\/\*)\n(?:[\s\*]+)?(?<description>[^\n]+)\n(?<content>(?:[^*]|\*[^\/])+)(?:\*\/)(?:[\n\s]*)class(?:[\s]+)cXMLTemplateAction_(?<name>[A-Za-z_]+)(?:[\s]+)extends(?:[\s]+)cXMLTemplateAction(?:[\n\s]*)
-^(?:[\s\*]*)\@(?<type>[A-Za-z]+)(?:\s+)(?<content>[^\n]+)

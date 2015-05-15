@@ -296,12 +296,15 @@ namespace syntaxi
         {
             // Scan les groupes
             List<ParamGroup> groups = new List<ParamGroup>();
-            string[] groupsPaths = Directory.GetFiles(options.defDir+@"\groups", "*");
-            foreach (var syntaxFile in groupsPaths)
+            if (Directory.Exists(options.defDir + @"\groups"))
             {
-                Syntax curGroup = new Syntax();
-                ReadObjectSyntax(syntaxFile, ref curGroup);
-                groups.Add(new ParamGroup(curGroup.type, curGroup.content, curGroup.param));
+                string[] groupsPaths = Directory.GetFiles(options.defDir + @"\groups", "*");
+                foreach (var syntaxFile in groupsPaths)
+                {
+                    Syntax curGroup = new Syntax();
+                    ReadObjectSyntax(syntaxFile, ref curGroup);
+                    groups.Add(new ParamGroup(curGroup.type, curGroup.content, curGroup.param));
+                }
             }
 
             // lit les fichiers sources
@@ -400,6 +403,36 @@ namespace syntaxi
                     Console.WriteLine("Action inconnue");
                     break;
             }
+            /*
+            try
+            {
+                // lit les arguments
+                AppArguments options = new AppArguments();
+                options.ReadArguments(args);
+
+                if (options.action == null)
+                {
+                    Console.WriteLine("Action non définit");
+                    return;
+                }
+
+                switch (options.action.ToLower())
+                {
+                    case "init":
+                        Action_Init(options);
+                        break;
+                    case "add":
+                        Action_Add(options);
+                        break;
+                    default:
+                        Console.WriteLine("Action inconnue");
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }*/
         }
 
     }
