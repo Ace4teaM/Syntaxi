@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="editor.View.ObjectSyntaxEdit"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="246" d:DesignWidth="573">
+    <UserControl.Resources>
+        <Style x:Key="TitleStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="Black"></Setter>
+            <Setter Property="FontSize" Value="22"></Setter>
+            <Setter Property="FontWeight" Value="Bold"></Setter>
+            <Setter Property="Margin" Value="8"></Setter>
+        </Style>
+        <Style x:Key="SectionTitleStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize" Value="12"></Setter>
+            <Setter Property="Margin" Value="8"></Setter>
+            <Setter Property="TextDecorations" Value=""></Setter>
+            <Setter Property="FontWeight" Value="SemiBold"></Setter>
+        </Style>
+        <Style x:Key="SectionEditStyle" TargetType="{x:Type TextBox}">
+            <Setter Property="FontSize" Value="12"></Setter>
+            <Setter Property="Margin" Value="18,0,8,0"></Setter>
+        </Style>
+    </UserControl.Resources>
+    
+    <StackPanel Orientation="Vertical">
+        <TextBlock Style="{StaticResource TitleStyle}" Text="{Binding ObjectType}">Object_name</TextBlock>
+        <TextBox Style="{StaticResource SectionEditStyle}" Text="{Binding Description}"></TextBox>
+        <TextBlock Style="{StaticResource SectionTitleStyle}">Expression de contenu</TextBlock>
+        <TextBox Style="{StaticResource SectionEditStyle}" Text="{Binding ContentRegEx}"></TextBox>
+        <TextBlock Style="{StaticResource SectionTitleStyle}">Expression de paramètre</TextBlock>
+        <TextBox Style="{StaticResource SectionEditStyle}" Text="{Binding ParamRegEx}"></TextBox>
+    </StackPanel>
+</UserControl>

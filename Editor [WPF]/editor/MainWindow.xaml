@@ -1,0 +1,8 @@
+﻿<Window x:Class="editor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Syntaxi" Height="580.917" Width="791.124">
+    <Grid>
+
+    </Grid>
+</Window>

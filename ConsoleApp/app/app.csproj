@@ -40,11 +40,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\Entity\ObjectContent.cs" />
-    <Compile Include="Data\Entity\ObjectParam.cs" />
-    <Compile Include="Data\Entity\ObjectSyntax.cs" />
-    <Compile Include="Data\Entity\Project.cs" />
-    <Compile Include="Data\Entity\SearchParams.cs" />
+    <Compile Include="AppModel\Entity\ObjectContent.cs" />
+    <Compile Include="AppModel\Entity\ObjectSyntax.cs" />
+    <Compile Include="AppModel\Entity\ParamContent.cs" />
+    <Compile Include="AppModel\Entity\ParamSyntax.cs" />
+    <Compile Include="AppModel\Entity\Project.cs" />
+    <Compile Include="AppModel\Entity\SearchParams.cs" />
+    <Compile Include="AppModel\Interface\IApp.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
