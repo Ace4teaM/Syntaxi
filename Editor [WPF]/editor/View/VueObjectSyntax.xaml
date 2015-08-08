@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="editor.View.VueObjectSyntax"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:v="clr-namespace:editor.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="411" d:DesignWidth="801">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100*"></ColumnDefinition>
+            <ColumnDefinition Width="400"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="190"></RowDefinition>
+            <RowDefinition Height="100*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.Children>
+            <v:ObjectSyntaxList Grid.Row="1" Grid.Column="0"></v:ObjectSyntaxList>
+            <v:ObjectSyntaxEdit Grid.Row="0" Grid.Column="0"></v:ObjectSyntaxEdit>
+            <v:CodeSample Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"></v:CodeSample>
+        </Grid.Children>
+    </Grid>
+</UserControl>

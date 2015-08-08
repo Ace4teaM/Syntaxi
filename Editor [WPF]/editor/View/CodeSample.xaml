@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="editor.View.CodeSample"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="100*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.Children>
+            <TextBlock Grid.Row="0" FontWeight="Bold" FontSize="25" FontFamily="Verdana" TextAlignment="Center" Padding="12" Background="Coral">Exemple</TextBlock>
+            <TextBlock Grid.Row="1" Padding="10" Text="{Binding CodeSample}"></TextBlock>
+        </Grid.Children>
+    </Grid>
+</UserControl>

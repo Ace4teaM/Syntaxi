@@ -53,11 +53,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="View\CodeSample.xaml.cs">
+      <DependentUpon>CodeSample.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ObjectSyntaxEdit.xaml.cs">
       <DependentUpon>ObjectSyntaxEdit.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ObjectSyntaxList.xaml.cs">
       <DependentUpon>ObjectSyntaxList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\VueHome.xaml.cs">
+      <DependentUpon>VueHome.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\VueObjectSyntax.xaml.cs">
+      <DependentUpon>VueObjectSyntax.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -71,11 +80,23 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\CodeSample.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\ObjectSyntaxEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ObjectSyntaxList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\VueHome.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\VueObjectSyntax.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
