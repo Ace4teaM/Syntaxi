@@ -53,6 +53,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AppModel\Entity\ObjectContent.cs" />
+    <Compile Include="AppModel\Entity\ObjectSyntax.cs" />
+    <Compile Include="AppModel\Entity\ParamContent.cs" />
+    <Compile Include="AppModel\Entity\ParamSyntax.cs" />
+    <Compile Include="AppModel\Entity\Project.cs" />
+    <Compile Include="AppModel\Entity\SearchParams.cs" />
+    <Compile Include="AppModel\Interface\IApp.cs" />
+    <Compile Include="ModelView\VueObjectSyntax.cs" />
     <Compile Include="View\CodeSample.xaml.cs">
       <DependentUpon>CodeSample.xaml</DependentUpon>
     </Compile>

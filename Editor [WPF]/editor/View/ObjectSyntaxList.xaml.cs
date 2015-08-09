@@ -18,7 +18,7 @@ namespace editor.View
     /// <summary>
     /// Logique d'interaction pour ObjectSyntaxList.xaml
     /// </summary>
-    public partial class ObjectSyntaxList : UserControl
+    public partial class ObjectSyntaxList : ListView
     {
         public ObjectSyntaxList()
         {

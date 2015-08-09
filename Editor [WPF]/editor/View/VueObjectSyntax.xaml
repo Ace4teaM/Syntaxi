@@ -16,8 +16,8 @@
             <RowDefinition Height="100*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.Children>
-            <v:ObjectSyntaxList Grid.Row="1" Grid.Column="0"></v:ObjectSyntaxList>
-            <v:ObjectSyntaxEdit Grid.Row="0" Grid.Column="0"></v:ObjectSyntaxEdit>
+            <v:ObjectSyntaxList Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Project.ObjectSyntax}" SelectedItem="{Binding CurObjectSyntax}" IsSynchronizedWithCurrentItem="True"></v:ObjectSyntaxList>
+            <v:ObjectSyntaxEdit Grid.Row="0" Grid.Column="0" DataContext="{Binding CurObjectSyntax}"></v:ObjectSyntaxEdit>
             <v:CodeSample Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"></v:CodeSample>
         </Grid.Children>
     </Grid>

@@ -24,5 +24,11 @@ namespace editor
         {
             InitializeComponent();
         }
+
+        public void ChangeView(UIElement view)
+        {
+            this.Client.Children.Clear();
+            this.Client.Children.Add(view);
+        }
     }
 }
