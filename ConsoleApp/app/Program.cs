@@ -110,7 +110,7 @@ namespace app
                 }
 
                 // Initialise le projet
-                if (!String.IsNullOrEmpty(options.inputProjectFile))
+                if (!String.IsNullOrEmpty(options.inputProjectFile) && options.action.ToLower().StartsWith("init") == false)
                 {
                     // Charge le projet
                     LoadProject(options.inputProjectFile);
@@ -223,7 +223,8 @@ namespace app
                 objSyntax = new ObjectSyntax(
                     @"^(?:\s*\/\*\*)(?:[\n\s]+)(?<description>[^\n]*)[\n]+(?<content>(?:[^*]|\*[^\/])+)(?:\*\/)(?:[\n\s]*)(?<return_type>[A-Za-z_]+)(?:[\n\s]+)(?<name>[A-Za-z_]+)(?:[\n\s]*)\((?<params>[^\)]*)\)",
                     @"^(?:\s*)\@(?<type>[A-Za-z]+)(?:\s+)(?<content>[^@])+",
-                    @"function");
+                    @"function",
+                    "Fonction");
                 /*objSyntax.ParamSyntax = new Collection<ParamSyntax>(
                     project.ParamSyntax.Where(p=>p.ParamType == "description" || p.ParamType == "return").ToArray()
                 );*/
@@ -233,7 +234,8 @@ namespace app
                 objSyntax = new ObjectSyntax(
                     @"^(?:\s*\/\*\*)(?:[\n\s]+)(?<description>[^\n]*)[\n]+(?<content>(?:[^*]|\*[^\/])*)(?:\*\/)(?:[\n\s]*)typedef(?:[\n\s]+)struct(?:[\n\s]+)(?<name>[A-Za-z_]+)(?:[\n\s]*)\{",
                     @"^(?:\s*)\@(?<type>[A-Za-z]+)(?:\s+)(?<content>[^@])+",
-                    @"struct");
+                    @"struct",
+                    "Structure de données");
                // objSyntax.ParamSyntax = new Collection<ParamSyntax>();
                 project.ObjectSyntax.Add(objSyntax);
                 

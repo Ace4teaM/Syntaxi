@@ -79,7 +79,7 @@ namespace editor.View
 
             //
             VueObjectSyntax view = new VueObjectSyntax();
-            view.DataContext = app.Project;
+            view.DataContext = new ModelView.VueObjectSyntax(app.Project);
             wnd.ChangeView(view);
         }
     }

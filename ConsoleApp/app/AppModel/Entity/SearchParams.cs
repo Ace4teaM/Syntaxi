@@ -24,7 +24,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class SearchParams : ISerializable    {
+    public partial class SearchParams : ISerializable , INotifyPropertyChanged    {
          #region Constructor
          public SearchParams(){
          }
@@ -37,19 +37,20 @@ namespace AppModel.Entity
 
          #endregion // Constructor
          
+         #region INotifyPropertyChanged
+         public event PropertyChangedEventHandler PropertyChanged;
+         #endregion // INotifyPropertyChanged
+
          #region Fields
          // Dossier de recherche
-
          protected String inputdir;
-         public String InputDir { get{ return inputdir; } set{ inputdir = value; } }
+         public String InputDir { get{ return inputdir; } set{ inputdir = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("InputDir")); } }
          // Filtre de recherche sur les nom de fichiers
-
          protected String inputfilter;
-         public String InputFilter { get{ return inputfilter; } set{ inputfilter = value; } }
+         public String InputFilter { get{ return inputfilter; } set{ inputfilter = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("InputFilter")); } }
          // Récursif
-
          protected bool recursive;
-         public bool Recursive { get{ return recursive; } set{ recursive = value; } }
+         public bool Recursive { get{ return recursive; } set{ recursive = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Recursive")); } }
          #endregion // Fields
 
          #region Associations

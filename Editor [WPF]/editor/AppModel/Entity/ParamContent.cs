@@ -24,7 +24,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class ParamContent : ISerializable    {
+    public partial class ParamContent : ISerializable , INotifyPropertyChanged    {
          #region Constructor
          public ParamContent(){
          }
@@ -36,15 +36,17 @@ namespace AppModel.Entity
 
          #endregion // Constructor
          
+         #region INotifyPropertyChanged
+         public event PropertyChangedEventHandler PropertyChanged;
+         #endregion // INotifyPropertyChanged
+
          #region Fields
          // Nom
-
          protected String paramname;
-         public String ParamName { get{ return paramname; } set{ paramname = value; } }
+         public String ParamName { get{ return paramname; } set{ paramname = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ParamName")); } }
          // Valeur
-
          protected String paramvalue;
-         public String ParamValue { get{ return paramvalue; } set{ paramvalue = value; } }
+         public String ParamValue { get{ return paramvalue; } set{ paramvalue = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ParamValue")); } }
          #endregion // Fields
 
          #region Associations

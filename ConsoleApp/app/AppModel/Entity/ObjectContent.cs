@@ -24,7 +24,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class ObjectContent : ISerializable    {
+    public partial class ObjectContent : ISerializable , INotifyPropertyChanged    {
          #region Constructor
          public ObjectContent(){
 
@@ -41,29 +41,29 @@ namespace AppModel.Entity
 
          #endregion // Constructor
          
+         #region INotifyPropertyChanged
+         public event PropertyChangedEventHandler PropertyChanged;
+         #endregion // INotifyPropertyChanged
+
          #region Fields
          // Identifiant
-
          protected String id;
-         public String Id { get{ return id; } set{ id = value; } }
+         public String Id { get{ return id; } set{ id = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Id")); } }
          // Type d'objet
-
          protected String objecttype;
-         public String ObjectType { get{ return objecttype; } set{ objecttype = value; } }
+         public String ObjectType { get{ return objecttype; } set{ objecttype = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ObjectType")); } }
          // Emplacement du fichier source
-
          protected String filename;
-         public String Filename { get{ return filename; } set{ filename = value; } }
+         public String Filename { get{ return filename; } set{ filename = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Filename")); } }
          // Position de départ dans le fichier source
-
          protected int? position;
-         public int? Position { get{ return position; } set{ position = value; } }
+         public int? Position { get{ return position; } set{ position = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Position")); } }
          #endregion // Fields
 
          #region Associations
          // 
          protected Collection<ParamContent> paramcontent;
-         public virtual Collection<ParamContent> ParamContent { get{ return paramcontent; } set{ paramcontent = value; } }
+         public virtual Collection<ParamContent> ParamContent { get{ return paramcontent; } set{ paramcontent = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ParamContent"));  } }
          #endregion // Associations
 
          #region Methods

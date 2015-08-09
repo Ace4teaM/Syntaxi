@@ -59,7 +59,7 @@
             <ComboBoxItem Tag="c#">C#</ComboBoxItem>
             <ComboBoxItem Tag="c++">C++</ComboBoxItem>
         </ComboBox>
-        <TextBox Name="NameTb" Style="{StaticResource placeHolder}" Tag="Nom" Width="150" HorizontalAlignment="Center" TextAlignment="Center"></TextBox>
+        <TextBox Name="NameTb" Style="{StaticResource placeHolder}" Tag="Nom" Width="150" Margin="0,0,0,5" HorizontalAlignment="Center" TextAlignment="Center"></TextBox>
         <TextBox Name="VersionTb" Style="{StaticResource placeHolder}" Tag="Version" Width="150" HorizontalAlignment="Center" TextAlignment="Center"></TextBox>
         <Button Name="NewBtn" Margin="10" Width="150" Height="40" Click="NewBtn_Click">Créer</Button>
         <Separator Margin="50,10,50,10"></Separator>

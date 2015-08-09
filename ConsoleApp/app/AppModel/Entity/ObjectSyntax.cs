@@ -24,32 +24,37 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class ObjectSyntax : ISerializable    {
+    public partial class ObjectSyntax : ISerializable , INotifyPropertyChanged    {
          #region Constructor
          public ObjectSyntax(){
          }
          
-         public ObjectSyntax(String contentregex, String paramregex, String objecttype) : this(){
+         public ObjectSyntax(String contentregex, String paramregex, String objecttype, String objectdesc) : this(){
             this.contentregex = contentregex;
             this.paramregex = paramregex;
             this.objecttype = objecttype;
+            this.objectdesc = objectdesc;
          }
 
          #endregion // Constructor
          
+         #region INotifyPropertyChanged
+         public event PropertyChangedEventHandler PropertyChanged;
+         #endregion // INotifyPropertyChanged
+
          #region Fields
          // 
-
          protected String contentregex;
-         public String ContentRegEx { get{ return contentregex; } set{ contentregex = value; } }
+         public String ContentRegEx { get{ return contentregex; } set{ contentregex = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ContentRegEx")); } }
          // 
-
          protected String paramregex;
-         public String ParamRegEx { get{ return paramregex; } set{ paramregex = value; } }
+         public String ParamRegEx { get{ return paramregex; } set{ paramregex = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ParamRegEx")); } }
          // 
-
          protected String objecttype;
-         public String ObjectType { get{ return objecttype; } set{ objecttype = value; } }
+         public String ObjectType { get{ return objecttype; } set{ objecttype = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ObjectType")); } }
+         // 
+         protected String objectdesc;
+         public String ObjectDesc { get{ return objectdesc; } set{ objectdesc = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ObjectDesc")); } }
          #endregion // Fields
 
          #region Associations
@@ -62,6 +67,7 @@ namespace AppModel.Entity
              result += "ContentRegEx = " + ContentRegEx + Environment.NewLine;
              result += "ParamRegEx = " + ParamRegEx + Environment.NewLine;
              result += "ObjectType = " + ObjectType + Environment.NewLine;
+             result += "ObjectDesc = " + ObjectDesc + Environment.NewLine;
              return result;
          }
 
@@ -73,6 +79,7 @@ namespace AppModel.Entity
               info.AddValue("ContentRegEx", ContentRegEx, typeof(String));
               info.AddValue("ParamRegEx", ParamRegEx, typeof(String));
               info.AddValue("ObjectType", ObjectType, typeof(String));
+              info.AddValue("ObjectDesc", ObjectDesc, typeof(String));
           }
          #endregion // ISerializable
     
@@ -85,6 +92,7 @@ namespace AppModel.Entity
             ContentRegEx =  reader.ReadString();
             ParamRegEx =  reader.ReadString();
             ObjectType =  reader.ReadString();
+            ObjectDesc =  reader.ReadString();
          }
          
          public void WriteBinary(BinaryWriter writer)
@@ -93,6 +101,7 @@ namespace AppModel.Entity
             writer.Write(ContentRegEx);
             writer.Write(ParamRegEx);
             writer.Write(ObjectType);
+            writer.Write(ObjectDesc);
        }
 
        #endregion // Serialization

@@ -14,7 +14,15 @@ namespace editor
     /// </summary>
     public partial class App : Application
     {
-        public Project Project { get; set; }
+        public Project project;
+        public Project Project {
+            get { return project; }
+            set { 
+                project = value;
+                if (project != null && MainWindow != null)
+                    MainWindow.Title = "Syntaxi - " + Project.Name + " [" + Project.Version + "]";
+            }
+        }
 
         public Project MakeCppProject(string title, string version)
         {
@@ -65,7 +73,8 @@ namespace editor
             objSyntax = new ObjectSyntax(
                 @"^(?:\s*\/\*\*)(?:[\n\s]+)(?<description>[^\n]*)[\n]+(?<content>(?:[^*]|\*[^\/])+)(?:\*\/)(?:[\n\s]*)(?<return_type>[A-Za-z_]+)(?:[\n\s]+)(?<name>[A-Za-z_]+)(?:[\n\s]*)\((?<params>[^\)]*)\)",
                 @"^(?:\s*)\@(?<type>[A-Za-z]+)(?:\s+)(?<content>[^@])+",
-                @"function");
+                @"function",
+                @"Fonction");
             /*objSyntax.ParamSyntax = new Collection<ParamSyntax>(
                 project.ParamSyntax.Where(p=>p.ParamType == "description" || p.ParamType == "return").ToArray()
             );*/
@@ -75,7 +84,8 @@ namespace editor
             objSyntax = new ObjectSyntax(
                 @"^(?:\s*\/\*\*)(?:[\n\s]+)(?<description>[^\n]*)[\n]+(?<content>(?:[^*]|\*[^\/])*)(?:\*\/)(?:[\n\s]*)typedef(?:[\n\s]+)struct(?:[\n\s]+)(?<name>[A-Za-z_]+)(?:[\n\s]*)\{",
                 @"^(?:\s*)\@(?<type>[A-Za-z]+)(?:\s+)(?<content>[^@])+",
-                @"struct");
+                @"struct",
+                @"Structure de données");
             // objSyntax.ParamSyntax = new Collection<ParamSyntax>();
             project.ObjectSyntax.Add(objSyntax);
 

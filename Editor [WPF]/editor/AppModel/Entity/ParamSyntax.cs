@@ -24,7 +24,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class ParamSyntax : ISerializable    {
+    public partial class ParamSyntax : ISerializable , INotifyPropertyChanged    {
          #region Constructor
          public ParamSyntax(){
          }
@@ -37,19 +37,20 @@ namespace AppModel.Entity
 
          #endregion // Constructor
          
+         #region INotifyPropertyChanged
+         public event PropertyChangedEventHandler PropertyChanged;
+         #endregion // INotifyPropertyChanged
+
          #region Fields
          // 
-
          protected String contentregex;
-         public String ContentRegEx { get{ return contentregex; } set{ contentregex = value; } }
+         public String ContentRegEx { get{ return contentregex; } set{ contentregex = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ContentRegEx")); } }
          // 
-
          protected String paramregex;
-         public String ParamRegEx { get{ return paramregex; } set{ paramregex = value; } }
+         public String ParamRegEx { get{ return paramregex; } set{ paramregex = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ParamRegEx")); } }
          // 
-
          protected String paramtype;
-         public String ParamType { get{ return paramtype; } set{ paramtype = value; } }
+         public String ParamType { get{ return paramtype; } set{ paramtype = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ParamType")); } }
          #endregion // Fields
 
          #region Associations

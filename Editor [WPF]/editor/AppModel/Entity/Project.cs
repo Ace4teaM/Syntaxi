@@ -24,7 +24,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class Project : ISerializable    {
+    public partial class Project : ISerializable , INotifyPropertyChanged    {
          #region Constructor
          public Project(){
 
@@ -45,30 +45,32 @@ namespace AppModel.Entity
 
          #endregion // Constructor
          
+         #region INotifyPropertyChanged
+         public event PropertyChangedEventHandler PropertyChanged;
+         #endregion // INotifyPropertyChanged
+
          #region Fields
          // 
-
          protected String name;
-         public String Name { get{ return name; } set{ name = value; } }
+         public String Name { get{ return name; } set{ name = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Name")); } }
          // 
-
          protected String version;
-         public String Version { get{ return version; } set{ version = value; } }
+         public String Version { get{ return version; } set{ version = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Version")); } }
          #endregion // Fields
 
          #region Associations
          // 
          protected Collection<ObjectContent> objectcontent;
-         public virtual Collection<ObjectContent> ObjectContent { get{ return objectcontent; } set{ objectcontent = value; } }
+         public virtual Collection<ObjectContent> ObjectContent { get{ return objectcontent; } set{ objectcontent = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ObjectContent"));  } }
          // 
          protected Collection<SearchParams> searchparams;
-         public virtual Collection<SearchParams> SearchParams { get{ return searchparams; } set{ searchparams = value; } }
+         public virtual Collection<SearchParams> SearchParams { get{ return searchparams; } set{ searchparams = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("SearchParams"));  } }
          // 
          protected Collection<ObjectSyntax> objectsyntax;
-         public virtual Collection<ObjectSyntax> ObjectSyntax { get{ return objectsyntax; } set{ objectsyntax = value; } }
+         public virtual Collection<ObjectSyntax> ObjectSyntax { get{ return objectsyntax; } set{ objectsyntax = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ObjectSyntax"));  } }
          // 
          protected Collection<ParamSyntax> paramsyntax;
-         public virtual Collection<ParamSyntax> ParamSyntax { get{ return paramsyntax; } set{ paramsyntax = value; } }
+         public virtual Collection<ParamSyntax> ParamSyntax { get{ return paramsyntax; } set{ paramsyntax = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ParamSyntax"));  } }
          #endregion // Associations
 
          #region Methods

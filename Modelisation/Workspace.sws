@@ -4,7 +4,7 @@
 
 <Workspace>
 	<Local Expanded="Yes">
-		<Model Expanded="Yes" ID="{3060F09A-BCA9-45F5-A41C-B12508D0B65F}" Name="AppModel" Selected="Yes" Type="{18112060-1A4B-11D1-83D9-444553540000}" URL="AppModel.oom"/>
+		<Model Expanded="Yes" ID="{3060F09A-BCA9-45F5-A41C-B12508D0B65F}" Name="AppModel" Type="{18112060-1A4B-11D1-83D9-444553540000}" URL="AppModel.oom"/>
 	</Local>
 	<BrowserModule Name="Repository"/>
 </Workspace>
