@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using AppModel.Entity;
+using EditorModel.Entity;
 
 namespace editor
 {
@@ -14,7 +15,9 @@ namespace editor
     /// </summary>
     public partial class App : Application
     {
-        public Project project;
+        public String Version = "1.0";
+
+        private Project project;
         public Project Project {
             get { return project; }
             set { 
@@ -24,11 +27,65 @@ namespace editor
             }
         }
 
+        private EditorStates states;
+        public EditorStates States
+        {
+            get { return states; }
+            set
+            {
+                states = value;
+            }
+        }
+
+        public EditorStates MakeCppStates()
+        {
+            // Initialise
+            EditorStates states = new EditorStates(this.Version);
+
+            // function example
+            states.EditorSampleCode.Add(new EditorSampleCode(
+@"
+/**
+	Alloue est initialise la mémoire
+
+	Parametres:
+		handle_count : nombre d'handle allouable
+		handle_size  : taille d'un handle
+
+	Retourne:
+		1 en cas de succes, 0 en cas d'erreur.
+*/
+ushort npInitHandle(ushort handle_count,ushort handle_size)
+{ ... }
+",
+                @"function")
+            );
+
+            // struct example
+            states.EditorSampleCode.Add(new EditorSampleCode(
+@"
+/**
+	En-tete d'un handle
+*/
+typedef struct _NP_HANDLE_HEADER{
+	ushort chunk_count;
+	ushort chunk_size;
+	size_t data_size;
+	NP_HANDLE_INDICE* index;
+	char* data;
+	char* lock_data;
+}NP_HANDLE_HEADER;
+",
+                @"struct")
+            );
+
+            return states;
+        }
+
         public Project MakeCppProject(string title, string version)
         {
             // Initialise un projet
-            Project project;
-            project = new Project(title, version);
+            Project project = new Project(title, version);
 
             //
             // Params Syntaxes

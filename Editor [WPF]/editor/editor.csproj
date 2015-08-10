@@ -60,6 +60,8 @@
     <Compile Include="AppModel\Entity\Project.cs" />
     <Compile Include="AppModel\Entity\SearchParams.cs" />
     <Compile Include="AppModel\Interface\IApp.cs" />
+    <Compile Include="EditorModel\Entity\EditorSampleCode.cs" />
+    <Compile Include="EditorModel\Entity\EditorStates.cs" />
     <Compile Include="Lib\ViewModelBase.cs" />
     <Compile Include="ModelView\VueObjectSyntax.cs" />
     <Compile Include="View\CodeSample.xaml.cs">
@@ -136,6 +138,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\AppIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

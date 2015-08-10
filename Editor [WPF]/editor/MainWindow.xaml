@@ -4,7 +4,8 @@
         xmlns:v="clr-namespace:editor.View"
         WindowStartupLocation="CenterScreen"
         WindowState="Normal"
-        Title="Syntaxi" Height="580.917" Width="791.124">
+        Title="Syntaxi" Height="580.917" Width="791.124"
+        Icon="Resources/AppIcon.png">
     <Grid Name="Client">
         <v:VueHome HorizontalAlignment="Center" VerticalAlignment="Center"></v:VueHome>
     </Grid>

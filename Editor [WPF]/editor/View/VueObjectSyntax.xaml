@@ -16,9 +16,9 @@
             <RowDefinition Height="100*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.Children>
+            <v:ObjectSyntaxEdit Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" DataContext="{Binding CurObjectSyntax}"></v:ObjectSyntaxEdit>
             <v:ObjectSyntaxList Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Project.ObjectSyntax}" SelectedItem="{Binding CurObjectSyntax}" IsSynchronizedWithCurrentItem="True"></v:ObjectSyntaxList>
-            <v:ObjectSyntaxEdit Grid.Row="0" Grid.Column="0" DataContext="{Binding CurObjectSyntax}"></v:ObjectSyntaxEdit>
-            <v:CodeSample Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"></v:CodeSample>
+            <v:CodeSample Grid.Row="1" Grid.Column="1" DataContext="{Binding CurCodeExample}"></v:CodeSample>
         </Grid.Children>
     </Grid>
 </UserControl>

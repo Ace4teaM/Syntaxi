@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using AppModel.Entity;
+using EditorModel.Entity;
 using Microsoft.Win32;
 
 namespace editor.View
@@ -42,15 +43,29 @@ namespace editor.View
             // Get the selected file name and display in a TextBox
             if (dlg.ShowDialog() == true)
             {
-                // Sauvegarde le projet
-                FileStream file = File.Open(dlg.FileName, FileMode.Open);
-                BinaryReader reader = new BinaryReader(file);
-                Project project = new Project();
-                project.ReadBinary(reader);
-                reader.Close();
-                file.Close();
+                // Charge le projet
+                {
+                    FileStream file = File.Open(dlg.FileName, FileMode.Open);
+                    BinaryReader reader = new BinaryReader(file);
+                    Project project = new Project();
+                    project.ReadBinary(reader);
+                    reader.Close();
+                    file.Close();
+                    app.Project = project;
+                }
 
-                app.Project = project;
+                // Charge les infos sur le projet
+                String EditorDataFilename = dlg.FileName.Remove(-3, 3) + ".dat";
+                if (File.Exists(EditorDataFilename))
+                {
+                    FileStream file = File.Open(dlg.FileName, FileMode.Open);
+                    BinaryReader reader = new BinaryReader(file);
+                    EditorStates states = new EditorStates();
+                    states.ReadBinary(reader);
+                    reader.Close();
+                    file.Close();
+                    app.States = states;
+                }
             }
 
             //
@@ -67,13 +82,16 @@ namespace editor.View
             switch (this.ProjectTypeCb.SelectedValue as string)
             {
                 /*case "c#":
-                    app.Project = app.MakeCsharpProject(this.NameTb.Text, this.VersionTb.Text);
+                    app.Project = app.MakeCSharpProject(this.NameTb.Text, this.VersionTb.Text);
+                    app.Editor = app.MakeCSharpStates();
                     break;*/
                 case "c++":
                     app.Project = app.MakeCppProject(this.NameTb.Text, this.VersionTb.Text);
+                    app.States = app.MakeCppStates();
                     break;
-                case "empy":
+                case "empty":
                     app.Project = new Project(this.NameTb.Text, this.VersionTb.Text);
+                    app.States = new EditorStates(app.Version);
                     break;
             }
 

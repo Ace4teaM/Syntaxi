@@ -12,7 +12,7 @@
         </Grid.RowDefinitions>
         <Grid.Children>
             <TextBlock Grid.Row="0" FontWeight="Bold" FontSize="25" FontFamily="Verdana" TextAlignment="Center" Padding="12" Background="Coral">Exemple</TextBlock>
-            <TextBlock Grid.Row="1" Padding="10" Text="{Binding CodeSample}"></TextBlock>
+            <TextBlock Grid.Row="1" Padding="10" Text="{Binding Text}"></TextBlock>
         </Grid.Children>
     </Grid>
 </UserControl>
