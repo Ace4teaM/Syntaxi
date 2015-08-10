@@ -43,34 +43,20 @@ namespace editor.View
             // Get the selected file name and display in a TextBox
             if (dlg.ShowDialog() == true)
             {
-                // Charge le projet
+                try
                 {
-                    FileStream file = File.Open(dlg.FileName, FileMode.Open);
-                    BinaryReader reader = new BinaryReader(file);
-                    Project project = new Project();
-                    project.ReadBinary(reader);
-                    reader.Close();
-                    file.Close();
-                    app.Project = project;
+                    app.OpenProject(dlg.FileName);
                 }
-
-                // Charge les infos sur le projet
-                String EditorDataFilename = dlg.FileName.Remove(-3, 3) + ".dat";
-                if (File.Exists(EditorDataFilename))
+                catch (Exception ex)
                 {
-                    FileStream file = File.Open(dlg.FileName, FileMode.Open);
-                    BinaryReader reader = new BinaryReader(file);
-                    EditorStates states = new EditorStates();
-                    states.ReadBinary(reader);
-                    reader.Close();
-                    file.Close();
-                    app.States = states;
+                    MessageBox.Show(app.MainWindow, "Impossible de charger le projet.\n"+ex.Message, "Oups", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
                 }
             }
 
             //
-            VueObjectSyntax view = new VueObjectSyntax();
-            view.DataContext = new ModelView.VueObjectSyntax(app.Project);
+            VueEditor view = new VueEditor();
+            view.DataContext = new ModelView.VueEditor();
             wnd.ChangeView(view);
         }
 
@@ -96,8 +82,8 @@ namespace editor.View
             }
 
             //
-            VueObjectSyntax view = new VueObjectSyntax();
-            view.DataContext = new ModelView.VueObjectSyntax(app.Project);
+            VueEditor view = new VueEditor();
+            view.DataContext = new ModelView.VueEditor();
             wnd.ChangeView(view);
         }
     }

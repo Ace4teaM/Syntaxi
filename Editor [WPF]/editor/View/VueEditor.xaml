@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="editor.View.VueEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:v="clr-namespace:editor.View" 
+             mc:Ignorable="d" 
+             d:DesignHeight="361" d:DesignWidth="712">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100*"></ColumnDefinition>
+            <ColumnDefinition Width="300"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.Children>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="100*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.Children>
+                    <WrapPanel Grid.Row="0" VerticalAlignment="Center">
+                        <Button Margin="10,0,0,0" Width="20" Height="20">
+                            <Image Width="16" Source="/Resources/close.png"></Image>
+                        </Button>
+                        <Button Margin="10,0,0,0" Width="20" Height="20" Command="{Binding SaveProject}">
+                            <Image Width="16" Source="/Resources/save.png"></Image>
+                        </Button>
+                        <StackPanel Width="200" Margin="10,0,10,0" Orientation="Vertical" VerticalAlignment="Center">
+                            <TextBlock FontSize="10" FontWeight="SemiBold">Project Name</TextBlock>
+                            <TextBlock FontSize="8">Project Version</TextBlock>
+                        </StackPanel>
+                    </WrapPanel>
+                    <v:ObjectSyntaxEdit Grid.Row="1" DataContext="{Binding CurObjectSyntax}"></v:ObjectSyntaxEdit>
+                </Grid.Children>
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="100*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.Children>
+                    <TextBlock Grid.Row="0" FontStyle="Italic" FontWeight="SemiBold" FontSize="25" FontFamily="Verdana" TextAlignment="Center" Padding="12" Background="Coral">Exemples</TextBlock>
+                    <StackPanel Margin="0,5,0,5" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <v:ObjectSyntaxCombo ItemsSource="{Binding ObjectSyntaxList}" SelectedItem="{Binding CurObjectSyntax}" IsSynchronizedWithCurrentItem="True" Width="200"></v:ObjectSyntaxCombo>
+                        <Button Width="60" Margin="10,0,0,0">Editer</Button>
+                    </StackPanel>
+                    <v:CodeSampleEdit Margin="5" Grid.Row="2" Padding="10" DataContext="{Binding CurEditorSampleCode}"></v:CodeSampleEdit>
+                </Grid.Children>
+            </Grid>
+        </Grid.Children>
+    </Grid>
+</UserControl>

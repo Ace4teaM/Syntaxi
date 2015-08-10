@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using AppModel.Entity;
 using EditorModel.Entity;
+using Microsoft.Win32;
 
 namespace editor
 {
@@ -16,7 +18,7 @@ namespace editor
     public partial class App : Application
     {
         public String Version = "1.0";
-
+        private string ProjectFileName;
         private Project project;
         public Project Project {
             get { return project; }
@@ -147,6 +149,78 @@ typedef struct _NP_HANDLE_HEADER{
             project.ObjectSyntax.Add(objSyntax);
 
             return project;
+        }
+
+        public bool SaveProject()
+        {
+            if (ProjectFileName == null)
+            {
+                SaveFileDialog dlg = new SaveFileDialog();
+
+                // Set filter for file extension and default file extension
+                dlg.DefaultExt = ".prj";
+                dlg.Filter = "Projet Syntaxi|*.prj";
+
+                // Get the selected file name and display in a TextBox
+                if (dlg.ShowDialog() != true)
+                {
+                    return false;
+                }
+
+                ProjectFileName = dlg.FileName;
+            }
+
+            // Sauvegarde le projet
+            {
+                FileStream file = File.Open(ProjectFileName, FileMode.OpenOrCreate);
+                BinaryWriter reader = new BinaryWriter(file);
+                this.Project.WriteBinary(reader);
+                reader.Close();
+                file.Close();
+            }
+
+            // Sauvegarde les infos sur le projet
+            if (this.States != null)
+            {
+                String EditorDataFilename = ProjectFileName.Remove(ProjectFileName.Length-3, 3) + "dat";
+                FileStream file = File.Open(EditorDataFilename, FileMode.OpenOrCreate);
+                BinaryWriter reader = new BinaryWriter(file);
+                this.States.WriteBinary(reader);
+                reader.Close();
+                file.Close();
+            }
+
+            return true;
+        }
+
+        public bool OpenProject(string FileName)
+        {
+            // Charge le projet
+            {
+                FileStream file = File.Open(FileName, FileMode.Open);
+                BinaryReader reader = new BinaryReader(file);
+                Project project = new Project();
+                project.ReadBinary(reader);
+                reader.Close();
+                file.Close();
+                this.Project = project;
+                this.ProjectFileName = FileName;
+            }
+
+            // Charge les infos sur le projet
+            String EditorDataFilename = FileName.Remove(ProjectFileName.Length - 3, 3) + "dat";
+            if (File.Exists(EditorDataFilename))
+            {
+                FileStream file = File.Open(EditorDataFilename, FileMode.Open);
+                BinaryReader reader = new BinaryReader(file);
+                EditorStates states = new EditorStates();
+                states.ReadBinary(reader);
+                reader.Close();
+                file.Close();
+                this.States = states;
+            }
+
+            return true;
         }
     }
 }

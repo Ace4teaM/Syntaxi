@@ -4,8 +4,8 @@
 
 <Workspace>
 	<Local Expanded="Yes">
-		<Model Expanded="Yes" ID="{3060F09A-BCA9-45F5-A41C-B12508D0B65F}" Name="AppModel" Type="{18112060-1A4B-11D1-83D9-444553540000}" URL="AppModel.oom"/>
-		<Model Expanded="Yes" ID="{75366A13-68C4-4D75-8782-7D92614E553B}" Name="EditorStatesModel" Type="{18112060-1A4B-11D1-83D9-444553540000}" URL="EditorModel.oom"/>
+		<Model Expanded="Yes" ID="{3060F09A-BCA9-45F5-A41C-B12508D0B65F}" Loaded="No" Name="AppModel" Type="{18112060-1A4B-11D1-83D9-444553540000}" URL="AppModel.oom"/>
+		<Model Expanded="Yes" ID="{75366A13-68C4-4D75-8782-7D92614E553B}" Loaded="No" Name="EditorStatesModel" Type="{18112060-1A4B-11D1-83D9-444553540000}" URL="EditorModel.oom"/>
 	</Local>
 	<BrowserModule Name="Repository"/>
 </Workspace>

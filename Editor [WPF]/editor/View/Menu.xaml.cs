@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace editor.View
 {
     /// <summary>
-    /// Logique d'interaction pour VueObjectSyntax.xaml
+    /// Logique d'interaction pour Menu.xaml
     /// </summary>
-    public partial class VueObjectSyntax : UserControl
+    public partial class Menu : UserControl
     {
-        public VueObjectSyntax()
+        public Menu()
         {
             InitializeComponent();
         }

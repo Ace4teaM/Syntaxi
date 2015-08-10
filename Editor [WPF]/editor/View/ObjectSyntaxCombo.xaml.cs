@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace editor.View
 {
     /// <summary>
-    /// Logique d'interaction pour CodeSample.xaml
+    /// Logique d'interaction pour ObjectSyntaxCombo.xaml
     /// </summary>
-    public partial class CodeSample : UserControl
+    public partial class ObjectSyntaxCombo : ComboBox
     {
-        public CodeSample()
+        public ObjectSyntaxCombo()
         {
             InitializeComponent();
         }

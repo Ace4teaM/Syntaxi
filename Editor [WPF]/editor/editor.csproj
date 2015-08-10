@@ -62,10 +62,18 @@
     <Compile Include="AppModel\Interface\IApp.cs" />
     <Compile Include="EditorModel\Entity\EditorSampleCode.cs" />
     <Compile Include="EditorModel\Entity\EditorStates.cs" />
+    <Compile Include="Lib\DelegateCommand.cs" />
     <Compile Include="Lib\ViewModelBase.cs" />
-    <Compile Include="ModelView\VueObjectSyntax.cs" />
-    <Compile Include="View\CodeSample.xaml.cs">
-      <DependentUpon>CodeSample.xaml</DependentUpon>
+    <Compile Include="ModelView\CodeSample.cs" />
+    <Compile Include="ModelView\VueEditor.cs" />
+    <Compile Include="View\CodeSampleEdit.xaml.cs">
+      <DependentUpon>CodeSampleEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Menu.xaml.cs">
+      <DependentUpon>Menu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ObjectSyntaxCombo.xaml.cs">
+      <DependentUpon>ObjectSyntaxCombo.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ObjectSyntaxEdit.xaml.cs">
       <DependentUpon>ObjectSyntaxEdit.xaml</DependentUpon>
@@ -73,11 +81,11 @@
     <Compile Include="View\ObjectSyntaxList.xaml.cs">
       <DependentUpon>ObjectSyntaxList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\VueEditor.xaml.cs">
+      <DependentUpon>VueEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\VueHome.xaml.cs">
       <DependentUpon>VueHome.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\VueObjectSyntax.xaml.cs">
-      <DependentUpon>VueObjectSyntax.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -91,7 +99,15 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\CodeSample.xaml">
+    <Page Include="View\CodeSampleEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Menu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ObjectSyntaxCombo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -103,11 +119,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\VueHome.xaml">
+    <Page Include="View\VueEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\VueObjectSyntax.xaml">
+    <Page Include="View\VueHome.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -141,6 +157,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\AppIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\home.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\close.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
