@@ -14,8 +14,10 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
 using System.Collections.ObjectModel;
+using Lib;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Data.SqlClient;
 
 namespace AppModel.Entity
 {
@@ -24,7 +26,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class ObjectContent : ISerializable , INotifyPropertyChanged    {
+    public partial class ObjectContent : ISerializable , INotifyPropertyChanged , IEntity    {
          #region Constructor
          public ObjectContent(){
 
@@ -38,9 +40,8 @@ namespace AppModel.Entity
             this.filename = filename;
             this.position = position;
          }
-
          #endregion // Constructor
-         
+
          #region INotifyPropertyChanged
          public event PropertyChangedEventHandler PropertyChanged;
          #endregion // INotifyPropertyChanged
@@ -62,8 +63,15 @@ namespace AppModel.Entity
 
          #region Associations
          // 
+         protected Project project;
+         public virtual Project Project { get{ return project; } set{ project = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Project"));  } }
+         // 
          protected Collection<ParamContent> paramcontent;
          public virtual Collection<ParamContent> ParamContent { get{ return paramcontent; } set{ paramcontent = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ParamContent"));  } }
+         public void AddParamContent(ParamContent obj){
+            obj.ObjectContent = this;
+            ParamContent.Add(obj);
+         }
          #endregion // Associations
 
          #region Methods
@@ -104,16 +112,16 @@ namespace AppModel.Entity
             size = reader.ReadInt32();
             if (size > 0)
             {
-                this.paramcontent = new Collection<ParamContent>();
+                this.ParamContent = new Collection<ParamContent>();
                 for(int i=0;i<size;i++){
                     ParamContent o = new ParamContent();
                     o.ReadBinary(reader);
-                    this.paramcontent.Add(o);
+                    this.AddParamContent(o);
                 }
             }
             else
             {
-                this.paramcontent = new Collection<ParamContent>();
+                this.ParamContent = new Collection<ParamContent>();
             }
          }
          
@@ -133,7 +141,140 @@ namespace AppModel.Entity
                     col.WriteBinary(writer);
             }
        }
-
        #endregion // Serialization
+       
+       #region IEntity
+       public IEntityFactory Factory{get;set;}
+       
+       public string TableName { get{ return "T_OBJECT_CONTENT";} }
+       
+       public static string[] PrimaryIdentifier = {"Id"};
+       public string[] GetPrimaryIdentifier() { return PrimaryIdentifier; }
+       
+       // Identifiants
+       public bool CompareIdentifier(IEntity e)
+       {
+           ObjectContent b = e as ObjectContent;
+           if(b==null)
+             return false;
+           return (this.Id == b.Id);
+       }
+       
+       public void Load()
+       {
+          SqlFactory db = Factory as SqlFactory;
+          string query = "SELECT ObjectType , Filename , Position FROM T_OBJECT_CONTENT WHERE Id = "+SqlFactory.ParseType(Id)+"";
+          db.QueryObject(query, this);
+       }
+       
+       public object LoadAssociations(string name)
+       {
+          SqlFactory db = Factory as SqlFactory;
+       
+          if(name == "ParamContent")
+             return LoadParamContent();
+       
+          return null;
+       }
+       
+       public int Delete()
+       {
+          SqlFactory db = Factory as SqlFactory;
+          string query = "DELETE FROM T_OBJECT_CONTENT WHERE Id = "+SqlFactory.ParseType(Id)+"";
+          return db.Query(query);
+       }
+       
+       public void Insert(string add_params = "", string add_values = "")
+       {
+          SqlFactory db = Factory as SqlFactory;
+          string query = "INSERT INTO T_OBJECT_CONTENT (Id, ObjectType, Filename, Position$add_params$) VALUES( " + SqlFactory.ParseType(ObjectType) + ", " + SqlFactory.ParseType(Filename) + ", " + SqlFactory.ParseType(Position) + "$add_values$)";
+       
+       
+          query = query.Replace("$add_params$", add_params);
+          query = query.Replace("$add_values$", add_values);
+       
+          db.Query(query);
+       
+       }
+       
+       public int Update(string add_params = "")
+       {
+          SqlFactory db = Factory as SqlFactory;
+          string query = "UPDATE T_OBJECT_CONTENT SET ObjectType = "+SqlFactory.ParseType(ObjectType)+", Filename = "+SqlFactory.ParseType(Filename)+", Position = "+SqlFactory.ParseType(Position)+"$add_params$ WHERE Id = "+SqlFactory.ParseType(Id)+"";
+       
+       
+          query = query.Replace("$add_params$", add_params);
+          
+          return db.Query(query);
+       
+       }
+       
+       // ObjectContent(0,1) <-> (0,*)ParamContent
+       public Collection<ParamContent> LoadParamContent()
+       {
+          SqlFactory db = Factory as SqlFactory;
+          string query = "SELECT ParamName FROM T_PARAM_CONTENT WHERE Id = "+SqlFactory.ParseType(Id)+"";
+          this.ParamContent = new Collection<ParamContent>();
+       
+          db.Query(query, reader =>
+          {
+              while (reader.Read())
+              {
+                // obtient l'identifiant
+                String ParamName = "";
+       
+                if (reader["ParamName"] == null)
+                   continue;
+                ParamName = reader["ParamName"].ToString();
+                
+                // obtient l'objet de reference
+                ParamContent _entity = (from p in db.References.OfType<ParamContent>() where p.ParamName == ParamName select p).FirstOrDefault();
+       
+                if ( _entity == null)
+                {
+                    _entity = new ParamContent();
+                    _entity.Factory = db;
+                    _entity.ParamName = ParamName;
+                    _entity = db.GetReference(_entity) as ParamContent;//mise en cache
+                }
+                
+                // Recharge les données depuis la BDD
+                _entity.Load();
+          
+                // Ajoute la reference à la collection
+                this.AddParamContent(_entity);
+       
+              }
+              return 0;
+          });
+       
+          return ParamContent;
+       }
+       
+       // Obtient l'identifiant primaire depuis un curseur SQL
+       public void PickIdentity(object _reader)
+       {
+          SqlFactory db = Factory as SqlFactory;
+          SqlDataReader reader = _reader as SqlDataReader;
+          if (reader["Id"] != null)
+             Id = reader["Id"].ToString();
+       }
+       
+       // Obtient les propriétés depuis un curseur SQL
+       public void PickProperties(object _reader)
+       {
+          SqlFactory db = Factory as SqlFactory;
+          SqlDataReader reader = _reader as SqlDataReader;
+          if (reader["ObjectType"] != null)
+             ObjectType = reader["ObjectType"].ToString();
+       
+          if (reader["Filename"] != null)
+             Filename = reader["Filename"].ToString();
+       
+          if (reader["Position"] != null)
+             Position = int.Parse(reader["Position"].ToString());
+       }
+       #endregion // IEntity
       }
+
 }

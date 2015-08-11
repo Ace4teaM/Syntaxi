@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using AppModel.Entity;
 using EditorModel.Entity;
+using Lib;
 using Microsoft.Win32;
 
 namespace editor
@@ -221,6 +222,19 @@ typedef struct _NP_HANDLE_HEADER{
             }
 
             return true;
+        }
+
+        public void ScanFolder(SearchParams searchParams)
+        {
+        }
+
+        public void Export(IEntityFactory factory)
+        {
+            foreach (var e in Project.ObjectContent)
+            {
+                e.Factory = factory;
+                e.Insert();
+            }
         }
     }
 }

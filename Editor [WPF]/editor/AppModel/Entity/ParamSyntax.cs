@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
 using System.Collections.ObjectModel;
+using Lib;
 using System.IO;
 using System.Runtime.Serialization;
 
@@ -34,9 +35,8 @@ namespace AppModel.Entity
             this.paramregex = paramregex;
             this.paramtype = paramtype;
          }
-
          #endregion // Constructor
-         
+
          #region INotifyPropertyChanged
          public event PropertyChangedEventHandler PropertyChanged;
          #endregion // INotifyPropertyChanged
@@ -54,6 +54,9 @@ namespace AppModel.Entity
          #endregion // Fields
 
          #region Associations
+         // 
+         protected Project project;
+         public virtual Project Project { get{ return project; } set{ project = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Project"));  } }
          #endregion // Associations
 
          #region Methods
@@ -95,7 +98,8 @@ namespace AppModel.Entity
             writer.Write(ParamRegEx);
             writer.Write(ParamType);
        }
-
        #endregion // Serialization
+
       }
+
 }

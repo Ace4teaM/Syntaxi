@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
 using System.Collections.ObjectModel;
+using Lib;
 using System.IO;
 using System.Runtime.Serialization;
 
@@ -42,9 +43,8 @@ namespace AppModel.Entity
             this.name = name;
             this.version = version;
          }
-
          #endregion // Constructor
-         
+
          #region INotifyPropertyChanged
          public event PropertyChangedEventHandler PropertyChanged;
          #endregion // INotifyPropertyChanged
@@ -62,15 +62,31 @@ namespace AppModel.Entity
          // 
          protected Collection<ObjectContent> objectcontent;
          public virtual Collection<ObjectContent> ObjectContent { get{ return objectcontent; } set{ objectcontent = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ObjectContent"));  } }
+         public void AddObjectContent(ObjectContent obj){
+            obj.Project = this;
+            ObjectContent.Add(obj);
+         }
          // 
          protected Collection<SearchParams> searchparams;
          public virtual Collection<SearchParams> SearchParams { get{ return searchparams; } set{ searchparams = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("SearchParams"));  } }
+         public void AddSearchParams(SearchParams obj){
+            obj.Project = this;
+            SearchParams.Add(obj);
+         }
          // 
          protected Collection<ObjectSyntax> objectsyntax;
          public virtual Collection<ObjectSyntax> ObjectSyntax { get{ return objectsyntax; } set{ objectsyntax = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ObjectSyntax"));  } }
+         public void AddObjectSyntax(ObjectSyntax obj){
+            obj.Project = this;
+            ObjectSyntax.Add(obj);
+         }
          // 
          protected Collection<ParamSyntax> paramsyntax;
          public virtual Collection<ParamSyntax> ParamSyntax { get{ return paramsyntax; } set{ paramsyntax = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ParamSyntax"));  } }
+         public void AddParamSyntax(ParamSyntax obj){
+            obj.Project = this;
+            ParamSyntax.Add(obj);
+         }
          #endregion // Associations
 
          #region Methods
@@ -105,61 +121,61 @@ namespace AppModel.Entity
             size = reader.ReadInt32();
             if (size > 0)
             {
-                this.objectcontent = new Collection<ObjectContent>();
+                this.ObjectContent = new Collection<ObjectContent>();
                 for(int i=0;i<size;i++){
                     ObjectContent o = new ObjectContent();
                     o.ReadBinary(reader);
-                    this.objectcontent.Add(o);
+                    this.AddObjectContent(o);
                 }
             }
             else
             {
-                this.objectcontent = new Collection<ObjectContent>();
+                this.ObjectContent = new Collection<ObjectContent>();
             }
             // SearchParams
             size = reader.ReadInt32();
             if (size > 0)
             {
-                this.searchparams = new Collection<SearchParams>();
+                this.SearchParams = new Collection<SearchParams>();
                 for(int i=0;i<size;i++){
                     SearchParams o = new SearchParams();
                     o.ReadBinary(reader);
-                    this.searchparams.Add(o);
+                    this.AddSearchParams(o);
                 }
             }
             else
             {
-                this.searchparams = new Collection<SearchParams>();
+                this.SearchParams = new Collection<SearchParams>();
             }
             // ObjectSyntax
             size = reader.ReadInt32();
             if (size > 0)
             {
-                this.objectsyntax = new Collection<ObjectSyntax>();
+                this.ObjectSyntax = new Collection<ObjectSyntax>();
                 for(int i=0;i<size;i++){
                     ObjectSyntax o = new ObjectSyntax();
                     o.ReadBinary(reader);
-                    this.objectsyntax.Add(o);
+                    this.AddObjectSyntax(o);
                 }
             }
             else
             {
-                this.objectsyntax = new Collection<ObjectSyntax>();
+                this.ObjectSyntax = new Collection<ObjectSyntax>();
             }
             // ParamSyntax
             size = reader.ReadInt32();
             if (size > 0)
             {
-                this.paramsyntax = new Collection<ParamSyntax>();
+                this.ParamSyntax = new Collection<ParamSyntax>();
                 for(int i=0;i<size;i++){
                     ParamSyntax o = new ParamSyntax();
                     o.ReadBinary(reader);
-                    this.paramsyntax.Add(o);
+                    this.AddParamSyntax(o);
                 }
             }
             else
             {
-                this.paramsyntax = new Collection<ParamSyntax>();
+                this.ParamSyntax = new Collection<ParamSyntax>();
             }
          }
          
@@ -198,7 +214,8 @@ namespace AppModel.Entity
                     col.WriteBinary(writer);
             }
        }
-
        #endregion // Serialization
+
       }
+
 }
