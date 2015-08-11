@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -68,12 +69,16 @@
     <Compile Include="Lib\SqlFactory.cs" />
     <Compile Include="Lib\ViewModelBase.cs" />
     <Compile Include="ModelView\CodeSample.cs" />
+    <Compile Include="ModelView\SearchParams.cs" />
     <Compile Include="ModelView\VueEditor.cs" />
     <Compile Include="View\CodeSampleEdit.xaml.cs">
       <DependentUpon>CodeSampleEdit.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Menu.xaml.cs">
       <DependentUpon>Menu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ObjectContentGrid.xaml.cs">
+      <DependentUpon>ObjectContentGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ObjectSyntaxCombo.xaml.cs">
       <DependentUpon>ObjectSyntaxCombo.xaml</DependentUpon>
@@ -83,6 +88,9 @@
     </Compile>
     <Compile Include="View\ObjectSyntaxList.xaml.cs">
       <DependentUpon>ObjectSyntaxList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SearchParamsEdit.xaml.cs">
+      <DependentUpon>SearchParamsEdit.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\VueEditor.xaml.cs">
       <DependentUpon>VueEditor.xaml</DependentUpon>
@@ -110,6 +118,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ObjectContentGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\ObjectSyntaxCombo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -119,6 +131,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ObjectSyntaxList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SearchParamsEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -172,6 +188,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\search-plus.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

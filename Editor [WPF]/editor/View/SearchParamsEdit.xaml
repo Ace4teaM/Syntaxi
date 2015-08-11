@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="editor.View.SearchParamsEdit"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" >
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Width="100">Emplacement</TextBlock>
+            <TextBox Name="InputDir" Width="200" Text="{Binding InputDir}"></TextBox>
+            <Button Name="OpenInputDir" Width="20" Click="OpenInputDir_Click">...</Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Width="100">Filtre</TextBlock>
+            <TextBox Width="200" Text="{Binding InputFilter}"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Width="100">Recursif</TextBlock>
+            <CheckBox Width="200" IsChecked="{Binding Recursive}"></CheckBox>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

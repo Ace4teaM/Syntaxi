@@ -47,6 +47,9 @@
     <Compile Include="AppModel\Entity\Project.cs" />
     <Compile Include="AppModel\Entity\SearchParams.cs" />
     <Compile Include="AppModel\Interface\IApp.cs" />
+    <Compile Include="Lib\IEntity.cs" />
+    <Compile Include="Lib\IEntityFactory.cs" />
+    <Compile Include="Lib\SqlFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

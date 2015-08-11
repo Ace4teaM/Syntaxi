@@ -171,6 +171,9 @@ namespace AppModel.Entity
        {
           SqlFactory db = Factory as SqlFactory;
        
+          if(name == "Project")
+             return LoadProject();
+       
           if(name == "ParamContent")
              return LoadParamContent();
        
@@ -189,6 +192,11 @@ namespace AppModel.Entity
           SqlFactory db = Factory as SqlFactory;
           string query = "INSERT INTO T_OBJECT_CONTENT (Id, ObjectType, Filename, Position$add_params$) VALUES( " + SqlFactory.ParseType(ObjectType) + ", " + SqlFactory.ParseType(Filename) + ", " + SqlFactory.ParseType(Position) + "$add_values$)";
        
+          // Association Project
+          if(Project != null){
+             add_params += ", Name, Version";
+             add_values += ", "+SqlFactory.ParseType(Project.Name)+", "+SqlFactory.ParseType(Project.Version)+"";
+          }
        
           query = query.Replace("$add_params$", add_params);
           query = query.Replace("$add_values$", add_values);
@@ -202,11 +210,63 @@ namespace AppModel.Entity
           SqlFactory db = Factory as SqlFactory;
           string query = "UPDATE T_OBJECT_CONTENT SET ObjectType = "+SqlFactory.ParseType(ObjectType)+", Filename = "+SqlFactory.ParseType(Filename)+", Position = "+SqlFactory.ParseType(Position)+"$add_params$ WHERE Id = "+SqlFactory.ParseType(Id)+"";
        
+          // Association Project
+          if(Project != null){
+             add_params += ", Name = "+SqlFactory.ParseType(Project.Name)+", Version = "+SqlFactory.ParseType(Project.Version)+"";
+          }
        
           query = query.Replace("$add_params$", add_params);
           
           return db.Query(query);
        
+       }
+       
+       // Project(0,1) <-> (0,*)ObjectContent
+       public Project LoadProject()
+       {
+          SqlFactory db = Factory as SqlFactory;
+          string query = "SELECT Name , Version FROM T_OBJECT_CONTENT WHERE Id = "+SqlFactory.ParseType(Id)+"";
+          String Name = "";
+       
+          String Version = "";
+       
+          bool ok = true;
+          Project project = null;
+           
+          db.Query(query, reader =>
+          {
+              if (reader.Read())
+              {
+                 if (reader["Name"] != null)
+                   Name = reader["Name"].ToString();
+                else
+                   ok = false;
+                 if (reader["Version"] != null)
+                   Version = reader["Version"].ToString();
+                else
+                   ok = false;
+              }
+              return 0;
+          });
+       
+          if (ok == false)
+              return null;
+       
+          // obtient l'objet de reference
+          project = (from p in db.References.OfType<Project>() where p.Name == Name&& p.Version == Version select p).FirstOrDefault();
+          if ( project == null)
+          {
+              project = new Project();
+              project.Factory = db;
+              project.Name = Name;
+              project.Version = Version;
+              project = db.GetReference(project) as Project;//mise en cache
+          }
+       
+          // Recharge les données depuis la BDD
+          project.Load();
+       
+          return Project = project;
        }
        
        // ObjectContent(0,1) <-> (0,*)ParamContent

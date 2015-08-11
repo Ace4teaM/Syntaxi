@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using Lib;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Data.SqlClient;
 
 namespace AppModel.Entity
 {
@@ -25,7 +26,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class Project : ISerializable , INotifyPropertyChanged    {
+    public partial class Project : ISerializable , INotifyPropertyChanged , IEntity    {
          #region Constructor
          public Project(){
 
@@ -215,7 +216,134 @@ namespace AppModel.Entity
             }
        }
        #endregion // Serialization
-
+       
+       #region IEntity
+       public IEntityFactory Factory{get;set;}
+       
+       public string TableName { get{ return "Project";} }
+       
+       public static string[] PrimaryIdentifier = {"Name", "Version"};
+       public string[] GetPrimaryIdentifier() { return PrimaryIdentifier; }
+       
+       // Identifiants
+       public bool CompareIdentifier(IEntity e)
+       {
+           Project b = e as Project;
+           if(b==null)
+             return false;
+           return (this.Name == b.Name && this.Version == b.Version);
+       }
+       
+       public void Load()
+       {
+          SqlFactory db = Factory as SqlFactory;
+          string query = "SELECT FROM Project WHERE Name = "+SqlFactory.ParseType(Name)+" and Version = "+SqlFactory.ParseType(Version)+"";
+          db.QueryObject(query, this);
+       }
+       
+       public object LoadAssociations(string name)
+       {
+          SqlFactory db = Factory as SqlFactory;
+       
+          if(name == "ObjectContent")
+             return LoadObjectContent();
+       
+          return null;
+       }
+       
+       public int Delete()
+       {
+          SqlFactory db = Factory as SqlFactory;
+          string query = "DELETE FROM Project WHERE Name = "+SqlFactory.ParseType(Name)+" and Version = "+SqlFactory.ParseType(Version)+"";
+          return db.Query(query);
+       }
+       
+       public void Insert(string add_params = "", string add_values = "")
+       {
+          SqlFactory db = Factory as SqlFactory;
+          string query = "INSERT INTO Project (Name, Version$add_params$) VALUES( $add_values$)";
+       
+       
+          query = query.Replace("$add_params$", add_params);
+          query = query.Replace("$add_values$", add_values);
+       
+          db.Query(query);
+       
+       }
+       
+       public int Update(string add_params = "")
+       {
+          SqlFactory db = Factory as SqlFactory;
+          string query = "UPDATE Project SET $add_params$ WHERE Name = "+SqlFactory.ParseType(Name)+" and Version = "+SqlFactory.ParseType(Version)+"";
+       
+       
+          query = query.Replace("$add_params$", add_params);
+          
+          return db.Query(query);
+       
+       }
+       
+       // Project(0,1) <-> (0,*)ObjectContent
+       public Collection<ObjectContent> LoadObjectContent()
+       {
+          SqlFactory db = Factory as SqlFactory;
+          string query = "SELECT Id FROM T_OBJECT_CONTENT WHERE Name = "+SqlFactory.ParseType(Name)+"andVersion = "+SqlFactory.ParseType(Version)+"";
+          this.ObjectContent = new Collection<ObjectContent>();
+       
+          db.Query(query, reader =>
+          {
+              while (reader.Read())
+              {
+                // obtient l'identifiant
+                String Id = "";
+       
+                if (reader["Id"] == null)
+                   continue;
+                Id = reader["Id"].ToString();
+                
+                // obtient l'objet de reference
+                ObjectContent _entity = (from p in db.References.OfType<ObjectContent>() where p.Id == Id select p).FirstOrDefault();
+       
+                if ( _entity == null)
+                {
+                    _entity = new ObjectContent();
+                    _entity.Factory = db;
+                    _entity.Id = Id;
+                    _entity = db.GetReference(_entity) as ObjectContent;//mise en cache
+                }
+                
+                // Recharge les données depuis la BDD
+                _entity.Load();
+          
+                // Ajoute la reference à la collection
+                this.AddObjectContent(_entity);
+       
+              }
+              return 0;
+          });
+       
+          return ObjectContent;
+       }
+       
+       // Obtient l'identifiant primaire depuis un curseur SQL
+       public void PickIdentity(object _reader)
+       {
+          SqlFactory db = Factory as SqlFactory;
+          SqlDataReader reader = _reader as SqlDataReader;
+          if (reader["Name"] != null)
+             Name = reader["Name"].ToString();
+       
+          if (reader["Version"] != null)
+             Version = reader["Version"].ToString();
+       }
+       
+       // Obtient les propriétés depuis un curseur SQL
+       public void PickProperties(object _reader)
+       {
+          SqlFactory db = Factory as SqlFactory;
+          SqlDataReader reader = _reader as SqlDataReader;
+       }
+       #endregion // IEntity
       }
 
 }

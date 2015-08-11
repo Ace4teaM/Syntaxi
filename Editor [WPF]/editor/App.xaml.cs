@@ -4,6 +4,8 @@ using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using AppModel.Entity;
@@ -228,12 +230,119 @@ typedef struct _NP_HANDLE_HEADER{
         {
         }
 
+        public void AddObjects(string inputDir, string inputFilter, bool bRecursive)
+        {
+            // Liste des objets trouvés
+            List<ObjectContent> objets = new List<ObjectContent>();
+
+            // Liste les fichiers
+            string[] srcPaths = Directory.GetFiles(inputDir, inputFilter, (bRecursive == true ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly));
+
+            // Scan les fichiers
+            foreach (var filePath in srcPaths)
+            {
+                Console.WriteLine(String.Format("Scan file: {0}", filePath));
+                //Log(String.Format("Scan file: {0}", filePath));
+                string relativeFileName = filePath.Substring(inputDir.Length);
+                string text = string.Empty;
+                using (StreamReader streamReader = new StreamReader(filePath, Encoding.UTF8))
+                {
+                    text = streamReader.ReadToEnd().Replace("\r\n", "\n");
+                }
+
+                // Scan les objets
+                foreach (ObjectSyntax curSyntax in project.ObjectSyntax)
+                {
+                    ScanFile(text, relativeFileName, curSyntax, objets);
+                }
+
+                // Ajoute les objets au projet
+                foreach (var o in objets)
+                    project.ObjectContent.Add(o);
+
+                // Log
+                Console.WriteLine(String.Format("{0} objets traités", objets.Count));
+            }
+        }
+
+        /// <summary>
+        /// Scan un fichier à la recherche d'objets
+        /// </summary>
+        /// <param name="text">Texte du code à analyser</param>
+        /// <param name="filePath">Chemin d'accès relatif au fichier analysé</param>
+        /// <param name="syntax">Syntaxe utilisé pour scaner le texte</param>
+        void ScanFile(string text, string filePath, ObjectSyntax syntax, List<ObjectContent> objList)
+        {
+            // Convertie en expression reguliere
+            Regex content = new Regex(syntax.ContentRegEx, RegexOptions.Multiline | RegexOptions.IgnoreCase);
+            Regex param = new Regex(syntax.ParamRegEx, RegexOptions.Multiline | RegexOptions.IgnoreCase);
+
+            MatchCollection matches = content.Matches(text);
+            foreach (Match match in matches)
+            {
+                // Initialise l'objet
+                ObjectContent o = new ObjectContent();
+                o.ObjectType = syntax.ObjectType;
+                o.Filename = filePath;
+                o.Position = match.Index;
+                o.Id = Guid.NewGuid().ToString("N");
+
+                // Extrer les paramètres implicite de l'expression régulière
+                foreach (string groupName in content.GetGroupNames())
+                {
+                    if (groupName != "content" && groupName != "0")
+                    {
+                        o.ParamContent.Add(new ParamContent(groupName, match.Groups[groupName].Value));
+                        //Log(String.Format("\tAdd param '{0}' as '{1}'", groupName, match.Groups[groupName].Value));
+                    }
+                }
+
+                // Recherche des paramètres dans le contenu de l'objet
+                string objet_text = match.Groups["content"].Value;
+
+                // Extrer les groupes de parametres
+                foreach (ParamSyntax g in project.ParamSyntax)
+                {
+                    // Convertie en expression reguliere
+                    Regex pContent = new Regex(g.ContentRegEx, RegexOptions.Multiline | RegexOptions.IgnoreCase);
+                    Regex pParam = new Regex(g.ParamRegEx, RegexOptions.Multiline | RegexOptions.IgnoreCase);
+
+                    MatchCollection pMatches = pContent.Matches(objet_text);
+                    foreach (Match pMatch in pMatches)
+                    {
+                        MatchCollection gParamMatches = pParam.Matches(pMatch.Groups["content"].Value);
+                        foreach (Match paramMatch in gParamMatches)
+                        {
+                            o.ParamContent.Add(new ParamContent(g.ParamType, paramMatch.Groups["content"].Value));
+                        }
+                    }
+                }
+
+                // Extrer les parametres d'objet
+                MatchCollection paramMatches = param.Matches(objet_text);
+                foreach (Match paramMatch in paramMatches)
+                {
+                    o.ParamContent.Add(new ParamContent(paramMatch.Groups["type"].Value, paramMatch.Groups["content"].Value));
+                }
+
+                // Ajoute à la liste des objets
+                objList.Add(o);
+            }
+        }
+
         public void Export(IEntityFactory factory)
         {
+            Project.Factory = factory;
+            Project.Insert();
             foreach (var e in Project.ObjectContent)
             {
                 e.Factory = factory;
                 e.Insert();
+                foreach (var p in e.ParamContent)
+                {
+                    p.Factory = factory;
+                    p.Insert();
+                }
             }
         }
     }

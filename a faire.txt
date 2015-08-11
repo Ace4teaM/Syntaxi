@@ -1,0 +1,2 @@
+OOM: ajouter la méthode InsertOrUpdate
+PDM: Suppression en cascade pour les aggregations

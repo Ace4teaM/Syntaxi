@@ -13,10 +13,10 @@ using Lib;
 
 namespace editor.ModelView
 {
-    class VueEditor : ViewModelBase
+    class SearchParams : ViewModelBase
     {
         App app = Application.Current as App;
-        public VueEditor()
+        public SearchParams()
         {
         }
 
@@ -56,33 +56,18 @@ namespace editor.ModelView
         //-----------------------------------------------------------------------------------------
         #region Commands
         #region SaveProject
-        private ICommand saveProject;
-        public ICommand SaveProject
+        private ICommand openInputDir;
+        public ICommand OpenInputDir
         {
             get
             {
-                if (this.saveProject == null)
-                    this.saveProject = new DelegateCommand(() =>
+                if (this.openInputDir == null)
+                    this.openInputDir = new DelegateCommand(() =>
                     {
                         app.SaveProject();
                     });
 
-                return this.saveProject;
-            }
-        }
-        #endregion
-        #region AddContent
-        private ICommand addContent;
-        public ICommand AddContent
-        {
-            get
-            {
-                if (this.addContent == null)
-                    this.addContent = new DelegateCommand(() =>
-                    {
-                    });
-
-                return this.addContent;
+                return this.openInputDir;
             }
         }
         #endregion
