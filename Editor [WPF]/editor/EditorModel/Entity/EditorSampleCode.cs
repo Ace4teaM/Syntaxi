@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
 using System.Collections.ObjectModel;
+using Lib;
 using System.IO;
 using System.Runtime.Serialization;
 
@@ -24,7 +25,7 @@ namespace EditorModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class EditorSampleCode : ISerializable , INotifyPropertyChanged    {
+    public partial class EditorSampleCode : ISerializable    {
          #region Constructor
          public EditorSampleCode(){
          }
@@ -33,12 +34,7 @@ namespace EditorModel.Entity
             this.text = text;
             this.objectsyntaxtype = objectsyntaxtype;
          }
-
          #endregion // Constructor
-         
-         #region INotifyPropertyChanged
-         public event PropertyChangedEventHandler PropertyChanged;
-         #endregion // INotifyPropertyChanged
 
          #region Fields
          // 
@@ -50,6 +46,9 @@ namespace EditorModel.Entity
          #endregion // Fields
 
          #region Associations
+         // 
+         protected EditorStates editorstates;
+         public virtual EditorStates EditorStates { get{ return editorstates; } set{ editorstates = value; } }
          #endregion // Associations
 
          #region Methods
@@ -87,7 +86,8 @@ namespace EditorModel.Entity
             writer.Write(Text);
             writer.Write(ObjectSyntaxType);
        }
-
        #endregion // Serialization
+
       }
+
 }

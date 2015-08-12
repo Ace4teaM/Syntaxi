@@ -220,7 +220,7 @@ namespace AppModel.Entity
        #region IEntity
        public IEntityFactory Factory{get;set;}
        
-       public string TableName { get{ return "Project";} }
+       public string TableName { get{ return "T_PROJECT";} }
        
        public static string[] PrimaryIdentifier = {"Name", "Version"};
        public string[] GetPrimaryIdentifier() { return PrimaryIdentifier; }
@@ -237,7 +237,7 @@ namespace AppModel.Entity
        public void Load()
        {
           SqlFactory db = Factory as SqlFactory;
-          string query = "SELECT FROM Project WHERE Name = "+SqlFactory.ParseType(Name)+" and Version = "+SqlFactory.ParseType(Version)+"";
+          string query = "SELECT FROM T_PROJECT WHERE Name = "+SqlFactory.ParseType(Name)+" and Version = "+SqlFactory.ParseType(Version)+"";
           db.QueryObject(query, this);
        }
        
@@ -254,14 +254,14 @@ namespace AppModel.Entity
        public int Delete()
        {
           SqlFactory db = Factory as SqlFactory;
-          string query = "DELETE FROM Project WHERE Name = "+SqlFactory.ParseType(Name)+" and Version = "+SqlFactory.ParseType(Version)+"";
+          string query = "DELETE FROM T_PROJECT WHERE Name = "+SqlFactory.ParseType(Name)+" and Version = "+SqlFactory.ParseType(Version)+"";
           return db.Query(query);
        }
        
        public void Insert(string add_params = "", string add_values = "")
        {
           SqlFactory db = Factory as SqlFactory;
-          string query = "INSERT INTO Project (Name, Version$add_params$) VALUES( $add_values$)";
+          string query = "INSERT INTO T_PROJECT (Name, Version$add_params$) VALUES( " + SqlFactory.ParseType(Name) + ", " + SqlFactory.ParseType(Version) + "$add_values$)";
        
        
           query = query.Replace("$add_params$", add_params);
@@ -274,7 +274,7 @@ namespace AppModel.Entity
        public int Update(string add_params = "")
        {
           SqlFactory db = Factory as SqlFactory;
-          string query = "UPDATE Project SET $add_params$ WHERE Name = "+SqlFactory.ParseType(Name)+" and Version = "+SqlFactory.ParseType(Version)+"";
+          string query = "UPDATE T_PROJECT SET $add_params$ WHERE Name = "+SqlFactory.ParseType(Name)+" and Version = "+SqlFactory.ParseType(Version)+"";
        
        
           query = query.Replace("$add_params$", add_params);
@@ -287,7 +287,7 @@ namespace AppModel.Entity
        public Collection<ObjectContent> LoadObjectContent()
        {
           SqlFactory db = Factory as SqlFactory;
-          string query = "SELECT Id FROM T_OBJECT_CONTENT WHERE Name = "+SqlFactory.ParseType(Name)+"andVersion = "+SqlFactory.ParseType(Version)+"";
+          string query = "SELECT Id FROM T_OBJECT_CONTENT WHERE Name = "+SqlFactory.ParseType(Name)+"and Version = "+SqlFactory.ParseType(Version)+"";
           this.ObjectContent = new Collection<ObjectContent>();
        
           db.Query(query, reader =>

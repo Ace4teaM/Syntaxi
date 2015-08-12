@@ -190,7 +190,7 @@ namespace AppModel.Entity
        public void Insert(string add_params = "", string add_values = "")
        {
           SqlFactory db = Factory as SqlFactory;
-          string query = "INSERT INTO T_OBJECT_CONTENT (Id, ObjectType, Filename, Position$add_params$) VALUES( " + SqlFactory.ParseType(ObjectType) + ", " + SqlFactory.ParseType(Filename) + ", " + SqlFactory.ParseType(Position) + "$add_values$)";
+          string query = "INSERT INTO T_OBJECT_CONTENT (Id, ObjectType, Filename, Position$add_params$) VALUES( " + SqlFactory.ParseType(Id) + ", " + SqlFactory.ParseType(ObjectType) + ", " + SqlFactory.ParseType(Filename) + ", " + SqlFactory.ParseType(Position) + "$add_values$)";
        
           // Association Project
           if(Project != null){
@@ -273,7 +273,7 @@ namespace AppModel.Entity
        public Collection<ParamContent> LoadParamContent()
        {
           SqlFactory db = Factory as SqlFactory;
-          string query = "SELECT ParamName FROM T_PARAM_CONTENT WHERE Id = "+SqlFactory.ParseType(Id)+"";
+          string query = "SELECT ParamName , ParamCount FROM T_PARAM_CONTENT WHERE Id = "+SqlFactory.ParseType(Id)+"";
           this.ParamContent = new Collection<ParamContent>();
        
           db.Query(query, reader =>
@@ -282,19 +282,25 @@ namespace AppModel.Entity
               {
                 // obtient l'identifiant
                 String ParamName = "";
+                int ParamCount = new int();
        
                 if (reader["ParamName"] == null)
                    continue;
                 ParamName = reader["ParamName"].ToString();
+       
+                if (reader["ParamCount"] == null)
+                   continue;
+                ParamCount = int.Parse(reader["ParamCount"].ToString());
                 
                 // obtient l'objet de reference
-                ParamContent _entity = (from p in db.References.OfType<ParamContent>() where p.ParamName == ParamName select p).FirstOrDefault();
+                ParamContent _entity = (from p in db.References.OfType<ParamContent>() where p.ParamName == ParamName&& p.ParamCount == ParamCount select p).FirstOrDefault();
        
                 if ( _entity == null)
                 {
                     _entity = new ParamContent();
                     _entity.Factory = db;
                     _entity.ParamName = ParamName;
+                    _entity.ParamCount = ParamCount;
                     _entity = db.GetReference(_entity) as ParamContent;//mise en cache
                 }
                 

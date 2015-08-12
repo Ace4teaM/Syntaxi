@@ -16,7 +16,7 @@ namespace app
         {
             App app = new App();
             int ret = app.Run(args);
-            Console.ReadKey();
+            //Console.ReadKey();
             return ret;
         }
 
@@ -110,7 +110,7 @@ namespace app
                 }
 
                 // Initialise le projet
-                if (!String.IsNullOrEmpty(options.inputProjectFile) && options.action.ToLower().StartsWith("init") == false)
+                if (!String.IsNullOrEmpty(options.inputProjectFile))
                 {
                     // Charge le projet
                     LoadProject(options.inputProjectFile);
@@ -131,14 +131,17 @@ namespace app
                         project = new Project(options.title,options.version);
                         break;
                     // Réinitialise le projet
-                    case "init_cpp":
+                    case "add_cpp_syntax":
                         //Action_Init(options);
-                        project = MakeCppProject(options.title, options.version);
+                        project = AddCppSyntax();
                         break;
-                    // Ajoute des objets
+                    // Ajoute des paramétres de recherche
                     case "add":
-                        //Action_Add(options);
-                        AddObjects(options.inputDir, options.inputFilter, options.recursive);
+                        AddSearch(options.inputDir, options.inputFilter, options.recursive);
+                        break;
+                    // Scan les données
+                    case "scan":
+                        ScanObjects();
                         break;
                     // Exporte les données
                     case "toxml":
@@ -174,12 +177,8 @@ namespace app
                 }
             }
 
-            public Project MakeCppProject(string title, string version)
+            public Project AddCppSyntax()
             {
-                // Initialise un projet
-                Project project;
-                project = new Project(title, version);
-                
                 //
                 // Params Syntaxes
                 //
@@ -268,6 +267,19 @@ namespace app
                 throw new NotImplementedException();
             }
 
+            public void AddSearch(string inputDir, string inputFilter, bool bRecursive)
+            {
+                project.SearchParams.Add(new SearchParams(inputDir, inputFilter, bRecursive));
+            }
+
+            public void ScanObjects()
+            {
+                project.ObjectContent.Clear();
+                foreach (var s in project.SearchParams)
+                {
+                    AddObjects(s.InputDir, s.InputFilter, s.Recursive);
+                }
+            }
 
             public void AddObjects(string inputDir, string inputFilter, bool bRecursive)
             {
@@ -295,13 +307,14 @@ namespace app
                         ScanFile(text, relativeFileName, curSyntax, objets);
                     }
 
-                    // Ajoute les objets au projet
-                    foreach (var o in objets)
-                        project.ObjectContent.Add(o);
-
                     // Log
                     Console.WriteLine(String.Format("{0} objets traités", objets.Count));
                 }
+
+                // Ajoute les objets au projet
+                foreach (var o in objets)
+                    project.ObjectContent.Add(o);
+
             }
 
             /// <summary>
@@ -319,6 +332,8 @@ namespace app
                 MatchCollection matches = content.Matches(text);
                 foreach (Match match in matches)
                 {
+                    int paramCount = 0;
+
                     // Initialise l'objet
                     ObjectContent o = new ObjectContent();
                     o.ObjectType = syntax.ObjectType;
@@ -331,7 +346,7 @@ namespace app
                     {
                         if (groupName != "content" && groupName != "0")
                         {
-                            o.ParamContent.Add(new ParamContent(groupName, match.Groups[groupName].Value));
+                            o.ParamContent.Add(new ParamContent(groupName, paramCount++, match.Groups[groupName].Value));
                             //Log(String.Format("\tAdd param '{0}' as '{1}'", groupName, match.Groups[groupName].Value));
                         }
                     }
@@ -352,7 +367,7 @@ namespace app
                             MatchCollection gParamMatches = pParam.Matches(pMatch.Groups["content"].Value);
                             foreach (Match paramMatch in gParamMatches)
                             {
-                                o.ParamContent.Add(new ParamContent(g.ParamType, paramMatch.Groups["content"].Value));
+                                o.ParamContent.Add(new ParamContent(g.ParamType, paramCount++, paramMatch.Groups["content"].Value));
                             }
                         }
                     }
@@ -361,7 +376,7 @@ namespace app
                     MatchCollection paramMatches = param.Matches(objet_text);
                     foreach (Match paramMatch in paramMatches)
                     {
-                        o.ParamContent.Add(new ParamContent(paramMatch.Groups["type"].Value, paramMatch.Groups["content"].Value));
+                        o.ParamContent.Add(new ParamContent(paramMatch.Groups["type"].Value, paramCount++, paramMatch.Groups["content"].Value));
                     }
 
                     // Ajoute à la liste des objets

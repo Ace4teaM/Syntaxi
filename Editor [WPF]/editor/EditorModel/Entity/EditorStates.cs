@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
 using System.Collections.ObjectModel;
+using Lib;
 using System.IO;
 using System.Runtime.Serialization;
 
@@ -24,7 +25,7 @@ namespace EditorModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class EditorStates : ISerializable , INotifyPropertyChanged    {
+    public partial class EditorStates : ISerializable    {
          #region Constructor
          public EditorStates(){
 
@@ -35,12 +36,7 @@ namespace EditorModel.Entity
          public EditorStates(String version) : this(){
             this.version = version;
          }
-
          #endregion // Constructor
-         
-         #region INotifyPropertyChanged
-         public event PropertyChangedEventHandler PropertyChanged;
-         #endregion // INotifyPropertyChanged
 
          #region Fields
          // 
@@ -52,6 +48,14 @@ namespace EditorModel.Entity
          // 
          protected Collection<EditorSampleCode> editorsamplecode;
          public virtual Collection<EditorSampleCode> EditorSampleCode { get{ return editorsamplecode; } set{ editorsamplecode = value; } }
+         public void AddEditorSampleCode(EditorSampleCode obj){
+            obj.EditorStates = this;
+            EditorSampleCode.Add(obj);
+         }
+         public void RemoveEditorSampleCode(EditorSampleCode obj){
+            obj.EditorStates = null;
+            EditorSampleCode.Remove(obj);
+         }
          #endregion // Associations
 
          #region Methods
@@ -83,16 +87,16 @@ namespace EditorModel.Entity
             size = reader.ReadInt32();
             if (size > 0)
             {
-                this.editorsamplecode = new Collection<EditorSampleCode>();
+                this.EditorSampleCode = new Collection<EditorSampleCode>();
                 for(int i=0;i<size;i++){
                     EditorSampleCode o = new EditorSampleCode();
                     o.ReadBinary(reader);
-                    this.editorsamplecode.Add(o);
+                    this.AddEditorSampleCode(o);
                 }
             }
             else
             {
-                this.editorsamplecode = new Collection<EditorSampleCode>();
+                this.EditorSampleCode = new Collection<EditorSampleCode>();
             }
          }
          
@@ -109,7 +113,8 @@ namespace EditorModel.Entity
                     col.WriteBinary(writer);
             }
        }
-
        #endregion // Serialization
+
       }
+
 }

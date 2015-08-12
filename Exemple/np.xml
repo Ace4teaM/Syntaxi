@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <lib title="NoyauPortable" version="1.0">
+    <object filename="\handle.c" type="function" position="549" id="0196197326494c4e96c6946008242b7d">
+      <param name="description">Alloue est initialise la memoire</param>
+      <param name="return_type">ushort</param>
+      <param name="name">npInitHandle</param>
+      <param name="params">ushort handle_count,ushort handle_size</param>
+      <param name="param">handle_count : nombre d'handle allouable</param>
+      <param name="param">handle_size  : taille d'un handle</param>
+      <param name="return">1 en cas de succes, 0 en cas d'erreur.</param>
+    </object>
+    <object filename="\handle.c" type="function" position="2108" id="3a5438da36c14d299fb3cc9e60640330">
+      <param name="description">Alloue un handle</param>
+      <param name="return_type">NP_HANDLE</param>
+      <param name="name">npCreateHandle</param>
+      <param name="params">void* data,size_t size</param>
+      <param name="exemple">	    // Initialise un objet
+		NP_HANDLE hMyObj = npCreateHandle(__global_stack,sizeof(MY_OBJECT));</param>
+      <param name="exemple">
+      </param>
+      <param name="param">data  : donnees de l'allocation. Si 0, ignore.</param>
+      <param name="param">size  : taille desire en bytes</param>
+      <param name="return">handle, NP_HANDLE_NULL en cas d'echec.</param>
+    </object>
+    <object filename="\handle.h" type="struct" position="267" id="ed314fd9e40b4a2081b764cbac58c028">
+      <param name="description">En-tete d'un handle</param>
+      <param name="name">_NP_HANDLE_HEADER</param>
+    </object>
+  </lib>
+</root>

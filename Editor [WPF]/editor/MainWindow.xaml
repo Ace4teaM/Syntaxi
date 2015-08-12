@@ -6,14 +6,7 @@
         WindowState="Normal"
         Title="Syntaxi" Height="580.917" Width="791.124"
         Icon="Resources/AppIcon.png">
-    <Grid Name="Client">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="100*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Grid.Children>
-            <v:Menu Margin="60,-26,0,0" Grid.Row="0"></v:Menu>
-            <v:VueHome  Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"></v:VueHome>
-        </Grid.Children>
-    </Grid>
+    <DockPanel Name="Client">
+            <v:VueHome HorizontalAlignment="Center" VerticalAlignment="Center"></v:VueHome>
+    </DockPanel>
 </Window>

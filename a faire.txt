@@ -1,2 +1,6 @@
 OOM: ajouter la méthode InsertOrUpdate
 PDM: Suppression en cascade pour les aggregations
+OOM: Exporter en XML
+OOM: Copier & Coller & Dupliquer
+OOM: Gestion des etats sur les entités
+Utiliser la fonction Add* lors qu'un object est ajouté a la liste (Etat ajouté)

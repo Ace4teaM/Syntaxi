@@ -21,7 +21,7 @@ namespace editor
     public partial class App : Application
     {
         public String Version = "1.0";
-        private string ProjectFileName;
+        public string ProjectFileName;
         private Project project;
         public Project Project {
             get { return project; }
@@ -41,14 +41,25 @@ namespace editor
                 states = value;
             }
         }
-
+        public string ProjectFilePath
+        {
+            get {
+                if (ProjectFileName == null)
+                    return null;
+                int index = ProjectFileName.LastIndexOf(@"\");
+                if (index<0)
+                    return null;
+                return ProjectFileName.Substring(0, ProjectFileName.Length-(ProjectFileName.Length-index));
+            }
+        }
+        
         public EditorStates MakeCppStates()
         {
             // Initialise
             EditorStates states = new EditorStates(this.Version);
 
             // function example
-            states.EditorSampleCode.Add(new EditorSampleCode(
+            states.AddEditorSampleCode(new EditorSampleCode(
 @"
 /**
 	Alloue est initialise la mémoire
@@ -67,7 +78,7 @@ ushort npInitHandle(ushort handle_count,ushort handle_size)
             );
 
             // struct example
-            states.EditorSampleCode.Add(new EditorSampleCode(
+            states.AddEditorSampleCode(new EditorSampleCode(
 @"
 /**
 	En-tete d'un handle
@@ -96,31 +107,31 @@ typedef struct _NP_HANDLE_HEADER{
             // Params Syntaxes
             //
 
-            project.ParamSyntax.Add(new ParamSyntax(
+            project.AddParamSyntax(new ParamSyntax(
                 @"^(?:\s*)(?:description[s]?)?\:\n(?<content>(?!\n{2,})(?:.|\n[^\n])*)",
                 @"^(?:[\n\s]*)(?<content>[^\n]+)",
                 @"description")
             );
 
-            project.ParamSyntax.Add(new ParamSyntax(
+            project.AddParamSyntax(new ParamSyntax(
                 @"^(?:\s*)(?:exemple|example|sample?)?\:\n(?<content>(?!\n{2,})(?:.|\n[^\n])*)",
                 @"(?<content>[^\0]*)",
                 @"exemple")
             );
 
-            project.ParamSyntax.Add(new ParamSyntax(
+            project.AddParamSyntax(new ParamSyntax(
                 @"^(?:\s*)(?:param[eè]tre[s]|parameter[s]?)?\:\n(?<content>(?!\n{2,})(?:.|\n[^\n])*)",
                 @"^(?:[\n\s]*)(?<content>[^\n]+)",
                 @"param")
             );
 
-            project.ParamSyntax.Add(new ParamSyntax(
+            project.AddParamSyntax(new ParamSyntax(
                 @"^(?:\s*)(?:remarque[s]?|remark[s]?)?\:\n(?<content>(?!\n{2,})(?:.|\n[^\n])*)",
                 @"^(?:[\n\s]*)(?<content>[^\n]+)",
                 @"remark")
             );
 
-            project.ParamSyntax.Add(new ParamSyntax(
+            project.AddParamSyntax(new ParamSyntax(
                 @"^(?:\s*)(?:retourne|return)?\:\n(?<content>(?!\n{2,})(?:.|\n[^\n])*)",
                 @"^(?:[\n\s]*)(?<content>[^\n]+)",
                 @"return")
@@ -140,7 +151,7 @@ typedef struct _NP_HANDLE_HEADER{
             /*objSyntax.ParamSyntax = new Collection<ParamSyntax>(
                 project.ParamSyntax.Where(p=>p.ParamType == "description" || p.ParamType == "return").ToArray()
             );*/
-            project.ObjectSyntax.Add(objSyntax);
+            project.AddObjectSyntax(objSyntax);
 
             // Structure
             objSyntax = new ObjectSyntax(
@@ -149,7 +160,7 @@ typedef struct _NP_HANDLE_HEADER{
                 @"struct",
                 @"Structure de données");
             // objSyntax.ParamSyntax = new Collection<ParamSyntax>();
-            project.ObjectSyntax.Add(objSyntax);
+            project.AddObjectSyntax(objSyntax);
 
             return project;
         }
@@ -226,8 +237,13 @@ typedef struct _NP_HANDLE_HEADER{
             return true;
         }
 
-        public void ScanFolder(SearchParams searchParams)
+        public void ScanObjects()
         {
+            project.ObjectContent.Clear();
+            foreach (var s in project.SearchParams)
+            {
+                AddObjects(s.InputDir, s.InputFilter, s.Recursive);
+            }
         }
 
         public void AddObjects(string inputDir, string inputFilter, bool bRecursive)
@@ -236,6 +252,8 @@ typedef struct _NP_HANDLE_HEADER{
             List<ObjectContent> objets = new List<ObjectContent>();
 
             // Liste les fichiers
+            if (inputDir.StartsWith(@".\"))
+                inputDir = this.ProjectFilePath + @"\" + inputDir.Substring(2);
             string[] srcPaths = Directory.GetFiles(inputDir, inputFilter, (bRecursive == true ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly));
 
             // Scan les fichiers
@@ -256,13 +274,13 @@ typedef struct _NP_HANDLE_HEADER{
                     ScanFile(text, relativeFileName, curSyntax, objets);
                 }
 
-                // Ajoute les objets au projet
-                foreach (var o in objets)
-                    project.ObjectContent.Add(o);
-
                 // Log
                 Console.WriteLine(String.Format("{0} objets traités", objets.Count));
             }
+
+            // Ajoute les objets au projet
+            foreach (var o in objets)
+                project.AddObjectContent(o);
         }
 
         /// <summary>
@@ -280,6 +298,8 @@ typedef struct _NP_HANDLE_HEADER{
             MatchCollection matches = content.Matches(text);
             foreach (Match match in matches)
             {
+                int paramCount = 0;
+
                 // Initialise l'objet
                 ObjectContent o = new ObjectContent();
                 o.ObjectType = syntax.ObjectType;
@@ -292,7 +312,7 @@ typedef struct _NP_HANDLE_HEADER{
                 {
                     if (groupName != "content" && groupName != "0")
                     {
-                        o.ParamContent.Add(new ParamContent(groupName, match.Groups[groupName].Value));
+                        o.AddParamContent(new ParamContent(groupName, paramCount++, match.Groups[groupName].Value));
                         //Log(String.Format("\tAdd param '{0}' as '{1}'", groupName, match.Groups[groupName].Value));
                     }
                 }
@@ -313,7 +333,7 @@ typedef struct _NP_HANDLE_HEADER{
                         MatchCollection gParamMatches = pParam.Matches(pMatch.Groups["content"].Value);
                         foreach (Match paramMatch in gParamMatches)
                         {
-                            o.ParamContent.Add(new ParamContent(g.ParamType, paramMatch.Groups["content"].Value));
+                            o.AddParamContent(new ParamContent(g.ParamType, paramCount++, paramMatch.Groups["content"].Value));
                         }
                     }
                 }
@@ -322,7 +342,7 @@ typedef struct _NP_HANDLE_HEADER{
                 MatchCollection paramMatches = param.Matches(objet_text);
                 foreach (Match paramMatch in paramMatches)
                 {
-                    o.ParamContent.Add(new ParamContent(paramMatch.Groups["type"].Value, paramMatch.Groups["content"].Value));
+                    o.AddParamContent(new ParamContent(paramMatch.Groups["type"].Value, paramCount++, paramMatch.Groups["content"].Value));
                 }
 
                 // Ajoute à la liste des objets
@@ -333,6 +353,9 @@ typedef struct _NP_HANDLE_HEADER{
         public void Export(IEntityFactory factory)
         {
             Project.Factory = factory;
+            //Supprime la version existante
+            Project.Delete();
+            //Insert les données
             Project.Insert();
             foreach (var e in Project.ObjectContent)
             {

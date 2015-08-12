@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace editor.View
 {
     /// <summary>
-    /// Logique d'interaction pour VueEditor.xaml
+    /// Logique d'interaction pour ParamContentGrid.xaml
     /// </summary>
-    public partial class VueEditor : Grid
+    public partial class ParamContentGrid : DataGrid
     {
-        public VueEditor()
+        public ParamContentGrid()
         {
             InitializeComponent();
         }

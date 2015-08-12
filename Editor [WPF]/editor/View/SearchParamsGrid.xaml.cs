@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace editor.View
 {
     /// <summary>
-    /// Logique d'interaction pour VueEditor.xaml
+    /// Logique d'interaction pour SearchParamsGrid.xaml
     /// </summary>
-    public partial class VueEditor : Grid
+    public partial class SearchParamsGrid : DataGrid
     {
-        public VueEditor()
+        public SearchParamsGrid()
         {
             InitializeComponent();
         }

@@ -1,0 +1,14 @@
+﻿<DataGrid x:Class="editor.View.SearchParamsGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="340" d:DesignWidth="687"
+          AutoGenerateColumns="False">
+    <DataGrid.Columns>
+        <DataGridTextColumn Width="*" Header="Emplacement" Binding="{Binding InputDir}"></DataGridTextColumn>
+        <DataGridTextColumn Width="auto" Header="Filtre" Binding="{Binding InputFilter}"></DataGridTextColumn>
+        <DataGridCheckBoxColumn Width="auto" Header="Recursif" Binding="{Binding Recursive}"></DataGridCheckBoxColumn>
+    </DataGrid.Columns>
+</DataGrid>

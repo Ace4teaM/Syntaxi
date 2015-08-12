@@ -18,8 +18,24 @@ namespace editor.ModelView
         App app = Application.Current as App;
         public VueEditor()
         {
+            ObjectContentList = new ObservableCollection<ObjectContent>(app.Project.ObjectContent);
         }
 
+        //
+        public string ProjectName
+        {
+            get { return app.Project.Name; }
+        }
+        //
+        public string ProjectVersion
+        {
+            get { return app.Project.Version; }
+        }
+        //
+        public string ProjectPath
+        {
+            get { return app.ProjectFileName; }
+        }
         //
         private EditorSampleCode curEditorSampleCode;
         public EditorSampleCode CurEditorSampleCode {
@@ -46,9 +62,55 @@ namespace editor.ModelView
             get { return app.Project.ObjectSyntax; }
         }
         //
-        public Collection<ObjectContent> ObjectContentList
+        private ObservableCollection<ObjectContent> objectContentList;
+        public ObservableCollection<ObjectContent> ObjectContentList
         {
-            get { return app.Project.ObjectContent; }
+            get { return objectContentList; }
+            set
+            {
+                objectContentList = value;
+                OnPropertyChanged("ObjectContentList");
+            }
+        }
+        //
+        private ObjectContent curObjectContent;
+        public ObjectContent CurObjectContent
+        {
+            get { return curObjectContent; }
+            set
+            {
+                curObjectContent = value;
+                if (curObjectContent != null)
+                    CurParamContentList = curObjectContent.ParamContent;
+                OnPropertyChanged("CurObjectContent");
+            }
+        }
+        //
+        private Collection<ParamContent> curParamContentList;
+        public Collection<ParamContent> CurParamContentList
+        {
+            get { return curParamContentList; }
+            set
+            {
+                curParamContentList = value;
+                OnPropertyChanged("CurParamContentList");
+            }
+        }
+        //
+        public Collection<SearchParams> SearchParamsList
+        {
+            get { return app.Project.SearchParams; }
+        }
+        //
+        private SearchParams curSearchParams;
+        public SearchParams CurSearchParams
+        {
+            get { return curSearchParams; }
+            set
+            {
+                curSearchParams = value;
+                OnPropertyChanged("CurSearchParams");
+            }
         }
 
         //-----------------------------------------------------------------------------------------
@@ -71,18 +133,39 @@ namespace editor.ModelView
             }
         }
         #endregion
-        #region AddContent
-        private ICommand addContent;
-        public ICommand AddContent
+        #region ScanObjects
+        private ICommand scanObjects;
+        public ICommand ScanObjects
         {
             get
             {
-                if (this.addContent == null)
-                    this.addContent = new DelegateCommand(() =>
+                if (this.scanObjects == null)
+                    this.scanObjects = new DelegateCommand(() =>
                     {
+                        app.ScanObjects();
+                        ObjectContentList = new ObservableCollection<ObjectContent>(app.Project.ObjectContent);
+                        CurObjectContent = ObjectContentList.FirstOrDefault();
                     });
 
-                return this.addContent;
+                return this.scanObjects;
+            }
+        }
+        #endregion
+        #region ExportToDatabase
+        private ICommand exportToDatabase;
+        public ICommand ExportToDatabase
+        {
+            get
+            {
+                if (this.exportToDatabase == null)
+                    this.exportToDatabase = new DelegateCommand(() =>
+                    {
+                        SqlFactory sqlFactory = new SqlFactory();
+                        sqlFactory.SetConnection(@"Server=BDE-PORT\SQLSERVER2012;Database=syntaxi;Trusted_Connection=True;");
+                        app.Export(sqlFactory);
+                    });
+
+                return this.exportToDatabase;
             }
         }
         #endregion

@@ -67,12 +67,20 @@ namespace AppModel.Entity
             obj.Project = this;
             ObjectContent.Add(obj);
          }
+         public void RemoveObjectContent(ObjectContent obj){
+            obj.Project = null;
+            ObjectContent.Remove(obj);
+         }
          // 
          protected Collection<SearchParams> searchparams;
          public virtual Collection<SearchParams> SearchParams { get{ return searchparams; } set{ searchparams = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("SearchParams"));  } }
          public void AddSearchParams(SearchParams obj){
             obj.Project = this;
             SearchParams.Add(obj);
+         }
+         public void RemoveSearchParams(SearchParams obj){
+            obj.Project = null;
+            SearchParams.Remove(obj);
          }
          // 
          protected Collection<ObjectSyntax> objectsyntax;
@@ -81,12 +89,20 @@ namespace AppModel.Entity
             obj.Project = this;
             ObjectSyntax.Add(obj);
          }
+         public void RemoveObjectSyntax(ObjectSyntax obj){
+            obj.Project = null;
+            ObjectSyntax.Remove(obj);
+         }
          // 
          protected Collection<ParamSyntax> paramsyntax;
          public virtual Collection<ParamSyntax> ParamSyntax { get{ return paramsyntax; } set{ paramsyntax = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ParamSyntax"));  } }
          public void AddParamSyntax(ParamSyntax obj){
             obj.Project = this;
             ParamSyntax.Add(obj);
+         }
+         public void RemoveParamSyntax(ParamSyntax obj){
+            obj.Project = null;
+            ParamSyntax.Remove(obj);
          }
          #endregion // Associations
 
@@ -261,7 +277,7 @@ namespace AppModel.Entity
        public void Insert(string add_params = "", string add_values = "")
        {
           SqlFactory db = Factory as SqlFactory;
-          string query = "INSERT INTO T_PROJECT (Name, Version$add_params$) VALUES( $add_values$)";
+          string query = "INSERT INTO T_PROJECT (Name, Version$add_params$) VALUES( " + SqlFactory.ParseType(Name) + ", " + SqlFactory.ParseType(Version) + "$add_values$)";
        
        
           query = query.Replace("$add_params$", add_params);
@@ -287,7 +303,7 @@ namespace AppModel.Entity
        public Collection<ObjectContent> LoadObjectContent()
        {
           SqlFactory db = Factory as SqlFactory;
-          string query = "SELECT Id FROM T_OBJECT_CONTENT WHERE Name = "+SqlFactory.ParseType(Name)+"andVersion = "+SqlFactory.ParseType(Version)+"";
+          string query = "SELECT Id FROM T_OBJECT_CONTENT WHERE Name = "+SqlFactory.ParseType(Name)+"and Version = "+SqlFactory.ParseType(Version)+"";
           this.ObjectContent = new Collection<ObjectContent>();
        
           db.Query(query, reader =>
