@@ -160,9 +160,14 @@ namespace editor.ModelView
                 if (this.exportToDatabase == null)
                     this.exportToDatabase = new DelegateCommand(() =>
                     {
-                        SqlFactory sqlFactory = new SqlFactory();
-                        sqlFactory.SetConnection(@"Server=BDE-PORT\SQLSERVER2012;Database=syntaxi;Trusted_Connection=True;");
-                        app.Export(sqlFactory);
+                        /*SqlFactory factory = new SqlFactory();
+                        factory.SetConnection(@"Server=THOMAS-PC\SQLSERVEREXPRESS;Database=syntaxi;Trusted_Connection=True;");
+                        //factory.SetConnection(@"Server=BDE-PORT\SQLSERVER2012;Database=syntaxi;Trusted_Connection=True;");
+                        app.Export(sqlFactory);*/
+
+                        SqlOdbcFactory factory = new SqlOdbcFactory();
+                        factory.SetConnection(@"DSN=Syntaxi;");
+                        app.Export(factory);
                     });
 
                 return this.exportToDatabase;

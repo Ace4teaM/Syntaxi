@@ -162,14 +162,14 @@ namespace AppModel.Entity
        
        public void Load()
        {
-          SqlFactory db = Factory as SqlFactory;
-          string query = "SELECT ObjectType , Filename , Position FROM T_OBJECT_CONTENT WHERE Id = "+SqlFactory.ParseType(Id)+"";
-          db.QueryObject(query, this);
+          
+          string query = "SELECT ObjectType , Filename , Position FROM T_OBJECT_CONTENT WHERE Id = "+Factory.ParseType(Id)+"";
+          Factory.QueryObject(query, this);
        }
        
        public object LoadAssociations(string name)
        {
-          SqlFactory db = Factory as SqlFactory;
+          
        
           if(name == "Project")
              return LoadProject();
@@ -182,50 +182,50 @@ namespace AppModel.Entity
        
        public int Delete()
        {
-          SqlFactory db = Factory as SqlFactory;
-          string query = "DELETE FROM T_OBJECT_CONTENT WHERE Id = "+SqlFactory.ParseType(Id)+"";
-          return db.Query(query);
+          
+          string query = "DELETE FROM T_OBJECT_CONTENT WHERE Id = "+Factory.ParseType(Id)+"";
+          return Factory.Query(query);
        }
        
        public void Insert(string add_params = "", string add_values = "")
        {
-          SqlFactory db = Factory as SqlFactory;
-          string query = "INSERT INTO T_OBJECT_CONTENT (Id, ObjectType, Filename, Position$add_params$) VALUES( " + SqlFactory.ParseType(Id) + ", " + SqlFactory.ParseType(ObjectType) + ", " + SqlFactory.ParseType(Filename) + ", " + SqlFactory.ParseType(Position) + "$add_values$)";
+          
+          string query = "INSERT INTO T_OBJECT_CONTENT (Id, ObjectType, Filename, Position$add_params$) VALUES( " + Factory.ParseType(Id) + ", " + Factory.ParseType(ObjectType) + ", " + Factory.ParseType(Filename) + ", " + Factory.ParseType(Position) + "$add_values$)";
        
           // Association Project
           if(Project != null){
              add_params += ", Name, Version";
-             add_values += ", "+SqlFactory.ParseType(Project.Name)+", "+SqlFactory.ParseType(Project.Version)+"";
+             add_values += ", "+Factory.ParseType(Project.Name)+", "+Factory.ParseType(Project.Version)+"";
           }
        
           query = query.Replace("$add_params$", add_params);
           query = query.Replace("$add_values$", add_values);
        
-          db.Query(query);
+          Factory.Query(query);
        
        }
        
        public int Update(string add_params = "")
        {
-          SqlFactory db = Factory as SqlFactory;
-          string query = "UPDATE T_OBJECT_CONTENT SET ObjectType = "+SqlFactory.ParseType(ObjectType)+", Filename = "+SqlFactory.ParseType(Filename)+", Position = "+SqlFactory.ParseType(Position)+"$add_params$ WHERE Id = "+SqlFactory.ParseType(Id)+"";
+          
+          string query = "UPDATE T_OBJECT_CONTENT SET ObjectType = "+Factory.ParseType(ObjectType)+", Filename = "+Factory.ParseType(Filename)+", Position = "+Factory.ParseType(Position)+"$add_params$ WHERE Id = "+Factory.ParseType(Id)+"";
        
           // Association Project
           if(Project != null){
-             add_params += ", Name = "+SqlFactory.ParseType(Project.Name)+", Version = "+SqlFactory.ParseType(Project.Version)+"";
+             add_params += ", Name = "+Factory.ParseType(Project.Name)+", Version = "+Factory.ParseType(Project.Version)+"";
           }
        
           query = query.Replace("$add_params$", add_params);
           
-          return db.Query(query);
+          return Factory.Query(query);
        
        }
        
        // Project(0,1) <-> (0,*)ObjectContent
        public Project LoadProject()
        {
-          SqlFactory db = Factory as SqlFactory;
-          string query = "SELECT Name , Version FROM T_OBJECT_CONTENT WHERE Id = "+SqlFactory.ParseType(Id)+"";
+          
+          string query = "SELECT Name , Version FROM T_OBJECT_CONTENT WHERE Id = "+Factory.ParseType(Id)+"";
           String Name = "";
        
           String Version = "";
@@ -233,7 +233,7 @@ namespace AppModel.Entity
           bool ok = true;
           Project project = null;
            
-          db.Query(query, reader =>
+          Factory.Query(query, reader =>
           {
               if (reader.Read())
               {
@@ -253,14 +253,14 @@ namespace AppModel.Entity
               return null;
        
           // obtient l'objet de reference
-          project = (from p in db.References.OfType<Project>() where p.Name == Name&& p.Version == Version select p).FirstOrDefault();
+          project = (from p in Factory.GetReferences().OfType<Project>() where p.Name == Name&& p.Version == Version select p).FirstOrDefault();
           if ( project == null)
           {
               project = new Project();
-              project.Factory = db;
+              project.Factory = this.Factory;
               project.Name = Name;
               project.Version = Version;
-              project = db.GetReference(project) as Project;//mise en cache
+              project = Factory.GetReference(project) as Project;//mise en cache
           }
        
           // Recharge les données depuis la BDD
@@ -272,11 +272,11 @@ namespace AppModel.Entity
        // ObjectContent(0,1) <-> (0,*)ParamContent
        public Collection<ParamContent> LoadParamContent()
        {
-          SqlFactory db = Factory as SqlFactory;
-          string query = "SELECT ParamName , ParamCount FROM T_PARAM_CONTENT WHERE Id = "+SqlFactory.ParseType(Id)+"";
+          
+          string query = "SELECT ParamName , ParamCount FROM T_PARAM_CONTENT WHERE Id = "+Factory.ParseType(Id)+"";
           this.ParamContent = new Collection<ParamContent>();
        
-          db.Query(query, reader =>
+          Factory.Query(query, reader =>
           {
               while (reader.Read())
               {
@@ -293,15 +293,15 @@ namespace AppModel.Entity
                 ParamCount = int.Parse(reader["ParamCount"].ToString());
                 
                 // obtient l'objet de reference
-                ParamContent _entity = (from p in db.References.OfType<ParamContent>() where p.ParamName == ParamName&& p.ParamCount == ParamCount select p).FirstOrDefault();
+                ParamContent _entity = (from p in Factory.GetReferences().OfType<ParamContent>() where p.ParamName == ParamName&& p.ParamCount == ParamCount select p).FirstOrDefault();
        
                 if ( _entity == null)
                 {
                     _entity = new ParamContent();
-                    _entity.Factory = db;
+                    _entity.Factory = this.Factory;
                     _entity.ParamName = ParamName;
                     _entity.ParamCount = ParamCount;
-                    _entity = db.GetReference(_entity) as ParamContent;//mise en cache
+                    _entity = Factory.GetReference(_entity) as ParamContent;//mise en cache
                 }
                 
                 // Recharge les données depuis la BDD
@@ -320,7 +320,7 @@ namespace AppModel.Entity
        // Obtient l'identifiant primaire depuis un curseur SQL
        public void PickIdentity(object _reader)
        {
-          SqlFactory db = Factory as SqlFactory;
+          
           SqlDataReader reader = _reader as SqlDataReader;
           if (reader["Id"] != null)
              Id = reader["Id"].ToString();
@@ -329,7 +329,7 @@ namespace AppModel.Entity
        // Obtient les propriétés depuis un curseur SQL
        public void PickProperties(object _reader)
        {
-          SqlFactory db = Factory as SqlFactory;
+          
           SqlDataReader reader = _reader as SqlDataReader;
           if (reader["ObjectType"] != null)
              ObjectType = reader["ObjectType"].ToString();

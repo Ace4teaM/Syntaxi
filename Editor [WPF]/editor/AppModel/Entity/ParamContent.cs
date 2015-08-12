@@ -120,14 +120,14 @@ namespace AppModel.Entity
        
        public void Load()
        {
-          SqlFactory db = Factory as SqlFactory;
-          string query = "SELECT ParamValue FROM T_PARAM_CONTENT WHERE ParamName = "+SqlFactory.ParseType(ParamName)+" and ParamCount = "+SqlFactory.ParseType(ParamCount)+"";
-          db.QueryObject(query, this);
+          
+          string query = "SELECT ParamValue FROM T_PARAM_CONTENT WHERE ParamName = "+Factory.ParseType(ParamName)+" and ParamCount = "+Factory.ParseType(ParamCount)+"";
+          Factory.QueryObject(query, this);
        }
        
        public object LoadAssociations(string name)
        {
-          SqlFactory db = Factory as SqlFactory;
+          
        
           if(name == "ObjectContent")
              return LoadObjectContent();
@@ -137,56 +137,56 @@ namespace AppModel.Entity
        
        public int Delete()
        {
-          SqlFactory db = Factory as SqlFactory;
-          string query = "DELETE FROM T_PARAM_CONTENT WHERE ParamName = "+SqlFactory.ParseType(ParamName)+" and ParamCount = "+SqlFactory.ParseType(ParamCount)+"";
-          return db.Query(query);
+          
+          string query = "DELETE FROM T_PARAM_CONTENT WHERE ParamName = "+Factory.ParseType(ParamName)+" and ParamCount = "+Factory.ParseType(ParamCount)+"";
+          return Factory.Query(query);
        }
        
        public void Insert(string add_params = "", string add_values = "")
        {
-          SqlFactory db = Factory as SqlFactory;
-          string query = "INSERT INTO T_PARAM_CONTENT (ParamName, ParamCount, ParamValue$add_params$) VALUES( " + SqlFactory.ParseType(ParamName) + ", " + SqlFactory.ParseType(ParamCount) + ", " + SqlFactory.ParseType(ParamValue) + "$add_values$)";
+          
+          string query = "INSERT INTO T_PARAM_CONTENT (ParamName, ParamCount, ParamValue$add_params$) VALUES( " + Factory.ParseType(ParamName) + ", " + Factory.ParseType(ParamCount) + ", " + Factory.ParseType(ParamValue) + "$add_values$)";
        
           // Association ObjectContent
           if(ObjectContent != null){
              add_params += ", Id";
-             add_values += ", "+SqlFactory.ParseType(ObjectContent.Id)+"";
+             add_values += ", "+Factory.ParseType(ObjectContent.Id)+"";
           }
        
           query = query.Replace("$add_params$", add_params);
           query = query.Replace("$add_values$", add_values);
        
-          db.Query(query);
+          Factory.Query(query);
        
        }
        
        public int Update(string add_params = "")
        {
-          SqlFactory db = Factory as SqlFactory;
-          string query = "UPDATE T_PARAM_CONTENT SET ParamValue = "+SqlFactory.ParseType(ParamValue)+"$add_params$ WHERE ParamName = "+SqlFactory.ParseType(ParamName)+" and ParamCount = "+SqlFactory.ParseType(ParamCount)+"";
+          
+          string query = "UPDATE T_PARAM_CONTENT SET ParamValue = "+Factory.ParseType(ParamValue)+"$add_params$ WHERE ParamName = "+Factory.ParseType(ParamName)+" and ParamCount = "+Factory.ParseType(ParamCount)+"";
        
           // Association ObjectContent
           if(ObjectContent != null){
-             add_params += ", Id = "+SqlFactory.ParseType(ObjectContent.Id)+"";
+             add_params += ", Id = "+Factory.ParseType(ObjectContent.Id)+"";
           }
        
           query = query.Replace("$add_params$", add_params);
           
-          return db.Query(query);
+          return Factory.Query(query);
        
        }
        
        // ObjectContent(0,1) <-> (0,*)ParamContent
        public ObjectContent LoadObjectContent()
        {
-          SqlFactory db = Factory as SqlFactory;
-          string query = "SELECT Id FROM T_PARAM_CONTENT WHERE ParamName = "+SqlFactory.ParseType(ParamName)+"and ParamCount = "+SqlFactory.ParseType(ParamCount)+"";
+          
+          string query = "SELECT Id FROM T_PARAM_CONTENT WHERE ParamName = "+Factory.ParseType(ParamName)+"and ParamCount = "+Factory.ParseType(ParamCount)+"";
           String Id = "";
        
           bool ok = true;
           ObjectContent objectcontent = null;
            
-          db.Query(query, reader =>
+          Factory.Query(query, reader =>
           {
               if (reader.Read())
               {
@@ -202,13 +202,13 @@ namespace AppModel.Entity
               return null;
        
           // obtient l'objet de reference
-          objectcontent = (from p in db.References.OfType<ObjectContent>() where p.Id == Id select p).FirstOrDefault();
+          objectcontent = (from p in Factory.GetReferences().OfType<ObjectContent>() where p.Id == Id select p).FirstOrDefault();
           if ( objectcontent == null)
           {
               objectcontent = new ObjectContent();
-              objectcontent.Factory = db;
+              objectcontent.Factory = this.Factory;
               objectcontent.Id = Id;
-              objectcontent = db.GetReference(objectcontent) as ObjectContent;//mise en cache
+              objectcontent = Factory.GetReference(objectcontent) as ObjectContent;//mise en cache
           }
        
           // Recharge les données depuis la BDD
@@ -221,7 +221,7 @@ namespace AppModel.Entity
        // Obtient l'identifiant primaire depuis un curseur SQL
        public void PickIdentity(object _reader)
        {
-          SqlFactory db = Factory as SqlFactory;
+          
           SqlDataReader reader = _reader as SqlDataReader;
           if (reader["ParamName"] != null)
              ParamName = reader["ParamName"].ToString();
@@ -233,7 +233,7 @@ namespace AppModel.Entity
        // Obtient les propriétés depuis un curseur SQL
        public void PickProperties(object _reader)
        {
-          SqlFactory db = Factory as SqlFactory;
+          
           SqlDataReader reader = _reader as SqlDataReader;
           if (reader["ParamValue"] != null)
              ParamValue = reader["ParamValue"].ToString();

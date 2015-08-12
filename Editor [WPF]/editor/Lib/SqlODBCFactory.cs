@@ -9,18 +9,19 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
 using System.Linq;
+using System.Data.Odbc;
 using editor.Lib;
 using System.Data.Common;
 
 namespace Lib
 {
-    public class SqlFactory : EntityReferences<IEntity>, IEntityFactory
+    public class SqlOdbcFactory : EntityReferences<IEntity>, IEntityFactory
     {
         private  string connectionString;
         private  int maxPersistantConnection = 4;
-        private  SqlConnection con;
-        private  List<SqlConnection> unusedConList = new List<SqlConnection>();
-        private  List<SqlConnection> usedConList = new List<SqlConnection>();
+        private  OdbcConnection con;
+        private  List<OdbcConnection> unusedConList = new List<OdbcConnection>();
+        private  List<OdbcConnection> usedConList = new List<OdbcConnection>();
         public   bool useCachedAssociation = false;
         public   int CommandTimeout = 10;
 
@@ -29,7 +30,7 @@ namespace Lib
             return References;
         }
 
-        public string Name { get { return "SQL SqlFactory " + (con != null ? con.Database : "[NonConnecté]"); } }
+        public string Name { get { return "SQL SqlOdbcFactory " + (con != null ? con.Database : "[NonConnecté]"); } }
 
         // Ferme toutes les connexions
         public  void CloseConnections()
@@ -53,11 +54,11 @@ namespace Lib
         }
 
         // Retourne une nouvelle instance de connexion
-        public  SqlConnection GetConnection(bool current=true)
+        public  OdbcConnection GetConnection(bool current=true)
         {
             if (current)
             {
-                con = new SqlConnection(connectionString);
+                con = new OdbcConnection(connectionString);
 
                 if (con.State != ConnectionState.Open)
                     con.Open();
@@ -65,7 +66,7 @@ namespace Lib
             }
 
             // Nouvelle connexion
-            SqlConnection c;
+            OdbcConnection c;
             if (unusedConList.Count > 0)
             {
                 c = unusedConList[unusedConList.Count - 1];
@@ -73,7 +74,7 @@ namespace Lib
             }
             else
             {
-                c = new SqlConnection(connectionString);
+                c = new OdbcConnection(connectionString);
                 c.Open();
             }
             usedConList.Add(c);
@@ -81,7 +82,7 @@ namespace Lib
         }
 
         // Retourne une nouvelle instance de connexion
-        public  void ReleaseConnection(SqlConnection c)
+        public  void ReleaseConnection(OdbcConnection c)
         {
             if (usedConList.Contains(c) == false)
                 return;
@@ -111,8 +112,8 @@ namespace Lib
         public  int Query(string query)
         {
             int result;
-            SqlConnection conn = GetConnection();
-            SqlCommand cmd = new SqlCommand();
+            OdbcConnection conn = GetConnection();
+            OdbcCommand cmd = new OdbcCommand();
             cmd.CommandTimeout = this.CommandTimeout;
 
             cmd.CommandText = query;
@@ -128,8 +129,8 @@ namespace Lib
         public  object QueryScalar(string query)
         {
             object result;
-            SqlConnection conn = GetConnection();
-            SqlCommand cmd = new SqlCommand();
+            OdbcConnection conn = GetConnection();
+            OdbcCommand cmd = new OdbcCommand();
             cmd.CommandTimeout = this.CommandTimeout;
 
             cmd.CommandText = query;
@@ -144,9 +145,9 @@ namespace Lib
         // Execute une requete et retourne le reader
         public void Query(string query, Func<DbDataReader, int> act)
         {
-            SqlDataReader reader;
-            SqlConnection conn = GetConnection(false);
-            SqlCommand cmd = new SqlCommand();
+            OdbcDataReader reader;
+            OdbcConnection conn = GetConnection(false);
+            OdbcCommand cmd = new OdbcCommand();
             cmd.CommandTimeout = this.CommandTimeout;
 
             cmd.CommandText = query;
@@ -162,9 +163,9 @@ namespace Lib
         // Exécute une requete et intialise les propriétés d'un objet
         public  void QueryObject(string query, object obj)
         {
-            SqlDataReader reader;
-            SqlConnection conn = GetConnection();//nouvelle connexion pour une possible imbrication
-            SqlCommand cmd = new SqlCommand();
+            OdbcDataReader reader;
+            OdbcConnection conn = GetConnection();//nouvelle connexion pour une possible imbrication
+            OdbcCommand cmd = new OdbcCommand();
             cmd.CommandTimeout = this.CommandTimeout;
 
             cmd.CommandText = query;
@@ -329,10 +330,10 @@ namespace Lib
 
         public class EntityFactory<T> : IEnumerable where T : IEntity, new()
         {
-            private SqlFactory db;
+            private SqlOdbcFactory db;
             private string q;
 
-            public EntityFactory(SqlFactory database, string query = null)
+            public EntityFactory(SqlOdbcFactory database, string query = null)
             {
                 db = database;
                 q = query;
@@ -351,22 +352,22 @@ namespace Lib
 
         public class EntityEnum<T> : IEnumerator where T : IEntity, new()
         {
-            private SqlDataReader reader;
-            private SqlConnection conn;
-            private SqlCommand cmd;
+            private OdbcDataReader reader;
+            private OdbcConnection conn;
+            private OdbcCommand cmd;
             T entity;
-            SqlFactory db;
+            SqlOdbcFactory db;
 
             // Enumerators are positioned before the first element
             // until the first MoveNext() call.
             int position = -1;
 
-            public EntityEnum(SqlFactory database,string query=null)
+            public EntityEnum(SqlOdbcFactory database,string query=null)
             {
                 db = database;
 
                 conn = db.GetConnection(false); // nouvelle connexion pour les requetes imbriquées
-                cmd = new SqlCommand();
+                cmd = new OdbcCommand();
                 cmd.CommandTimeout = db.CommandTimeout;
 
                 cmd.CommandText = String.IsNullOrEmpty(query) ? "SELECT * FROM " + (new T().TableName) : query;
