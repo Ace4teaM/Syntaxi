@@ -164,10 +164,14 @@ namespace editor.ModelView
                         /*SqlServerFactory factory = new SqlServerFactory();
                         factory.SetConnection(@"Server=THOMAS-PC\SQLSERVEREXPRESS;Database=syntaxi;Trusted_Connection=True;");
                         //factory.SetConnection(@"Server=BDE-PORT\SQLSERVER2012;Database=syntaxi;Trusted_Connection=True;");
-                        app.Export(sqlFactory);*/
+                        app.Export(sqlFactory);
 
                         SqlOdbcFactory factory = new SqlOdbcFactory();
                         factory.SetConnection(@"DSN=Syntaxi;");
+                        app.Export(factory);*/
+
+                        SqlPostgresFactory factory = new SqlPostgresFactory();
+                        factory.SetConnection(@"server=217.70.189.220;Port=5432;Database=syntaxi;User Id=****;Password=****;POOLING=False;");
                         app.Export(factory);
                     });
 
@@ -204,7 +208,31 @@ namespace editor.ModelView
                 if (this.applyChanges == null)
                     this.applyChanges = new DelegateCommand(() =>
                     {
-                        foreach(var e in this.ObjectContentList)
+                        List<ObjectContent> deleted = new List<ObjectContent>();
+                        foreach (var e in this.ObjectContentList)
+                        {
+                            switch (e.EntityState)
+                            {
+                                case EntityState.Added:
+                                    e.Project = app.Project;
+                                    foreach (var p in e.ParamContent)
+                                    {
+                                        switch (e.EntityState)
+                                        {
+                                            case EntityState.Added:
+                                                e.Project = app.Project;
+                                                break;
+                                            case EntityState.Deleted:
+                                                deleted.Add(e);
+                                                break;
+                                        }
+                                    }
+                                    break;
+                                case EntityState.Deleted:
+                                    deleted.Add(e);
+                                    break;
+                            }
+                        }
                     });
 
                 return this.applyChanges;
