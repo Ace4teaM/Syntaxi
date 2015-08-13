@@ -65,6 +65,22 @@ namespace editor.View
             App app = Application.Current as App;
             MainWindow wnd = app.MainWindow as MainWindow;
 
+            // dossier d'enregistrement
+            SaveFileDialog dlg = new SaveFileDialog();
+
+            // Set filter for file extension and default file extension
+            dlg.DefaultExt = ".prj";
+            dlg.Filter = "Projet Syntaxi|*.prj";
+
+            // Get the selected file name and display in a TextBox
+            if (dlg.ShowDialog() != true)
+            {
+                return;
+            }
+
+            app.ProjectFileName = dlg.FileName;
+
+            // Initialise le projet
             switch (this.ProjectTypeCb.SelectedValue as string)
             {
                 /*case "c#":

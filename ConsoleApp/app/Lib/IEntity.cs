@@ -5,9 +5,19 @@ using System.Text;
 
 namespace Lib
 {
+    // Etat de modification
+    public enum EntityState
+    {
+        Unmodified, // Valeur par défaut
+        Modified,
+        Added,
+        Deleted
+    }
+
     public interface IEntity
     {
         IEntityFactory Factory { get; set; }
+        EntityState EntityState { get; set; }
         string TableName { get; }
         
         void Insert(string add_params = "", string add_values = "");

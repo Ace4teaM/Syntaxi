@@ -15,14 +15,17 @@
                 <Button Margin="10,0,0,0" Width="32" Height="32">
                     <Image Width="24" Source="/Resources/close.png"></Image>
                 </Button>
-                <Button Margin="10,0,0,0" Width="32" Height="32" Command="{Binding SaveProject}">
+                <Button Margin="10,0,0,0" Width="32" Height="32" Command="{Binding SaveProject}" ToolTip="Sauvegarder le projet">
                     <Image Width="24" Source="/Resources/save.png"></Image>
                 </Button>
-                <Button Margin="10,0,0,0" Width="32" Height="32" Command="{Binding ScanObjects}">
+                <Button Margin="10,0,0,0" Width="32" Height="32" Command="{Binding ScanObjects}" ToolTip="Scanner les fichiers">
                     <Image Width="24" Source="/Resources/search-plus.png"></Image>
                 </Button>
-                <Button Margin="10,0,0,0" Width="32" Height="32" Command="{Binding ExportToDatabase}">
-                    <Image Width="24" Source="/Resources/bdd.png"></Image>
+                <Button Margin="10,0,0,0" Width="32" Height="32" Command="{Binding ExportToDatabase}" ToolTip="Exporter vers la base de données">
+                    <Image Width="24" Source="/Resources/setbdd.png"></Image>
+                </Button>
+                <Button Margin="10,0,0,0" Width="32" Height="32" Command="{Binding ImportFromDatabase}" ToolTip="Importer depuis la base de données">
+                    <Image Width="24" Source="/Resources/getbdd.png"></Image>
                 </Button>
                 <StackPanel MinWidth="200" Margin="10,0,10,0" Orientation="Vertical" VerticalAlignment="Center">
                     <TextBlock FontSize="10" FontWeight="SemiBold" Text="{Binding ProjectName}"></TextBlock>

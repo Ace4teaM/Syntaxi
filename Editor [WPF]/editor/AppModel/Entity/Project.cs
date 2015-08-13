@@ -50,6 +50,12 @@ namespace AppModel.Entity
          public event PropertyChangedEventHandler PropertyChanged;
          #endregion // INotifyPropertyChanged
 
+         #region State
+        private EntityState entityState;
+        public EntityState EntityState { get{ return entityState; } set{ entityState = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("EntityState")); } }
+
+         #endregion // State
+        
          #region Fields
          // 
          protected String name;
@@ -236,9 +242,7 @@ namespace AppModel.Entity
        
        public void Load()
        {
-          
-          string query = "SELECT FROM T_PROJECT WHERE Name = "+Factory.ParseType(Name)+" and Version = "+Factory.ParseType(Version)+"";
-          Factory.QueryObject(query, this);
+          // Aucunes propriétés
        }
        
        public object LoadAssociations(string name)
@@ -254,14 +258,14 @@ namespace AppModel.Entity
        public int Delete()
        {
           
-          string query = "DELETE FROM T_PROJECT WHERE Name = "+Factory.ParseType(Name)+" and Version = "+Factory.ParseType(Version)+"";
+          string query = "DELETE FROM T_PROJECT WHERE  Name = "+Factory.ParseType(this.Name)+" and  Version = "+Factory.ParseType(this.Version)+"";
           return Factory.Query(query);
        }
        
        public void Insert(string add_params = "", string add_values = "")
        {
           
-          string query = "INSERT INTO T_PROJECT (Name, Version$add_params$) VALUES( " + Factory.ParseType(Name) + ", " + Factory.ParseType(Version) + "$add_values$)";
+          string query = "INSERT INTO T_PROJECT (Name, Version$add_params$) VALUES( " + Factory.ParseType(this.Name) + ", " + Factory.ParseType(this.Version) + "$add_values$)";
        
        
           query = query.Replace("$add_params$", add_params);
@@ -273,21 +277,15 @@ namespace AppModel.Entity
        
        public int Update(string add_params = "")
        {
-          
-          string query = "UPDATE T_PROJECT SET $add_params$ WHERE Name = "+Factory.ParseType(Name)+" and Version = "+Factory.ParseType(Version)+"";
-       
-       
-          query = query.Replace("$add_params$", add_params);
-          
-          return Factory.Query(query);
-       
+             // Aucunes propriétés
+          return 0;
        }
        
        // Project(0,1) <-> (0,*)ObjectContent
        public Collection<ObjectContent> LoadObjectContent()
        {
           
-          string query = "SELECT Id FROM T_OBJECT_CONTENT WHERE Name = "+Factory.ParseType(Name)+"and Version = "+Factory.ParseType(Version)+"";
+          string query = "SELECT Object_Content_Id FROM T_OBJECT_CONTENT WHERE Name = "+Factory.ParseType(this.Name)+"and Version = "+Factory.ParseType(this.Version)+"";
           this.ObjectContent = new Collection<ObjectContent>();
        
           Factory.Query(query, reader =>
@@ -297,9 +295,9 @@ namespace AppModel.Entity
                 // obtient l'identifiant
                 String Id = "";
        
-                if (reader["Id"] == null)
+                if (reader["Object_Content_Id"] == null)
                    continue;
-                Id = reader["Id"].ToString();
+                Id = reader["Object_Content_Id"].ToString();
                 
                 // obtient l'objet de reference
                 ObjectContent _entity = (from p in Factory.GetReferences().OfType<ObjectContent>() where p.Id == Id select p).FirstOrDefault();
@@ -314,7 +312,7 @@ namespace AppModel.Entity
                 
                 // Recharge les données depuis la BDD
                 _entity.Load();
-          
+                
                 // Ajoute la reference à la collection
                 this.AddObjectContent(_entity);
        
@@ -328,7 +326,6 @@ namespace AppModel.Entity
        // Obtient l'identifiant primaire depuis un curseur SQL
        public void PickIdentity(object _reader)
        {
-          
           SqlDataReader reader = _reader as SqlDataReader;
           if (reader["Name"] != null)
              Name = reader["Name"].ToString();
@@ -340,7 +337,6 @@ namespace AppModel.Entity
        // Obtient les propriétés depuis un curseur SQL
        public void PickProperties(object _reader)
        {
-          
           SqlDataReader reader = _reader as SqlDataReader;
        }
        #endregion // IEntity

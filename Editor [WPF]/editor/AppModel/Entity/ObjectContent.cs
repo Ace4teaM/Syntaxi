@@ -34,7 +34,7 @@ namespace AppModel.Entity
             this.paramcontent = new Collection<ParamContent>();
          }
          
-         public ObjectContent(String id, String objecttype, String filename, int? position) : this(){
+         public ObjectContent(String id, String objecttype, String filename, int position) : this(){
             this.id = id;
             this.objecttype = objecttype;
             this.filename = filename;
@@ -46,6 +46,12 @@ namespace AppModel.Entity
          public event PropertyChangedEventHandler PropertyChanged;
          #endregion // INotifyPropertyChanged
 
+         #region State
+        private EntityState entityState;
+        public EntityState EntityState { get{ return entityState; } set{ entityState = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("EntityState")); } }
+
+         #endregion // State
+        
          #region Fields
          // Identifiant
          protected String id;
@@ -57,8 +63,8 @@ namespace AppModel.Entity
          protected String filename;
          public String Filename { get{ return filename; } set{ filename = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Filename")); } }
          // Position de départ dans le fichier source
-         protected int? position;
-         public int? Position { get{ return position; } set{ position = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Position")); } }
+         protected int position;
+         public int Position { get{ return position; } set{ position = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Position")); } }
          #endregion // Fields
 
          #region Associations
@@ -131,7 +137,7 @@ namespace AppModel.Entity
             writer.Write(Id);
             writer.Write(ObjectType);
             writer.Write(Filename);
-            writer.Write(Position.Value);
+            writer.Write(Position);
 
             // ParamContent
             writer.Write(this.paramcontent.Count);
@@ -162,8 +168,7 @@ namespace AppModel.Entity
        
        public void Load()
        {
-          
-          string query = "SELECT ObjectType , Filename , Position FROM T_OBJECT_CONTENT WHERE Id = "+Factory.ParseType(Id)+"";
+          string query = "SELECT ObjectType , Filename , Position FROM T_OBJECT_CONTENT WHERE Object_Content_Id = "+Factory.ParseType(this.Id)+"";
           Factory.QueryObject(query, this);
        }
        
@@ -183,14 +188,14 @@ namespace AppModel.Entity
        public int Delete()
        {
           
-          string query = "DELETE FROM T_OBJECT_CONTENT WHERE Id = "+Factory.ParseType(Id)+"";
+          string query = "DELETE FROM T_OBJECT_CONTENT WHERE  Object_Content_Id = "+Factory.ParseType(this.Id)+"";
           return Factory.Query(query);
        }
        
        public void Insert(string add_params = "", string add_values = "")
        {
           
-          string query = "INSERT INTO T_OBJECT_CONTENT (Id, ObjectType, Filename, Position$add_params$) VALUES( " + Factory.ParseType(Id) + ", " + Factory.ParseType(ObjectType) + ", " + Factory.ParseType(Filename) + ", " + Factory.ParseType(Position) + "$add_values$)";
+          string query = "INSERT INTO T_OBJECT_CONTENT (Object_Content_Id, ObjectType, Filename, Position$add_params$) VALUES( " + Factory.ParseType(this.Id) + ", " + Factory.ParseType(this.ObjectType) + ", " + Factory.ParseType(this.Filename) + ", " + Factory.ParseType(this.Position) + "$add_values$)";
        
           // Association Project
           if(Project != null){
@@ -207,8 +212,7 @@ namespace AppModel.Entity
        
        public int Update(string add_params = "")
        {
-          
-          string query = "UPDATE T_OBJECT_CONTENT SET ObjectType = "+Factory.ParseType(ObjectType)+", Filename = "+Factory.ParseType(Filename)+", Position = "+Factory.ParseType(Position)+"$add_params$ WHERE Id = "+Factory.ParseType(Id)+"";
+             string query = "UPDATE T_OBJECT_CONTENT SET ObjectType = "+Factory.ParseType(this.ObjectType)+", Filename = "+Factory.ParseType(this.Filename)+", Position = "+Factory.ParseType(this.Position)+"$add_params$ WHERE Object_Content_Id = "+Factory.ParseType(this.Id)+"";
        
           // Association Project
           if(Project != null){
@@ -218,14 +222,13 @@ namespace AppModel.Entity
           query = query.Replace("$add_params$", add_params);
           
           return Factory.Query(query);
-       
        }
        
        // Project(0,1) <-> (0,*)ObjectContent
        public Project LoadProject()
        {
           
-          string query = "SELECT Name , Version FROM T_OBJECT_CONTENT WHERE Id = "+Factory.ParseType(Id)+"";
+          string query = "SELECT Name, Version FROM T_OBJECT_CONTENT WHERE Object_Content_Id = "+Factory.ParseType(this.Id)+"";
           String Name = "";
        
           String Version = "";
@@ -273,7 +276,7 @@ namespace AppModel.Entity
        public Collection<ParamContent> LoadParamContent()
        {
           
-          string query = "SELECT ParamName , ParamCount FROM T_PARAM_CONTENT WHERE Id = "+Factory.ParseType(Id)+"";
+          string query = "SELECT Param_Content_Id FROM T_PARAM_CONTENT WHERE Object_Content_Id = "+Factory.ParseType(this.Id)+"";
           this.ParamContent = new Collection<ParamContent>();
        
           Factory.Query(query, reader =>
@@ -281,32 +284,26 @@ namespace AppModel.Entity
               while (reader.Read())
               {
                 // obtient l'identifiant
-                String ParamName = "";
-                int ParamCount = new int();
+                String Id = "";
        
-                if (reader["ParamName"] == null)
+                if (reader["Param_Content_Id"] == null)
                    continue;
-                ParamName = reader["ParamName"].ToString();
-       
-                if (reader["ParamCount"] == null)
-                   continue;
-                ParamCount = int.Parse(reader["ParamCount"].ToString());
+                Id = reader["Param_Content_Id"].ToString();
                 
                 // obtient l'objet de reference
-                ParamContent _entity = (from p in Factory.GetReferences().OfType<ParamContent>() where p.ParamName == ParamName&& p.ParamCount == ParamCount select p).FirstOrDefault();
+                ParamContent _entity = (from p in Factory.GetReferences().OfType<ParamContent>() where p.Id == Id select p).FirstOrDefault();
        
                 if ( _entity == null)
                 {
                     _entity = new ParamContent();
                     _entity.Factory = this.Factory;
-                    _entity.ParamName = ParamName;
-                    _entity.ParamCount = ParamCount;
+                    _entity.Id = Id;
                     _entity = Factory.GetReference(_entity) as ParamContent;//mise en cache
                 }
                 
                 // Recharge les données depuis la BDD
                 _entity.Load();
-          
+                
                 // Ajoute la reference à la collection
                 this.AddParamContent(_entity);
        
@@ -320,16 +317,14 @@ namespace AppModel.Entity
        // Obtient l'identifiant primaire depuis un curseur SQL
        public void PickIdentity(object _reader)
        {
-          
           SqlDataReader reader = _reader as SqlDataReader;
-          if (reader["Id"] != null)
-             Id = reader["Id"].ToString();
+          if (reader["Object_Content_Id"] != null)
+             Id = reader["Object_Content_Id"].ToString();
        }
        
        // Obtient les propriétés depuis un curseur SQL
        public void PickProperties(object _reader)
        {
-          
           SqlDataReader reader = _reader as SqlDataReader;
           if (reader["ObjectType"] != null)
              ObjectType = reader["ObjectType"].ToString();

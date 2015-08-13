@@ -18,7 +18,8 @@ namespace editor.ModelView
         App app = Application.Current as App;
         public VueEditor()
         {
-            ObjectContentList = new ObservableCollection<ObjectContent>(app.Project.ObjectContent);
+            if (app.Project!=null)
+                ObjectContentList = new ObservableCollection<ObjectContent>(app.Project.ObjectContent);
         }
 
         //
@@ -160,7 +161,7 @@ namespace editor.ModelView
                 if (this.exportToDatabase == null)
                     this.exportToDatabase = new DelegateCommand(() =>
                     {
-                        /*SqlFactory factory = new SqlFactory();
+                        /*SqlServerFactory factory = new SqlServerFactory();
                         factory.SetConnection(@"Server=THOMAS-PC\SQLSERVEREXPRESS;Database=syntaxi;Trusted_Connection=True;");
                         //factory.SetConnection(@"Server=BDE-PORT\SQLSERVER2012;Database=syntaxi;Trusted_Connection=True;");
                         app.Export(sqlFactory);*/
@@ -174,6 +175,42 @@ namespace editor.ModelView
             }
         }
         #endregion
+        #region ImportFromDatabase
+        private ICommand importFromDatabase;
+        public ICommand ImportFromDatabase
+        {
+            get
+            {
+                if (this.importFromDatabase == null)
+                    this.importFromDatabase = new DelegateCommand(() =>
+                    {
+                        SqlOdbcFactory factory = new SqlOdbcFactory();
+                        factory.SetConnection(@"DSN=Syntaxi;");
+                        app.Import(factory);
+                        ObjectContentList = new ObservableCollection<ObjectContent>(app.Project.ObjectContent);
+                        CurObjectContent = ObjectContentList.FirstOrDefault();
+                    });
+
+                return this.importFromDatabase;
+            }
+        }
+        #endregion
+        /*#region ApplyChanges
+        private ICommand applyChanges;
+        public ICommand ApplyChanges
+        {
+            get
+            {
+                if (this.applyChanges == null)
+                    this.applyChanges = new DelegateCommand(() =>
+                    {
+                        foreach(var e in this.ObjectContentList)
+                    });
+
+                return this.applyChanges;
+            }
+        }
+        #endregion*/
         #endregion
     }
 }

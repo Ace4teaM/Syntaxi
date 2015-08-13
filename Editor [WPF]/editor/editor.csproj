@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Npgsql">
+      <HintPath>packages\Npgsql.3.0.0\lib\net45\Npgsql.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
@@ -67,7 +70,8 @@
     <Compile Include="Lib\EntityReferences.cs" />
     <Compile Include="Lib\IEntity.cs" />
     <Compile Include="Lib\IEntityFactory.cs" />
-    <Compile Include="Lib\SqlFactory.cs" />
+    <Compile Include="Lib\SqlPostgresFactory.cs" />
+    <Compile Include="Lib\SqlServerFactory.cs" />
     <Compile Include="Lib\SqlODBCFactory.cs" />
     <Compile Include="Lib\ViewModelBase.cs" />
     <Compile Include="ModelView\CodeSample.cs" />
@@ -180,6 +184,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -206,6 +211,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\search-plus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\setbdd.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\getbdd.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\bdd.png" />

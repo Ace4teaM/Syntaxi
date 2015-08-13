@@ -298,8 +298,6 @@ typedef struct _NP_HANDLE_HEADER{
             MatchCollection matches = content.Matches(text);
             foreach (Match match in matches)
             {
-                int paramCount = 0;
-
                 // Initialise l'objet
                 ObjectContent o = new ObjectContent();
                 o.ObjectType = syntax.ObjectType;
@@ -312,7 +310,7 @@ typedef struct _NP_HANDLE_HEADER{
                 {
                     if (groupName != "content" && groupName != "0")
                     {
-                        o.AddParamContent(new ParamContent(groupName, paramCount++, match.Groups[groupName].Value));
+                        o.AddParamContent(new ParamContent(Guid.NewGuid().ToString("N"), groupName, match.Groups[groupName].Value));
                         //Log(String.Format("\tAdd param '{0}' as '{1}'", groupName, match.Groups[groupName].Value));
                     }
                 }
@@ -333,7 +331,7 @@ typedef struct _NP_HANDLE_HEADER{
                         MatchCollection gParamMatches = pParam.Matches(pMatch.Groups["content"].Value);
                         foreach (Match paramMatch in gParamMatches)
                         {
-                            o.AddParamContent(new ParamContent(g.ParamType, paramCount++, paramMatch.Groups["content"].Value));
+                            o.AddParamContent(new ParamContent(Guid.NewGuid().ToString("N"), g.ParamType, paramMatch.Groups["content"].Value));
                         }
                     }
                 }
@@ -342,7 +340,7 @@ typedef struct _NP_HANDLE_HEADER{
                 MatchCollection paramMatches = param.Matches(objet_text);
                 foreach (Match paramMatch in paramMatches)
                 {
-                    o.AddParamContent(new ParamContent(paramMatch.Groups["type"].Value, paramCount++, paramMatch.Groups["content"].Value));
+                    o.AddParamContent(new ParamContent(Guid.NewGuid().ToString("N"), paramMatch.Groups["type"].Value, paramMatch.Groups["content"].Value));
                 }
 
                 // Ajoute à la liste des objets
@@ -366,6 +364,19 @@ typedef struct _NP_HANDLE_HEADER{
                     p.Factory = factory;
                     p.Insert();
                 }
+            }
+        }
+
+        public void Import(IEntityFactory factory)
+        {
+            Project.Factory = factory;
+            //Supprime la version existante
+            Project.Load();
+            Project.LoadObjectContent();
+            //Insert les données
+            foreach (var e in Project.ObjectContent)
+            {
+                e.LoadParamContent();
             }
         }
     }

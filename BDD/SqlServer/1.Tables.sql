@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      Microsoft SQL Server 2012                    */
-/* Created on:     12/08/2015 14:23:48                          */
+/* Created on:     13/08/2015 18:25:46                          */
 /*==============================================================*/
 
 
@@ -13,9 +13,9 @@ go
 
 if exists (select 1
    from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('T_PARAM_CONTENT') and o.name = 'FK_T_PARAM_CONTENT_REFERENCE_1_T_OBJECT_CONTENT')
+   where r.fkeyid = object_id('T_PARAM_CONTENT') and o.name = 'FK_T_PARAM_CONTENT_REFERENCE_3_T_OBJECT_CONTENT')
 alter table T_PARAM_CONTENT
-   drop constraint FK_T_PARAM_CONTENT_REFERENCE_1_T_OBJECT_CONTENT
+   drop constraint FK_T_PARAM_CONTENT_REFERENCE_3_T_OBJECT_CONTENT
 go
 
 if exists (select 1
@@ -45,11 +45,11 @@ go
 create table T_OBJECT_CONTENT (
    NAME                 varchar(64)          null,
    VERSION              varchar(16)          null,
-   ID                   varchar(60)          not null,
+   OBJECT_CONTENT_ID    varchar(60)          not null,
    OBJECTTYPE           varchar(60)          not null,
    FILENAME             varchar(128)         not null,
-   POSITION             varchar(60)          not null,
-   constraint PK_T_OBJECT_CONTENT primary key (ID)
+   POSITION             int                  not null,
+   constraint PK_T_OBJECT_CONTENT primary key (OBJECT_CONTENT_ID)
 )
 go
 
@@ -57,11 +57,11 @@ go
 /* Table: T_PARAM_CONTENT                                       */
 /*==============================================================*/
 create table T_PARAM_CONTENT (
-   ID                   varchar(60)          not null,
+   PARAM_CONTENT_ID     varchar(60)          not null,
+   OBJECT_CONTENT_ID    varchar(60)          null,
    PARAMNAME            varchar(60)          not null,
-   PARAMCOUNT           int                  not null,
    PARAMVALUE           varchar(128)         null,
-   constraint PK_T_PARAM_CONTENT primary key (ID, PARAMNAME, PARAMCOUNT)
+   constraint PK_T_PARAM_CONTENT primary key (PARAM_CONTENT_ID)
 )
 go
 
@@ -83,9 +83,9 @@ alter table T_OBJECT_CONTENT
 go
 
 alter table T_PARAM_CONTENT
-   add constraint FK_T_PARAM_CONTENT_REFERENCE_1_T_OBJECT_CONTENT foreign key (ID)
-      references T_OBJECT_CONTENT (ID)
-         on update cascade on delete cascade 
+   add constraint FK_T_PARAM_CONTENT_REFERENCE_3_T_OBJECT_CONTENT foreign key (OBJECT_CONTENT_ID)
+      references T_OBJECT_CONTENT (OBJECT_CONTENT_ID)
+         
          not for replication
 go
 

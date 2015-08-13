@@ -9,6 +9,6 @@
     <DataGrid.Columns>
         <DataGridTextColumn Width="120" Header="Type" Binding="{Binding ParamName}"></DataGridTextColumn>
         <DataGridTextColumn Width="*" Header="Valeur" Binding="{Binding ParamValue}"></DataGridTextColumn>
-        <DataGridTextColumn Width="auto" Header="Index" Binding="{Binding ParamCount}"></DataGridTextColumn>
+        <DataGridTextColumn Width="auto" Header="Id" Binding="{Binding Id}"></DataGridTextColumn>
     </DataGrid.Columns>
 </DataGrid>

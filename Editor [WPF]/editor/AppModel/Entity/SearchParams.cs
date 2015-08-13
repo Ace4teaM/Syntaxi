@@ -41,6 +41,12 @@ namespace AppModel.Entity
          public event PropertyChangedEventHandler PropertyChanged;
          #endregion // INotifyPropertyChanged
 
+         #region State
+        private EntityState entityState;
+        public EntityState EntityState { get{ return entityState; } set{ entityState = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("EntityState")); } }
+
+         #endregion // State
+        
          #region Fields
          // Dossier de recherche
          protected String inputdir;

@@ -110,7 +110,7 @@ namespace app
                 }
 
                 // Initialise le projet
-                if (!String.IsNullOrEmpty(options.inputProjectFile))
+                if (!String.IsNullOrEmpty(options.inputProjectFile) && (options.action != "init"))
                 {
                     // Charge le projet
                     LoadProject(options.inputProjectFile);
@@ -332,8 +332,6 @@ namespace app
                 MatchCollection matches = content.Matches(text);
                 foreach (Match match in matches)
                 {
-                    int paramCount = 0;
-
                     // Initialise l'objet
                     ObjectContent o = new ObjectContent();
                     o.ObjectType = syntax.ObjectType;
@@ -346,7 +344,7 @@ namespace app
                     {
                         if (groupName != "content" && groupName != "0")
                         {
-                            o.ParamContent.Add(new ParamContent(groupName, paramCount++, match.Groups[groupName].Value));
+                            o.ParamContent.Add(new ParamContent(Guid.NewGuid().ToString("N"),groupName,match.Groups[groupName].Value));
                             //Log(String.Format("\tAdd param '{0}' as '{1}'", groupName, match.Groups[groupName].Value));
                         }
                     }
@@ -367,7 +365,7 @@ namespace app
                             MatchCollection gParamMatches = pParam.Matches(pMatch.Groups["content"].Value);
                             foreach (Match paramMatch in gParamMatches)
                             {
-                                o.ParamContent.Add(new ParamContent(g.ParamType, paramCount++, paramMatch.Groups["content"].Value));
+                                o.ParamContent.Add(new ParamContent(Guid.NewGuid().ToString("N"), g.ParamType, paramMatch.Groups["content"].Value));
                             }
                         }
                     }
@@ -376,7 +374,7 @@ namespace app
                     MatchCollection paramMatches = param.Matches(objet_text);
                     foreach (Match paramMatch in paramMatches)
                     {
-                        o.ParamContent.Add(new ParamContent(paramMatch.Groups["type"].Value, paramCount++, paramMatch.Groups["content"].Value));
+                        o.ParamContent.Add(new ParamContent(Guid.NewGuid().ToString("N"), paramMatch.Groups["type"].Value, paramMatch.Groups["content"].Value));
                     }
 
                     // Ajoute à la liste des objets
