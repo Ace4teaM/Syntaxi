@@ -7,20 +7,9 @@ using System.Text;
 
 namespace Lib
 {
-    // Etat de modification
-    public enum EntityState
-    {
-        Modified,
-        Added,
-        Deleted,
-        Unmodified
-    }
-
     public interface IEntityFactory
     {
         string Name { get; }
-        EntityState GetState(IEntity entity);
-        void SetState(IEntity entity, EntityState state);
         IEntity GetReference(IEntity e);
         IEnumerable Factory<T>() where T : IEntity, new();
         void Commit(IEntity[] entities);

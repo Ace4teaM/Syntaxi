@@ -14,7 +14,7 @@ using System.Data.Common;
 
 namespace Lib
 {
-    public class SqlFactory : EntityReferences<IEntity>, IEntityFactory
+    public class SqlServerFactory : EntityReferences<IEntity>, IEntityFactory
     {
         private  string connectionString;
         private  int maxPersistantConnection = 4;
@@ -29,7 +29,7 @@ namespace Lib
             return References;
         }
 
-        public string Name { get { return "SQL SqlFactory " + (con != null ? con.Database : "[NonConnecté]"); } }
+        public string Name { get { return "SQL SqlServerFactory " + (con != null ? con.Database : "[NonConnecté]"); } }
 
         // Ferme toutes les connexions
         public  void CloseConnections()
@@ -329,10 +329,10 @@ namespace Lib
 
         public class EntityFactory<T> : IEnumerable where T : IEntity, new()
         {
-            private SqlFactory db;
+            private SqlServerFactory db;
             private string q;
 
-            public EntityFactory(SqlFactory database, string query = null)
+            public EntityFactory(SqlServerFactory database, string query = null)
             {
                 db = database;
                 q = query;
@@ -355,13 +355,13 @@ namespace Lib
             private SqlConnection conn;
             private SqlCommand cmd;
             T entity;
-            SqlFactory db;
+            SqlServerFactory db;
 
             // Enumerators are positioned before the first element
             // until the first MoveNext() call.
             int position = -1;
 
-            public EntityEnum(SqlFactory database,string query=null)
+            public EntityEnum(SqlServerFactory database,string query=null)
             {
                 db = database;
 

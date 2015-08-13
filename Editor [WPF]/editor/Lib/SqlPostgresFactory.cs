@@ -9,19 +9,19 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
 using System.Linq;
-using System.Data.Odbc;
+using Npgsql;
 using editor.Lib;
 using System.Data.Common;
 
 namespace Lib
 {
-    public class SqlOdbcFactory : EntityReferences<IEntity>, IEntityFactory
+    public class SqlPostgresFactory : EntityReferences<IEntity>, IEntityFactory
     {
         private  string connectionString;
         private  int maxPersistantConnection = 4;
-        private  OdbcConnection con;
-        private  List<OdbcConnection> unusedConList = new List<OdbcConnection>();
-        private  List<OdbcConnection> usedConList = new List<OdbcConnection>();
+        private  NpgsqlConnection con;
+        private  List<NpgsqlConnection> unusedConList = new List<NpgsqlConnection>();
+        private  List<NpgsqlConnection> usedConList = new List<NpgsqlConnection>();
         public   bool useCachedAssociation = false;
         public   int CommandTimeout = 10;
 
@@ -30,7 +30,7 @@ namespace Lib
             return References;
         }
 
-        public string Name { get { return "SQL SqlOdbcFactory " + (con != null ? con.Database : "[NonConnecté]"); } }
+        public string Name { get { return "SQL SqlPostgresFactory " + (con != null ? con.Database : "[NonConnecté]"); } }
 
         // Ferme toutes les connexions
         public  void CloseConnections()
@@ -54,11 +54,11 @@ namespace Lib
         }
 
         // Retourne une nouvelle instance de connexion
-        public  OdbcConnection GetConnection(bool current=true)
+        public  NpgsqlConnection GetConnection(bool current=true)
         {
             if (current)
             {
-                con = new OdbcConnection(connectionString);
+                con = new NpgsqlConnection(connectionString);
 
                 if (con.State != ConnectionState.Open)
                     con.Open();
@@ -66,7 +66,7 @@ namespace Lib
             }
 
             // Nouvelle connexion
-            OdbcConnection c;
+            NpgsqlConnection c;
             if (unusedConList.Count > 0)
             {
                 c = unusedConList[unusedConList.Count - 1];
@@ -74,7 +74,7 @@ namespace Lib
             }
             else
             {
-                c = new OdbcConnection(connectionString);
+                c = new NpgsqlConnection(connectionString);
                 c.Open();
             }
             usedConList.Add(c);
@@ -82,7 +82,7 @@ namespace Lib
         }
 
         // Retourne une nouvelle instance de connexion
-        public  void ReleaseConnection(OdbcConnection c)
+        public  void ReleaseConnection(NpgsqlConnection c)
         {
             if (usedConList.Contains(c) == false)
                 return;
@@ -112,8 +112,8 @@ namespace Lib
         public  int Query(string query)
         {
             int result;
-            OdbcConnection conn = GetConnection();
-            OdbcCommand cmd = new OdbcCommand();
+            NpgsqlConnection conn = GetConnection() as NpgsqlConnection;
+            NpgsqlCommand cmd = new NpgsqlCommand();
             cmd.CommandTimeout = this.CommandTimeout;
 
             cmd.CommandText = query;
@@ -129,8 +129,8 @@ namespace Lib
         public  object QueryScalar(string query)
         {
             object result;
-            OdbcConnection conn = GetConnection();
-            OdbcCommand cmd = new OdbcCommand();
+            NpgsqlConnection conn = GetConnection() as NpgsqlConnection;
+            NpgsqlCommand cmd = new NpgsqlCommand();
             cmd.CommandTimeout = this.CommandTimeout;
 
             cmd.CommandText = query;
@@ -145,9 +145,9 @@ namespace Lib
         // Execute une requete et retourne le reader
         public void Query(string query, Func<DbDataReader, int> act)
         {
-            OdbcDataReader reader;
-            OdbcConnection conn = GetConnection(false);
-            OdbcCommand cmd = new OdbcCommand();
+            NpgsqlDataReader reader;
+            NpgsqlConnection conn = GetConnection(false) as NpgsqlConnection;
+            NpgsqlCommand cmd = new NpgsqlCommand();
             cmd.CommandTimeout = this.CommandTimeout;
 
             cmd.CommandText = query;
@@ -163,9 +163,9 @@ namespace Lib
         // Exécute une requete et intialise les propriétés d'un objet
         public  void QueryObject(string query, object obj)
         {
-            OdbcDataReader reader;
-            OdbcConnection conn = GetConnection();//nouvelle connexion pour une possible imbrication
-            OdbcCommand cmd = new OdbcCommand();
+            NpgsqlDataReader reader;
+            NpgsqlConnection conn = GetConnection() as NpgsqlConnection;//nouvelle connexion pour une possible imbrication
+            NpgsqlCommand cmd = new NpgsqlCommand();
             cmd.CommandTimeout = this.CommandTimeout;
 
             cmd.CommandText = query;
@@ -186,10 +186,6 @@ namespace Lib
                         string name = reader.GetName(i);
                         Type a = p.PropertyType;
                         Type b = reader[i].GetType();
-                        throw new ApplicationException(
-                            String.Format("The database field data type ({0}) differs from the entity property type ({1}) in entity '{2}'.",
-                            b.Name, a.Name, obj.GetType().Name)
-                        );
                     }
                 }
             }
@@ -334,10 +330,10 @@ namespace Lib
 
         public class EntityFactory<T> : IEnumerable where T : IEntity, new()
         {
-            private SqlOdbcFactory db;
+            private SqlPostgresFactory db;
             private string q;
 
-            public EntityFactory(SqlOdbcFactory database, string query = null)
+            public EntityFactory(SqlPostgresFactory database, string query = null)
             {
                 db = database;
                 q = query;
@@ -356,22 +352,22 @@ namespace Lib
 
         public class EntityEnum<T> : IEnumerator where T : IEntity, new()
         {
-            private OdbcDataReader reader;
-            private OdbcConnection conn;
-            private OdbcCommand cmd;
+            private NpgsqlDataReader reader;
+            private NpgsqlConnection conn;
+            private NpgsqlCommand cmd;
             T entity;
-            SqlOdbcFactory db;
+            SqlPostgresFactory db;
 
             // Enumerators are positioned before the first element
             // until the first MoveNext() call.
             int position = -1;
 
-            public EntityEnum(SqlOdbcFactory database,string query=null)
+            public EntityEnum(SqlPostgresFactory database, string query = null)
             {
                 db = database;
 
                 conn = db.GetConnection(false); // nouvelle connexion pour les requetes imbriquées
-                cmd = new OdbcCommand();
+                cmd = new NpgsqlCommand();
                 cmd.CommandTimeout = db.CommandTimeout;
 
                 cmd.CommandText = String.IsNullOrEmpty(query) ? "SELECT * FROM " + (new T().TableName) : query;
@@ -396,7 +392,7 @@ namespace Lib
                     entity.PickIdentity(reader);
                     entity = db.GetReference(entity); // obtient l'entité en cache
                     entity.PickProperties(reader);
-//TODO                    entity.RazPropertyCache();
+                    //TODO                    entity.RazPropertyCache();
                     return true;
                 }
                 return false;
