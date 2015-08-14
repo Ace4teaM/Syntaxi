@@ -68,6 +68,7 @@
     <Compile Include="EditorModel\Entity\EditorSampleCode.cs" />
     <Compile Include="EditorModel\Entity\EditorStates.cs" />
     <Compile Include="Lib\DelegateCommand.cs" />
+    <Compile Include="Lib\EditableDataGrid.cs" />
     <Compile Include="Lib\EntityReferences.cs" />
     <Compile Include="Lib\IEntity.cs" />
     <Compile Include="Lib\IEntityFactory.cs" />

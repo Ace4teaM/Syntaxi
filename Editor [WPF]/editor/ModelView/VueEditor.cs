@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using AppModel.Entity;
-using editor.Lib;
 using EditorModel.Entity;
 using Lib;
 
@@ -82,13 +81,13 @@ namespace editor.ModelView
             {
                 curObjectContent = value;
                 if (curObjectContent != null)
-                    CurParamContentList = curObjectContent.ParamContent;
+                    CurParamContentList = new ObservableCollection<ParamContent>(curObjectContent.ParamContent);
                 OnPropertyChanged("CurObjectContent");
             }
         }
         //
-        private Collection<ParamContent> curParamContentList;
-        public Collection<ParamContent> CurParamContentList
+        private ObservableCollection<ParamContent> curParamContentList;
+        public ObservableCollection<ParamContent> CurParamContentList
         {
             get { return curParamContentList; }
             set
@@ -111,6 +110,23 @@ namespace editor.ModelView
             {
                 curSearchParams = value;
                 OnPropertyChanged("CurSearchParams");
+            }
+        }
+
+        //
+        public Collection<DatabaseSource> DatabaseSourceList
+        {
+            get { return app.Project.DatabaseSource; }
+        }
+        //
+        private DatabaseSource curDatabaseSource;
+        public DatabaseSource CurDatabaseSource
+        {
+            get { return curDatabaseSource; }
+            set
+            {
+                curDatabaseSource = value;
+                OnPropertyChanged("CurDatabaseSource");
             }
         }
 
@@ -196,6 +212,67 @@ namespace editor.ModelView
                     });
 
                 return this.importFromDatabase;
+            }
+        }
+        #endregion
+        #region EntityAdded
+        private ICommand entityChange;
+        public ICommand EntityChange
+        {
+            get
+            {
+                if (this.entityChange == null)
+                    this.entityChange = new DelegateCommand(() =>
+                    {
+                        IEntity entity = ((DelegateCommand)this.entityChange).GetParam() as IEntity;
+                        if (entity == null)
+                            return;
+
+                        if (entity.EntityState == EntityState.Added)
+                        {
+                            if (entity is ObjectContent)
+                            {
+                                ObjectContent e = entity as ObjectContent;
+                                app.Project.AddObjectContent(e);
+                                e.Id = Guid.NewGuid().ToString("N");
+                            }
+                            if (entity is ParamContent)
+                            {
+                                ParamContent e = entity as ParamContent;
+                                CurObjectContent.AddParamContent(e);
+                                e.Id = Guid.NewGuid().ToString("N");
+                            }
+                            if (entity is DatabaseSource)
+                            {
+                                DatabaseSource e = entity as DatabaseSource;
+                                app.Project.AddDatabaseSource(e);
+                            }
+                        }
+
+                        if (entity.EntityState == EntityState.Deleted)
+                        {
+                            if (entity is ObjectContent)
+                            {
+                                ObjectContent e = entity as ObjectContent;
+                                app.Project.RemoveObjectContent(e);
+                            }
+                            if (entity is ParamContent)
+                            {
+                                ParamContent e = entity as ParamContent;
+                                CurObjectContent.RemoveParamContent(e);
+                            }
+                            if (entity is DatabaseSource)
+                            {
+                                DatabaseSource e = entity as DatabaseSource;
+                                app.Project.RemoveDatabaseSource(e);
+                            }
+                        }
+
+                        // accuse de la modification
+                        entity.EntityState = EntityState.Unmodified;
+                    });
+
+                return this.entityChange;
             }
         }
         #endregion

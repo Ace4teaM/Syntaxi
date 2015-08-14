@@ -12,13 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Lib;
 
 namespace editor.View
 {
     /// <summary>
     /// Logique d'interaction pour ParamContentGrid.xaml
     /// </summary>
-    public partial class ParamContentGrid : DataGrid
+    public partial class ParamContentGrid : EditableDataGrid
     {
         public ParamContentGrid()
         {

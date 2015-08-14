@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Lib;
 
-namespace editor.Lib
+namespace Lib
 {
     public class EntityReferences<T> where T : IEntity
     {

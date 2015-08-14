@@ -7,6 +7,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Input;
 using System.Reflection;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Lib
 {
@@ -100,6 +103,26 @@ namespace Lib
         public virtual string GetRefName()
         {
             return this.GetType().Name; 
+        }
+
+        // Recherche une commande dans les controles parents
+        public static ICommand FindParentCommand(DependencyObject child, string cmdName)
+        {
+            ICommand cmd;
+            DependencyObject parent = child;
+            //CHeck if this is the end of the tree
+            while (parent != null)
+            {
+                Control parentControl = parent as Control;
+                if (parentControl != null)
+                {
+                    ViewModelBase context = parentControl.DataContext as ViewModelBase;
+                    if (context != null && (cmd = context.GetCommand(cmdName)) != null)
+                        return cmd;
+                }
+                parent = VisualTreeHelper.GetParent(parent);
+            }
+            return null;
         }
     }
 }

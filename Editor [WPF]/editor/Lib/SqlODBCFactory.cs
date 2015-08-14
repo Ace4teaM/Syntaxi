@@ -10,7 +10,6 @@ using System.Data.SqlClient;
 using System.Reflection;
 using System.Linq;
 using System.Data.Odbc;
-using editor.Lib;
 using System.Data.Common;
 
 namespace Lib

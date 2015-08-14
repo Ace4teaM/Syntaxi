@@ -38,6 +38,8 @@ namespace AppModel.Entity
             this.objectsyntax = new Collection<ObjectSyntax>();
             // ParamSyntax
             this.paramsyntax = new Collection<ParamSyntax>();
+            // DatabaseSource
+            this.databasesource = new Collection<DatabaseSource>();
          }
          
          public Project(String name, String version) : this(){
@@ -71,7 +73,14 @@ namespace AppModel.Entity
          public virtual Collection<ObjectContent> ObjectContent { get{ return objectcontent; } set{ objectcontent = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ObjectContent"));  } }
          public void AddObjectContent(ObjectContent obj){
             obj.Project = this;
+            obj.Factory = this.Factory;
             ObjectContent.Add(obj);
+         }
+         
+         public void RemoveObjectContent(ObjectContent obj){
+            obj.Project = null;
+            obj.Factory = null;
+            ObjectContent.Remove(obj);
          }
          // 
          protected Collection<SearchParams> searchparams;
@@ -80,6 +89,11 @@ namespace AppModel.Entity
             obj.Project = this;
             SearchParams.Add(obj);
          }
+         
+         public void RemoveSearchParams(SearchParams obj){
+            obj.Project = null;
+            SearchParams.Remove(obj);
+         }
          // 
          protected Collection<ObjectSyntax> objectsyntax;
          public virtual Collection<ObjectSyntax> ObjectSyntax { get{ return objectsyntax; } set{ objectsyntax = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ObjectSyntax"));  } }
@@ -87,12 +101,34 @@ namespace AppModel.Entity
             obj.Project = this;
             ObjectSyntax.Add(obj);
          }
+         
+         public void RemoveObjectSyntax(ObjectSyntax obj){
+            obj.Project = null;
+            ObjectSyntax.Remove(obj);
+         }
          // 
          protected Collection<ParamSyntax> paramsyntax;
          public virtual Collection<ParamSyntax> ParamSyntax { get{ return paramsyntax; } set{ paramsyntax = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ParamSyntax"));  } }
          public void AddParamSyntax(ParamSyntax obj){
             obj.Project = this;
             ParamSyntax.Add(obj);
+         }
+         
+         public void RemoveParamSyntax(ParamSyntax obj){
+            obj.Project = null;
+            ParamSyntax.Remove(obj);
+         }
+         // 
+         protected Collection<DatabaseSource> databasesource;
+         public virtual Collection<DatabaseSource> DatabaseSource { get{ return databasesource; } set{ databasesource = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("DatabaseSource"));  } }
+         public void AddDatabaseSource(DatabaseSource obj){
+            obj.Project = this;
+            DatabaseSource.Add(obj);
+         }
+         
+         public void RemoveDatabaseSource(DatabaseSource obj){
+            obj.Project = null;
+            DatabaseSource.Remove(obj);
          }
          #endregion // Associations
 
@@ -184,6 +220,21 @@ namespace AppModel.Entity
             {
                 this.ParamSyntax = new Collection<ParamSyntax>();
             }
+            // DatabaseSource
+            size = reader.ReadInt32();
+            if (size > 0)
+            {
+                this.DatabaseSource = new Collection<DatabaseSource>();
+                for(int i=0;i<size;i++){
+                    DatabaseSource o = new DatabaseSource();
+                    o.ReadBinary(reader);
+                    this.AddDatabaseSource(o);
+                }
+            }
+            else
+            {
+                this.DatabaseSource = new Collection<DatabaseSource>();
+            }
          }
          
          public void WriteBinary(BinaryWriter writer)
@@ -218,6 +269,13 @@ namespace AppModel.Entity
             if (this.paramsyntax.Count > 0)
             {
                 foreach (var col in this.paramsyntax)
+                    col.WriteBinary(writer);
+            }
+            // DatabaseSource
+            writer.Write(this.databasesource.Count);
+            if (this.databasesource.Count > 0)
+            {
+                foreach (var col in this.databasesource)
                     col.WriteBinary(writer);
             }
        }

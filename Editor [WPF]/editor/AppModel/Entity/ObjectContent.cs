@@ -76,7 +76,14 @@ namespace AppModel.Entity
          public virtual Collection<ParamContent> ParamContent { get{ return paramcontent; } set{ paramcontent = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ParamContent"));  } }
          public void AddParamContent(ParamContent obj){
             obj.ObjectContent = this;
+            obj.Factory = this.Factory;
             ParamContent.Add(obj);
+         }
+         
+         public void RemoveParamContent(ParamContent obj){
+            obj.ObjectContent = null;
+            obj.Factory = null;
+            ParamContent.Remove(obj);
          }
          #endregion // Associations
 

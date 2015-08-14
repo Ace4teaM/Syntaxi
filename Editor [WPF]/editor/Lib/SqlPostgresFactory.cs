@@ -10,7 +10,6 @@ using System.Data.SqlClient;
 using System.Reflection;
 using System.Linq;
 using Npgsql;
-using editor.Lib;
 using System.Data.Common;
 
 namespace Lib

@@ -1,14 +1,11 @@
-﻿<DataGrid x:Class="editor.View.ObjectContentGrid"
+﻿<local:EditableDataGrid x:Class="editor.View.ObjectContentGrid"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Lib"
              mc:Ignorable="d" d:DesignWidth="530" d:DesignHeight="162"
           AutoGenerateColumns="False"
-          BeginningEdit="DataGrid_BeginningEdit"
-          CellEditEnding="DataGrid_CellEditEnding"
-          RowEditEnding="DataGrid_RowEditEnding"
-          PreviewKeyDown="DataGrid_PreviewKeyDown"
           >
     <DataGrid.Columns>
         <DataGridTextColumn Width="120" Header="Type" Binding="{Binding ObjectType}"></DataGridTextColumn>
@@ -16,4 +13,4 @@
         <DataGridTextColumn Width="auto" Header="Position" Binding="{Binding Position}"></DataGridTextColumn>
         <DataGridTextColumn Width="auto" Header="EntityState" Binding="{Binding EntityState}"></DataGridTextColumn>
     </DataGrid.Columns>
-</DataGrid>
+</local:EditableDataGrid>
