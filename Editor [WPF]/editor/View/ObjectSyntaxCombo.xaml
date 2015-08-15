@@ -5,19 +5,19 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
           
-             d:DesignHeight="300" d:DesignWidth="300">
-        <ComboBox.ItemTemplate>
-            <DataTemplate>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="80*"></ColumnDefinition>
-                        <ColumnDefinition Width="20*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Grid.Children>
-                        <TextBlock Grid.Column="0" FontWeight="Bold" Text="{Binding ObjectType}"></TextBlock>
-                        <TextBlock Grid.Column="1">[Langage]</TextBlock>
-                    </Grid.Children>
-                </Grid>
-            </DataTemplate>
-        </ComboBox.ItemTemplate>
+             d:DesignHeight="36" d:DesignWidth="319">
+    <ComboBox.ItemTemplate>
+        <DataTemplate>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80*"></ColumnDefinition>
+                    <ColumnDefinition Width="20*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.Children>
+                    <TextBlock Grid.Column="0" FontWeight="Bold" Text="{Binding ObjectType}"></TextBlock>
+                    <TextBlock Grid.Column="1">[Langage]</TextBlock>
+                </Grid.Children>
+            </Grid>
+        </DataTemplate>
+    </ComboBox.ItemTemplate>
 </ComboBox>

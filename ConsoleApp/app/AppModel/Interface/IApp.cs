@@ -7,7 +7,7 @@
 */
 
 using System;
-using AppModel.Entity;
+using AppModel.Entity;using AppModel.Domain;
 
 namespace AppModel.Interface
 {

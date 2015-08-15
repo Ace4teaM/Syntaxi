@@ -60,7 +60,7 @@ namespace Lib
             if (e.Row.Item is IEntity)
             {
                 IEntity entity = e.Row.Item as IEntity;
-                //initialise la nouvelle insertion
+                //notify
                 ICommand cmd = ViewModelBase.FindParentCommand(this, "EntityChange");
                 if (cmd != null && cmd.CanExecute(entity))
                     cmd.Execute(entity);
@@ -79,7 +79,7 @@ namespace Lib
                         if (entity != null)
                         {
                             entity.EntityState = EntityState.Deleted;
-                            //initialise la nouvelle insertion
+                            //notify
                             ICommand cmd = ViewModelBase.FindParentCommand(this, "EntityChange");
                             if (cmd != null && cmd.CanExecute(entity))
                                 cmd.Execute(entity);
@@ -92,7 +92,7 @@ namespace Lib
                     if (entity != null)
                     {
                         entity.EntityState = EntityState.Deleted;
-                        //initialise la nouvelle insertion
+                        //notify
                         ICommand cmd = ViewModelBase.FindParentCommand(this, "EntityChange");
                         if (cmd != null && cmd.CanExecute(entity))
                             cmd.Execute(entity);

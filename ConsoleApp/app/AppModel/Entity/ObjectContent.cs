@@ -15,6 +15,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Collections.ObjectModel;
 using Lib;
+using AppModel.Domain;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Data.SqlClient;
@@ -76,7 +77,14 @@ namespace AppModel.Entity
          public virtual Collection<ParamContent> ParamContent { get{ return paramcontent; } set{ paramcontent = value; if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ParamContent"));  } }
          public void AddParamContent(ParamContent obj){
             obj.ObjectContent = this;
+            obj.Factory = this.Factory;
             ParamContent.Add(obj);
+         }
+         
+         public void RemoveParamContent(ParamContent obj){
+            obj.ObjectContent = null;
+            obj.Factory = null;
+            ParamContent.Remove(obj);
          }
          #endregion // Associations
 
@@ -168,7 +176,7 @@ namespace AppModel.Entity
        
        public void Load()
        {
-          string query = "SELECT ObjectType , Filename , Position FROM T_OBJECT_CONTENT WHERE Object_Content_Id = "+Factory.ParseType(this.Id)+"";
+          string query = "SELECT ObjectType , Filename , FilePosition FROM T_OBJECT_CONTENT WHERE Object_Content_Id = "+Factory.ParseType(this.Id)+"";
           Factory.QueryObject(query, this);
        }
        
@@ -195,7 +203,7 @@ namespace AppModel.Entity
        public void Insert(string add_params = "", string add_values = "")
        {
           
-          string query = "INSERT INTO T_OBJECT_CONTENT (Object_Content_Id, ObjectType, Filename, Position$add_params$) VALUES( " + Factory.ParseType(this.Id) + ", " + Factory.ParseType(this.ObjectType) + ", " + Factory.ParseType(this.Filename) + ", " + Factory.ParseType(this.Position) + "$add_values$)";
+          string query = "INSERT INTO T_OBJECT_CONTENT (Object_Content_Id, ObjectType, Filename, FilePosition$add_params$) VALUES( " + Factory.ParseType(this.Id) + ", " + Factory.ParseType(this.ObjectType) + ", " + Factory.ParseType(this.Filename) + ", " + Factory.ParseType(this.Position) + "$add_values$)";
        
           // Association Project
           if(Project != null){
@@ -212,7 +220,7 @@ namespace AppModel.Entity
        
        public int Update(string add_params = "")
        {
-             string query = "UPDATE T_OBJECT_CONTENT SET ObjectType = "+Factory.ParseType(this.ObjectType)+", Filename = "+Factory.ParseType(this.Filename)+", Position = "+Factory.ParseType(this.Position)+"$add_params$ WHERE Object_Content_Id = "+Factory.ParseType(this.Id)+"";
+             string query = "UPDATE T_OBJECT_CONTENT SET ObjectType = "+Factory.ParseType(this.ObjectType)+", Filename = "+Factory.ParseType(this.Filename)+", FilePosition = "+Factory.ParseType(this.Position)+"$add_params$ WHERE Object_Content_Id = "+Factory.ParseType(this.Id)+"";
        
           // Association Project
           if(Project != null){
@@ -332,8 +340,8 @@ namespace AppModel.Entity
           if (reader["Filename"] != null)
              Filename = reader["Filename"].ToString();
        
-          if (reader["Position"] != null)
-             Position = int.Parse(reader["Position"].ToString());
+          if (reader["FilePosition"] != null)
+             Position = int.Parse(reader["FilePosition"].ToString());
        }
        #endregion // IEntity
       }

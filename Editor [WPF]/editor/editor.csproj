@@ -58,12 +58,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AppModel\Domain\DatabaseProvider.cs" />
+    <Compile Include="AppModel\Entity\DatabaseSource.cs" />
     <Compile Include="AppModel\Entity\ObjectContent.cs" />
     <Compile Include="AppModel\Entity\ObjectSyntax.cs" />
     <Compile Include="AppModel\Entity\ParamContent.cs" />
     <Compile Include="AppModel\Entity\ParamSyntax.cs" />
     <Compile Include="AppModel\Entity\Project.cs" />
     <Compile Include="AppModel\Entity\SearchParams.cs" />
+    <Compile Include="AppModel\Extend\DatabaseSource.cs" />
     <Compile Include="AppModel\Interface\IApp.cs" />
     <Compile Include="EditorModel\Entity\EditorSampleCode.cs" />
     <Compile Include="EditorModel\Entity\EditorStates.cs" />
@@ -80,6 +83,12 @@
     <Compile Include="ModelView\VueEditor.cs" />
     <Compile Include="View\CodeSampleEdit.xaml.cs">
       <DependentUpon>CodeSampleEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\DatabaseProviderCombo.xaml.cs">
+      <DependentUpon>DatabaseProviderCombo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\DatabaseSourceGrid.xaml.cs">
+      <DependentUpon>DatabaseSourceGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Menu.xaml.cs">
       <DependentUpon>Menu.xaml</DependentUpon>
@@ -124,6 +133,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View\CodeSampleEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\DatabaseProviderCombo.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\DatabaseSourceGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

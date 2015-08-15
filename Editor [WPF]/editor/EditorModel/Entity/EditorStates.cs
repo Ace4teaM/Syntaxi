@@ -33,15 +33,25 @@ namespace EditorModel.Entity
             this.editorsamplecode = new Collection<EditorSampleCode>();
          }
          
-         public EditorStates(String version) : this(){
+         public EditorStates(String version, String selecteddatabasesourceid) : this(){
             this.version = version;
+            this.selecteddatabasesourceid = selecteddatabasesourceid;
          }
          #endregion // Constructor
 
+         #region State
+        private EntityState entityState;
+        public EntityState EntityState { get{ return entityState; } set{ entityState = value; } }
+
+         #endregion // State
+        
          #region Fields
          // 
          protected String version;
          public String Version { get{ return version; } set{ version = value; } }
+         // 
+         protected String selecteddatabasesourceid;
+         public String SelectedDatabaseSourceId { get{ return selecteddatabasesourceid; } set{ selecteddatabasesourceid = value; } }
          #endregion // Fields
 
          #region Associations
@@ -52,6 +62,7 @@ namespace EditorModel.Entity
             obj.EditorStates = this;
             EditorSampleCode.Add(obj);
          }
+         
          public void RemoveEditorSampleCode(EditorSampleCode obj){
             obj.EditorStates = null;
             EditorSampleCode.Remove(obj);
@@ -63,6 +74,7 @@ namespace EditorModel.Entity
          {
              string result = this.GetType().Name+":"+Environment.NewLine+"-----------------------------"+Environment.NewLine;
              result += "Version = " + Version + Environment.NewLine;
+             result += "SelectedDatabaseSourceId = " + SelectedDatabaseSourceId + Environment.NewLine;
              return result;
          }
 
@@ -72,6 +84,7 @@ namespace EditorModel.Entity
           public void GetObjectData(SerializationInfo info, StreamingContext context)
           {
               info.AddValue("Version", Version, typeof(String));
+              info.AddValue("SelectedDatabaseSourceId", SelectedDatabaseSourceId, typeof(String));
           }
          #endregion // ISerializable
     
@@ -82,6 +95,7 @@ namespace EditorModel.Entity
       
             // Properties
             Version =  reader.ReadString();
+            SelectedDatabaseSourceId =  reader.ReadString();
 
             // EditorSampleCode
             size = reader.ReadInt32();
@@ -104,6 +118,7 @@ namespace EditorModel.Entity
          {
             // Properties
             writer.Write(Version);
+            writer.Write(SelectedDatabaseSourceId);
 
             // EditorSampleCode
             writer.Write(this.editorsamplecode.Count);

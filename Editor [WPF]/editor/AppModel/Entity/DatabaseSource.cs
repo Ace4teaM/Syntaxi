@@ -1,5 +1,5 @@
 ﻿/*
-   Extension de la classe d'entité ParamSyntax
+   Extension de la classe d'entité DatabaseSource
 
    !!Attention!!
    Ce code source est généré automatiquement, toutes modifications seront perdues
@@ -26,15 +26,15 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class ParamSyntax : ISerializable , INotifyPropertyChanged    {
+    public partial class DatabaseSource : ISerializable , INotifyPropertyChanged    {
          #region Constructor
-         public ParamSyntax(){
+         public DatabaseSource(){
          }
          
-         public ParamSyntax(String contentregex, String paramregex, String paramtype) : this(){
-            this.contentregex = contentregex;
-            this.paramregex = paramregex;
-            this.paramtype = paramtype;
+         public DatabaseSource(String id, DatabaseProvider? provider, String connectionstring) : this(){
+            this.id = id;
+            this.provider = provider;
+            this.connectionstring = connectionstring;
          }
          #endregion // Constructor
 
@@ -49,15 +49,15 @@ namespace AppModel.Entity
          #endregion // State
         
          #region Fields
+         // Identifiant de la source
+         protected String id;
+         public String Id { get{ return id; } set{ id = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Id")); } }
          // 
-         protected String contentregex;
-         public String ContentRegEx { get{ return contentregex; } set{ contentregex = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ContentRegEx")); } }
+         protected DatabaseProvider? provider;
+         public DatabaseProvider? Provider { get{ return provider; } set{ provider = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Provider")); } }
          // 
-         protected String paramregex;
-         public String ParamRegEx { get{ return paramregex; } set{ paramregex = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ParamRegEx")); } }
-         // 
-         protected String paramtype;
-         public String ParamType { get{ return paramtype; } set{ paramtype = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ParamType")); } }
+         protected String connectionstring;
+         public String ConnectionString { get{ return connectionstring; } set{ connectionstring = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ConnectionString")); } }
          #endregion // Fields
 
          #region Associations
@@ -70,9 +70,9 @@ namespace AppModel.Entity
          public override string ToString()
          {
              string result = this.GetType().Name+":"+Environment.NewLine+"-----------------------------"+Environment.NewLine;
-             result += "ContentRegEx = " + ContentRegEx + Environment.NewLine;
-             result += "ParamRegEx = " + ParamRegEx + Environment.NewLine;
-             result += "ParamType = " + ParamType + Environment.NewLine;
+             result += "Id = " + Id + Environment.NewLine;
+             result += "Provider = " + Provider + Environment.NewLine;
+             result += "ConnectionString = " + ConnectionString + Environment.NewLine;
              return result;
          }
 
@@ -81,9 +81,9 @@ namespace AppModel.Entity
           // Implement this method to serialize data. The method is called on serialization.
           public void GetObjectData(SerializationInfo info, StreamingContext context)
           {
-              info.AddValue("ContentRegEx", ContentRegEx, typeof(String));
-              info.AddValue("ParamRegEx", ParamRegEx, typeof(String));
-              info.AddValue("ParamType", ParamType, typeof(String));
+              info.AddValue("Id", Id, typeof(String));
+              info.AddValue("Provider", Provider, typeof(int));
+              info.AddValue("ConnectionString", ConnectionString, typeof(String));
           }
          #endregion // ISerializable
     
@@ -93,17 +93,17 @@ namespace AppModel.Entity
             int size;
       
             // Properties
-            ContentRegEx =  reader.ReadString();
-            ParamRegEx =  reader.ReadString();
-            ParamType =  reader.ReadString();
+            Id =  reader.ReadString();
+            Provider = (DatabaseProvider) reader.ReadInt32();
+            ConnectionString =  reader.ReadString();
          }
          
          public void WriteBinary(BinaryWriter writer)
          {
             // Properties
-            writer.Write(ContentRegEx);
-            writer.Write(ParamRegEx);
-            writer.Write(ParamType);
+            writer.Write(Id);
+            writer.Write((Int32)Provider.Value);
+            writer.Write(ConnectionString);
        }
        #endregion // Serialization
 

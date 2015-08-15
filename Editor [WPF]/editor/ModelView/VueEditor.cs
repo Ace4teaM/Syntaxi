@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using AppModel.Entity;
+using AppModel.Domain;
 using EditorModel.Entity;
 using Lib;
 
@@ -177,6 +178,45 @@ namespace editor.ModelView
                 if (this.exportToDatabase == null)
                     this.exportToDatabase = new DelegateCommand(() =>
                     {
+                        // Aucune source de données ?
+                        if(app.Project.DatabaseSource.Count == 0)
+                        {
+                            if(MessageBox.Show("Aucune source de données n'est configurée. Atteindre la page de configuration ?","Configurer une source de données",MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                            return;
+                        }
+
+                        // Aucune source de données par défaut
+                        DatabaseSource source = app.Project.DatabaseSource.Where(p => (p.Id == app.States.SelectedDatabaseSourceId)).SingleOrDefault();
+                        if (app.States.SelectedDatabaseSourceId == null || source == null)
+                        {
+                            MessageBox.Show("Veuillez sélectionner une source de données.", "Source de données");
+                            // a implementer avec EditWnd...
+                            return;
+                        }
+
+                        // Initialise la factory
+                        IEntityFactory factory;
+                        switch (source.Provider)
+                        {
+                            case DatabaseProvider.ODBC:
+                                factory = new SqlOdbcFactory();
+                                ((SqlOdbcFactory)factory).SetConnection(source.ConnectionString);
+                                break;
+                            case DatabaseProvider.Postgres:
+                                factory = new SqlPostgresFactory();
+                                ((SqlPostgresFactory)factory).SetConnection(source.ConnectionString);
+                                break;
+                            case DatabaseProvider.SqlServer:
+                                factory = new SqlServerFactory();
+                                ((SqlServerFactory)factory).SetConnection(source.ConnectionString);
+                                break;
+                            default:
+                                MessageBox.Show("La source de données ne correspond pas à une source valide.", "Source de données");
+                                return;
+                        }
+
+                        app.Export(factory);
+
                         /*SqlServerFactory factory = new SqlServerFactory();
                         factory.SetConnection(@"Server=THOMAS-PC\SQLSERVEREXPRESS;Database=syntaxi;Trusted_Connection=True;");
                         //factory.SetConnection(@"Server=BDE-PORT\SQLSERVER2012;Database=syntaxi;Trusted_Connection=True;");
@@ -184,11 +224,11 @@ namespace editor.ModelView
 
                         SqlOdbcFactory factory = new SqlOdbcFactory();
                         factory.SetConnection(@"DSN=Syntaxi;");
-                        app.Export(factory);*/
+                        app.Export(factory);
 
                         SqlPostgresFactory factory = new SqlPostgresFactory();
                         factory.SetConnection(@"server=217.70.189.220;Port=5432;Database=syntaxi;User Id=****;Password=****;POOLING=False;");
-                        app.Export(factory);
+                        */
                     });
 
                 return this.exportToDatabase;
@@ -215,7 +255,7 @@ namespace editor.ModelView
             }
         }
         #endregion
-        #region EntityAdded
+        #region EntityChange
         private ICommand entityChange;
         public ICommand EntityChange
         {
@@ -246,6 +286,9 @@ namespace editor.ModelView
                             {
                                 DatabaseSource e = entity as DatabaseSource;
                                 app.Project.AddDatabaseSource(e);
+
+                                if (app.States.SelectedDatabaseSourceId == null)
+                                    app.States.SelectedDatabaseSourceId = app.Project.DatabaseSource.First().Id;
                             }
                         }
 

@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppModel\Domain\DatabaseProvider.cs" />
+    <Compile Include="AppModel\Entity\DatabaseSource.cs" />
     <Compile Include="AppModel\Entity\ObjectContent.cs" />
     <Compile Include="AppModel\Entity\ObjectSyntax.cs" />
     <Compile Include="AppModel\Entity\ParamContent.cs" />

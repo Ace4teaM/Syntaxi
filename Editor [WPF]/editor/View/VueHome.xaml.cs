@@ -93,7 +93,7 @@ namespace editor.View
                     break;
                 case "empty":
                     app.Project = new Project(this.NameTb.Text, this.VersionTb.Text);
-                    app.States = new EditorStates(app.Version);
+                    app.States = new EditorStates(app.Version,null);
                     break;
             }
 

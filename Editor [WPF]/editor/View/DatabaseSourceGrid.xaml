@@ -1,0 +1,38 @@
+﻿<local:EditableDataGrid x:Class="editor.View.DatabaseSourceGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Lib"
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
+             xmlns:domain="clr-namespace:AppModel.Domain"
+             xmlns:v="clr-namespace:AppModel.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             AutoGenerateColumns="False">
+    <DataGrid.Resources>
+        <domain:DatabaseProviderConverter x:Key="databaseProviderConverter" />
+    </DataGrid.Resources>
+    <DataGrid.Columns>
+        <DataGridTextColumn Width="auto" Header="Défaut" Binding="{Binding IsDefault}"></DataGridTextColumn>
+        <DataGridTextColumn Width="auto" Header="ID" Binding="{Binding Id}"></DataGridTextColumn>
+        <DataGridTemplateColumn Width="100" Header="Fournisseur">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Provider}"></TextBlock>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+            <DataGridTemplateColumn.CellEditingTemplate>
+                <DataTemplate>
+                    <v:DatabaseProviderCombo SelectedValue="{Binding Provider, Converter={StaticResource databaseProviderConverter}}"></v:DatabaseProviderCombo>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellEditingTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTextColumn Width="*" Header="Chaine de connexion" Binding="{Binding ConnectionString}"></DataGridTextColumn>
+    </DataGrid.Columns>
+    <DataGrid.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Définir par défaut" Click="MenuItem_Click"></MenuItem>
+        </ContextMenu>
+    </DataGrid.ContextMenu>
+</local:EditableDataGrid>

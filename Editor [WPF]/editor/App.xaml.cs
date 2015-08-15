@@ -56,7 +56,7 @@ namespace editor
         public EditorStates MakeCppStates()
         {
             // Initialise
-            EditorStates states = new EditorStates(this.Version);
+            EditorStates states = new EditorStates(this.Version,null);
 
             // function example
             states.AddEditorSampleCode(new EditorSampleCode(
@@ -233,6 +233,8 @@ typedef struct _NP_HANDLE_HEADER{
                 file.Close();
                 this.States = states;
             }
+            else
+                this.States = new EditorStates(this.Version,String.Empty);
 
             return true;
         }

@@ -15,6 +15,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Collections.ObjectModel;
 using Lib;
+using AppModel.Domain;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Data.SqlClient;

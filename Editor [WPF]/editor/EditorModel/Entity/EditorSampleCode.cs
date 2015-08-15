@@ -36,6 +36,12 @@ namespace EditorModel.Entity
          }
          #endregion // Constructor
 
+         #region State
+        private EntityState entityState;
+        public EntityState EntityState { get{ return entityState; } set{ entityState = value; } }
+
+         #endregion // State
+        
          #region Fields
          // 
          protected String text;

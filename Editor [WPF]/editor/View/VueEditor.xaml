@@ -33,8 +33,23 @@
                     <TextBlock FontSize="8" Text="{Binding ProjectPath}"></TextBlock>
                 </StackPanel>
             </WrapPanel>
-            <TabControl Grid.Row="1" Margin="7" TabStripPlacement="Top">
-                <TabItem Name="objectSyntax" Header="Objets">
+        <TabControl Grid.Row="1" Margin="7" TabStripPlacement="Top">
+            <TabItem Name="Data" Header="Données">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="100*"></RowDefinition>
+                            <RowDefinition Height="100*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.Children>
+                            <v:ObjectContentGrid Grid.Row="0" Margin="10" ItemsSource="{Binding ObjectContentList}" IsSynchronizedWithCurrentItem="True" SelectedItem="{Binding CurObjectContent}" Grid.ColumnSpan="4"></v:ObjectContentGrid>
+                            <v:ParamContentGrid Grid.Row="1" Margin="10" ItemsSource="{Binding CurParamContentList}" Grid.ColumnSpan="4"></v:ParamContentGrid>
+                        </Grid.Children>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+            
+            <TabItem Name="objectSyntax" Header="Objets">
                     <TabItem.Content>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -82,20 +97,18 @@
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="Data" Header="Données">
-                    <TabItem.Content>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="100*"></RowDefinition>
-                                <RowDefinition Height="100*"></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Grid.Children>
-                                <v:ObjectContentGrid Grid.Row="0" Margin="10" ItemsSource="{Binding ObjectContentList}" IsSynchronizedWithCurrentItem="True" SelectedItem="{Binding CurObjectContent}" Grid.ColumnSpan="4"></v:ObjectContentGrid>
-                                <v:ParamContentGrid Grid.Row="1" Margin="10" ItemsSource="{Binding CurParamContentList}" Grid.ColumnSpan="4"></v:ParamContentGrid>
-                            </Grid.Children>
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
-            </TabControl>
+            <TabItem Name="Options" Header="Options">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="100*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.Children>
+                            <v:DatabaseSourceGrid Grid.Row="0" Margin="10" ItemsSource="{Binding DatabaseSourceList}" IsSynchronizedWithCurrentItem="True" SelectedItem="{Binding CurDatabaseSource}" CanUserAddRows="True" CanUserDeleteRows="True"></v:DatabaseSourceGrid>
+                        </Grid.Children>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+        </TabControl>
         </Grid.Children>
 </Grid>
