@@ -1,5 +1,10 @@
 OOM: ajouter la méthode InsertOrUpdate
 OOM: Exporter en XML
 OOM: Copier & Coller & Dupliquer
-OOM: Gestion des etats sur les entités
 Utiliser des procedures stockées a travert ODBC pour interfacer avec la BDD
+web ui: intégrer une réécriture d'url du type
+	/lib/version/objecttype/[objet reference,...]
+	ex : /webframework/1.0/function/findstr
+	ex : /webframework/1.0/method/CObject/ToString
+	ex : /webframework/1.0/member/CObject/ref
+WPF: implmenter le controle des valeurs sur les grid editables
