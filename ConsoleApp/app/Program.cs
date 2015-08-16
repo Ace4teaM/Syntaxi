@@ -42,6 +42,8 @@ namespace app
                 public string action = null;
                 // Fichier du projet en entrée
                 public string inputProjectFile = null;
+                // Dossier des objets de syntaxes
+                public string syntaxDir = null;
 
                 /// <summary>
                 /// Lit les argument depuis la ligne de commande
@@ -83,6 +85,9 @@ namespace app
                                     break;
                                 case 'r':
                                     recursive = true;
+                                    break;
+                                case 's':
+                                    syntaxDir = args[++c];
                                     break;
                                 default:
                                     c++;
@@ -127,13 +132,15 @@ namespace app
                 {
                     // Réinitialise le projet
                     case "init":
-                        //Action_Init(options);
                         project = new Project(options.title,options.version);
                         break;
                     // Réinitialise le projet
                     case "add_cpp_syntax":
-                        //Action_Init(options);
                         project = AddCppSyntax();
+                        break;
+                    // Réinitialise le projet
+                    case "import_syntax":
+                        ImportSyntaxDirectory(options.syntaxDir);
                         break;
                     // Ajoute des paramétres de recherche
                     case "add":
@@ -157,7 +164,7 @@ namespace app
                 }
 
                 // Sauvegarde le projet
-                SaveProject(@".\NoyauPortable.prj");
+                SaveProject(options.inputProjectFile);
 
                 return 0;
             }
@@ -381,6 +388,126 @@ namespace app
                     objList.Add(o);
                 }
             }
+
+            /// <summary>
+            /// Importe des syntaxes d'objets depuis un dossier
+            /// </summary>
+            /// <param name="path"></param>
+            void ImportSyntaxDirectory(string path)
+            {
+                // Scan les objets
+                if (Directory.Exists(path))
+                {
+                    string[] groupsPaths = Directory.GetFiles(path, "*");
+                    foreach (var syntaxFile in groupsPaths)
+                    {
+                        using (StreamReader streamReader = new StreamReader(syntaxFile, Encoding.UTF8))
+                        {
+                            try
+                            {
+                                ObjectSyntax syntax = new ObjectSyntax();
+                                syntax.ObjectType = Path.GetFileNameWithoutExtension(syntaxFile);
+                                syntax.ContentRegEx = streamReader.ReadLine();
+                                syntax.ParamRegEx = streamReader.ReadLine();
+                                syntax.ObjectDesc = String.Empty;
+                                project.AddObjectSyntax(syntax);
+                                Console.WriteLine("Add syntax object " + syntax.ObjectType);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("Ignore object file '" + syntaxFile + "'. " + ex.Message);
+                            }
+                            streamReader.Close();
+                        }
+                    }
+                }
+
+                // Scan les groupes
+                if (Directory.Exists(path + @"\groups"))
+                {
+                    string[] groupsPaths = Directory.GetFiles(path + @"\groups", "*");
+                    foreach (var syntaxFile in groupsPaths)
+                    {
+                        using (StreamReader streamReader = new StreamReader(syntaxFile, Encoding.UTF8))
+                        {
+                            try
+                            {
+                                ParamSyntax syntax = new ParamSyntax();
+                                syntax.ParamType = Path.GetFileNameWithoutExtension(syntaxFile);
+                                syntax.ContentRegEx = streamReader.ReadLine();
+                                syntax.ParamRegEx = streamReader.ReadLine();
+                                project.AddParamSyntax(syntax);
+                                Console.WriteLine("Add syntax param " + syntax.ParamType);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("Ignore param file '" + syntaxFile + "'. " + ex.Message);
+                            }
+                            streamReader.Close();
+                        }
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Exporte les objets dans un document XML
+            /// </summary>
+            /// <param name="fileName">Nom du fichier XML</param>
+            /// <param name="title">Titre de la librairie</param>
+            /// <param name="version">Version de la librairie</param>
+            /// <param name="objets">Objets à exporter</param>
+            /*static void ExportToXML(string fileName, string title, string version, List<Object> objets)
+            {
+                // initialise le document
+                XmlDocument doc = new XmlDocument();
+                try
+                {
+                    doc.Load(fileName);
+                }
+                catch (Exception)
+                {
+                    XmlNode docNode = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
+                    doc.AppendChild(docNode);
+
+                    XmlNode rootNode = doc.CreateElement("root");
+                    doc.AppendChild(rootNode);
+                }
+
+                // obtient le noeud de la librairie existante
+                XmlNode libNode = doc.DocumentElement.SelectSingleNode(String.Format("lib[@title='{0}' and @version='{1}']", title, version));
+                if (libNode == null)
+                {
+                    XmlNode rootNode = doc.CreateElement("root");
+                    doc.AppendChild(rootNode);
+
+                    libNode = doc.CreateElement("lib");
+                    rootNode.AppendChild(libNode);
+                    AppendAttribute(doc, libNode, "title", title);
+                    AppendAttribute(doc, libNode, "version", version);
+                }
+
+                // ajoute les objets
+                foreach (var o in objets)
+                {
+                    XmlNode objNode = doc.CreateElement("object");
+                    AppendAttribute(doc, objNode, "filename", o.fileName);
+                    AppendAttribute(doc, objNode, "type", o.type);
+                    AppendAttribute(doc, objNode, "position", o.position.ToString());
+                    AppendAttribute(doc, objNode, "id", o.id);
+                    //
+                    foreach (var p in o.objParams)
+                    {
+                        XmlNode paramNode = doc.CreateElement("param");
+                        AppendAttribute(doc, paramNode, "name", p.name);
+                        paramNode.AppendChild(doc.CreateTextNode(p.value));
+                        objNode.AppendChild(paramNode);
+                    }
+                    libNode.AppendChild(objNode);
+                }
+
+                doc.Save(fileName);
+            }*/
+
         }
     }
 }

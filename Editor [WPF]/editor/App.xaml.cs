@@ -256,6 +256,8 @@ typedef struct _NP_HANDLE_HEADER{
             // Liste les fichiers
             if (inputDir.StartsWith(@".\"))
                 inputDir = this.ProjectFilePath + @"\" + inputDir.Substring(2);
+            else if (inputDir.StartsWith(@".."))
+                inputDir = this.ProjectFilePath + @"\" + inputDir;
             string[] srcPaths = Directory.GetFiles(inputDir, inputFilter, (bRecursive == true ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly));
 
             // Scan les fichiers
@@ -347,6 +349,66 @@ typedef struct _NP_HANDLE_HEADER{
 
                 // Ajoute à la liste des objets
                 objList.Add(o);
+            }
+        }
+
+        /// <summary>
+        /// Importe des syntaxes d'objets depuis un dossier
+        /// </summary>
+        /// <param name="path"></param>
+        public void ImportSyntaxDirectory(string path)
+        {
+            // Scan les objets
+            if (Directory.Exists(path))
+            {
+                string[] groupsPaths = Directory.GetFiles(path, "*");
+                foreach (var syntaxFile in groupsPaths)
+                {
+                    using (StreamReader streamReader = new StreamReader(syntaxFile, Encoding.UTF8))
+                    {
+                        try
+                        {
+                            ObjectSyntax syntax = new ObjectSyntax();
+                            syntax.ObjectType = Path.GetFileNameWithoutExtension(syntaxFile);
+                            syntax.ContentRegEx = streamReader.ReadLine();
+                            syntax.ParamRegEx = streamReader.ReadLine();
+                            syntax.ObjectDesc = String.Empty;
+                            project.AddObjectSyntax(syntax);
+                            Console.WriteLine("Add syntax object " + syntax.ObjectType);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Ignore object file '" + syntaxFile + "'. " + ex.Message);
+                        }
+                        streamReader.Close();
+                    }
+                }
+            }
+
+            // Scan les groupes
+            if (Directory.Exists(path + @"\groups"))
+            {
+                string[] groupsPaths = Directory.GetFiles(path + @"\groups", "*");
+                foreach (var syntaxFile in groupsPaths)
+                {
+                    using (StreamReader streamReader = new StreamReader(syntaxFile, Encoding.UTF8))
+                    {
+                        try
+                        {
+                            ParamSyntax syntax = new ParamSyntax();
+                            syntax.ParamType = Path.GetFileNameWithoutExtension(syntaxFile);
+                            syntax.ContentRegEx = streamReader.ReadLine();
+                            syntax.ParamRegEx = streamReader.ReadLine();
+                            project.AddParamSyntax(syntax);
+                            Console.WriteLine("Add syntax param " + syntax.ParamType);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Ignore param file '" + syntaxFile + "'. " + ex.Message);
+                        }
+                        streamReader.Close();
+                    }
+                }
             }
         }
 

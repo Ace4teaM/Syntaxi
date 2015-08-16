@@ -169,6 +169,28 @@ namespace editor.ModelView
             }
         }
         #endregion
+        #region ImportSyntaxDirectory
+        private ICommand importSyntaxDirectory;
+        public ICommand ImportSyntaxDirectory
+        {
+            get
+            {
+                if (this.importSyntaxDirectory == null)
+                    this.importSyntaxDirectory = new DelegateCommand(() =>
+                    {
+                        WPFFolderBrowser.WPFFolderBrowserDialog dialog = new WPFFolderBrowser.WPFFolderBrowserDialog();
+                        dialog.InitialDirectory = app.ProjectFilePath;
+                        if (dialog.ShowDialog() == true)
+                        {
+                            app.ImportSyntaxDirectory(dialog.FileName);
+                            OnPropertyChanged("ObjectSyntaxList");
+                        }
+                    });
+
+                return this.importSyntaxDirectory;
+            }
+        }
+        #endregion
         #region ExportToDatabase
         private ICommand exportToDatabase;
         public ICommand ExportToDatabase
