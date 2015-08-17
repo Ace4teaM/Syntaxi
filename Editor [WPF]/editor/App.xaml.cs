@@ -56,7 +56,7 @@ namespace editor
         public EditorStates MakeCppStates()
         {
             // Initialise
-            EditorStates states = new EditorStates(this.Version,null);
+            EditorStates states = new EditorStates(this.Version, String.Empty);
 
             // function example
             states.AddEditorSampleCode(new EditorSampleCode(
