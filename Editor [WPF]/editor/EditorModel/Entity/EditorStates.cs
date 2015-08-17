@@ -31,6 +31,10 @@ namespace EditorModel.Entity
 
             // EditorSampleCode
             this.editorsamplecode = new Collection<EditorSampleCode>();
+            // Version
+            this.version = String.Empty;
+            // SelectedDatabaseSourceId
+            this.selecteddatabasesourceid = String.Empty;
          }
          
          public EditorStates(String version, String selecteddatabasesourceid) : this(){
@@ -91,26 +95,26 @@ namespace EditorModel.Entity
          #region Serialization
          public void ReadBinary(BinaryReader reader)
          {
-            int size;
-      
             // Properties
             Version =  reader.ReadString();
             SelectedDatabaseSourceId =  reader.ReadString();
 
             // EditorSampleCode
-            size = reader.ReadInt32();
-            if (size > 0)
             {
-                this.EditorSampleCode = new Collection<EditorSampleCode>();
-                for(int i=0;i<size;i++){
-                    EditorSampleCode o = new EditorSampleCode();
-                    o.ReadBinary(reader);
-                    this.AddEditorSampleCode(o);
-                }
-            }
-            else
-            {
-                this.EditorSampleCode = new Collection<EditorSampleCode>();
+               int size = reader.ReadInt32();
+               if (size > 0)
+               {
+                   this.EditorSampleCode = new Collection<EditorSampleCode>();
+                   for(int i=0;i<size;i++){
+                       EditorSampleCode o = new EditorSampleCode();
+                       o.ReadBinary(reader);
+                       this.AddEditorSampleCode(o);
+                   }
+               }
+               else
+               {
+                   this.EditorSampleCode = new Collection<EditorSampleCode>();
+               }
             }
          }
          

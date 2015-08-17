@@ -30,6 +30,12 @@ namespace AppModel.Entity
     public partial class ParamContent : ISerializable , INotifyPropertyChanged , IEntity    {
          #region Constructor
          public ParamContent(){
+            // Id
+            this.id = String.Empty;
+            // ParamName
+            this.paramname = String.Empty;
+            // ParamValue
+            this.paramvalue = String.Empty;
          }
          
          public ParamContent(String id, String paramname, String paramvalue) : this(){
@@ -91,8 +97,6 @@ namespace AppModel.Entity
          #region Serialization
          public void ReadBinary(BinaryReader reader)
          {
-            int size;
-      
             // Properties
             Id =  reader.ReadString();
             ParamName =  reader.ReadString();

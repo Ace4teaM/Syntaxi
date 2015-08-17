@@ -41,6 +41,10 @@ namespace AppModel.Entity
             this.paramsyntax = new Collection<ParamSyntax>();
             // DatabaseSource
             this.databasesource = new Collection<DatabaseSource>();
+            // Name
+            this.name = String.Empty;
+            // Version
+            this.version = String.Empty;
          }
          
          public Project(String name, String version) : this(){
@@ -155,86 +159,94 @@ namespace AppModel.Entity
          #region Serialization
          public void ReadBinary(BinaryReader reader)
          {
-            int size;
-      
             // Properties
             Name =  reader.ReadString();
             Version =  reader.ReadString();
 
             // ObjectContent
-            size = reader.ReadInt32();
-            if (size > 0)
             {
-                this.ObjectContent = new Collection<ObjectContent>();
-                for(int i=0;i<size;i++){
-                    ObjectContent o = new ObjectContent();
-                    o.ReadBinary(reader);
-                    this.AddObjectContent(o);
-                }
-            }
-            else
-            {
-                this.ObjectContent = new Collection<ObjectContent>();
+               int size = reader.ReadInt32();
+               if (size > 0)
+               {
+                   this.ObjectContent = new Collection<ObjectContent>();
+                   for(int i=0;i<size;i++){
+                       ObjectContent o = new ObjectContent();
+                       o.ReadBinary(reader);
+                       this.AddObjectContent(o);
+                   }
+               }
+               else
+               {
+                   this.ObjectContent = new Collection<ObjectContent>();
+               }
             }
             // SearchParams
-            size = reader.ReadInt32();
-            if (size > 0)
             {
-                this.SearchParams = new Collection<SearchParams>();
-                for(int i=0;i<size;i++){
-                    SearchParams o = new SearchParams();
-                    o.ReadBinary(reader);
-                    this.AddSearchParams(o);
-                }
-            }
-            else
-            {
-                this.SearchParams = new Collection<SearchParams>();
+               int size = reader.ReadInt32();
+               if (size > 0)
+               {
+                   this.SearchParams = new Collection<SearchParams>();
+                   for(int i=0;i<size;i++){
+                       SearchParams o = new SearchParams();
+                       o.ReadBinary(reader);
+                       this.AddSearchParams(o);
+                   }
+               }
+               else
+               {
+                   this.SearchParams = new Collection<SearchParams>();
+               }
             }
             // ObjectSyntax
-            size = reader.ReadInt32();
-            if (size > 0)
             {
-                this.ObjectSyntax = new Collection<ObjectSyntax>();
-                for(int i=0;i<size;i++){
-                    ObjectSyntax o = new ObjectSyntax();
-                    o.ReadBinary(reader);
-                    this.AddObjectSyntax(o);
-                }
-            }
-            else
-            {
-                this.ObjectSyntax = new Collection<ObjectSyntax>();
+               int size = reader.ReadInt32();
+               if (size > 0)
+               {
+                   this.ObjectSyntax = new Collection<ObjectSyntax>();
+                   for(int i=0;i<size;i++){
+                       ObjectSyntax o = new ObjectSyntax();
+                       o.ReadBinary(reader);
+                       this.AddObjectSyntax(o);
+                   }
+               }
+               else
+               {
+                   this.ObjectSyntax = new Collection<ObjectSyntax>();
+               }
             }
             // ParamSyntax
-            size = reader.ReadInt32();
-            if (size > 0)
             {
-                this.ParamSyntax = new Collection<ParamSyntax>();
-                for(int i=0;i<size;i++){
-                    ParamSyntax o = new ParamSyntax();
-                    o.ReadBinary(reader);
-                    this.AddParamSyntax(o);
-                }
-            }
-            else
-            {
-                this.ParamSyntax = new Collection<ParamSyntax>();
+               int size = reader.ReadInt32();
+               if (size > 0)
+               {
+                   this.ParamSyntax = new Collection<ParamSyntax>();
+                   for(int i=0;i<size;i++){
+                       ParamSyntax o = new ParamSyntax();
+                       o.ReadBinary(reader);
+                       this.AddParamSyntax(o);
+                   }
+               }
+               else
+               {
+                   this.ParamSyntax = new Collection<ParamSyntax>();
+               }
             }
             // DatabaseSource
-            size = reader.ReadInt32();
-            if (size > 0)
             {
-                this.DatabaseSource = new Collection<DatabaseSource>();
-                for(int i=0;i<size;i++){
-                    DatabaseSource o = new DatabaseSource();
-                    o.ReadBinary(reader);
-                    this.AddDatabaseSource(o);
-                }
-            }
-            else
-            {
-                this.DatabaseSource = new Collection<DatabaseSource>();
+               int size = reader.ReadInt32();
+               if (size > 0)
+               {
+                   this.DatabaseSource = new Collection<DatabaseSource>();
+                   for(int i=0;i<size;i++){
+                       DatabaseSource o = new DatabaseSource();
+                       o.ReadBinary(reader);
+                       this.AddDatabaseSource(o);
+                   }
+               }
+               else
+               {
+                   this.DatabaseSource = new Collection<DatabaseSource>();
+               }
             }
          }
          

@@ -29,6 +29,12 @@ namespace AppModel.Entity
     public partial class ParamSyntax : ISerializable , INotifyPropertyChanged    {
          #region Constructor
          public ParamSyntax(){
+            // ContentRegEx
+            this.contentregex = String.Empty;
+            // ParamRegEx
+            this.paramregex = String.Empty;
+            // ParamType
+            this.paramtype = String.Empty;
          }
          
          public ParamSyntax(String contentregex, String paramregex, String paramtype) : this(){
@@ -90,8 +96,6 @@ namespace AppModel.Entity
          #region Serialization
          public void ReadBinary(BinaryReader reader)
          {
-            int size;
-      
             // Properties
             ContentRegEx =  reader.ReadString();
             ParamRegEx =  reader.ReadString();

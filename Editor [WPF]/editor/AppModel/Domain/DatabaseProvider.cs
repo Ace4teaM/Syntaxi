@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Globalization;
 using System.Windows.Data;
+
 namespace AppModel.Domain
 {
     public enum DatabaseProvider : int

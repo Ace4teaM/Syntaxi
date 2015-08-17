@@ -29,6 +29,12 @@ namespace AppModel.Entity
     public partial class DatabaseSource : ISerializable , INotifyPropertyChanged    {
          #region Constructor
          public DatabaseSource(){
+            // Id
+            this.id = String.Empty;
+            // Provider
+            this.provider = new Int32();
+            // ConnectionString
+            this.connectionstring = String.Empty;
          }
          
          public DatabaseSource(String id, DatabaseProvider? provider, String connectionstring) : this(){
@@ -90,8 +96,6 @@ namespace AppModel.Entity
          #region Serialization
          public void ReadBinary(BinaryReader reader)
          {
-            int size;
-      
             // Properties
             Id =  reader.ReadString();
             Provider = (DatabaseProvider) reader.ReadInt32();

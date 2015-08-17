@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace AppModel.View
 {
     /// <summary>
-    /// Logique d'interaction pour DatabaseProvider.xaml
+    /// Logique d'interaction pour DatabaseProviderCombo.xaml
     /// </summary>
     public partial class DatabaseProviderCombo : ComboBox
     {

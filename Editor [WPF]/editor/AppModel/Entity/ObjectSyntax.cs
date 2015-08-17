@@ -29,6 +29,14 @@ namespace AppModel.Entity
     public partial class ObjectSyntax : ISerializable , INotifyPropertyChanged    {
          #region Constructor
          public ObjectSyntax(){
+            // ContentRegEx
+            this.contentregex = String.Empty;
+            // ParamRegEx
+            this.paramregex = String.Empty;
+            // ObjectType
+            this.objecttype = String.Empty;
+            // ObjectDesc
+            this.objectdesc = String.Empty;
          }
          
          public ObjectSyntax(String contentregex, String paramregex, String objecttype, String objectdesc) : this(){
@@ -96,8 +104,6 @@ namespace AppModel.Entity
          #region Serialization
          public void ReadBinary(BinaryReader reader)
          {
-            int size;
-      
             // Properties
             ContentRegEx =  reader.ReadString();
             ParamRegEx =  reader.ReadString();

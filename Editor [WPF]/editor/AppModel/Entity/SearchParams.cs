@@ -29,6 +29,12 @@ namespace AppModel.Entity
     public partial class SearchParams : ISerializable , INotifyPropertyChanged    {
          #region Constructor
          public SearchParams(){
+            // InputDir
+            this.inputdir = String.Empty;
+            // InputFilter
+            this.inputfilter = String.Empty;
+            // Recursive
+            this.recursive = new Boolean();
          }
          
          public SearchParams(String inputdir, String inputfilter, bool recursive) : this(){
@@ -90,8 +96,6 @@ namespace AppModel.Entity
          #region Serialization
          public void ReadBinary(BinaryReader reader)
          {
-            int size;
-      
             // Properties
             InputDir =  reader.ReadString();
             InputFilter =  reader.ReadString();

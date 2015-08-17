@@ -33,6 +33,14 @@ namespace AppModel.Entity
 
             // ParamContent
             this.paramcontent = new Collection<ParamContent>();
+            // Id
+            this.id = String.Empty;
+            // ObjectType
+            this.objecttype = String.Empty;
+            // Filename
+            this.filename = String.Empty;
+            // Position
+            this.position = new Int32();
          }
          
          public ObjectContent(String id, String objecttype, String filename, int position) : this(){
@@ -114,8 +122,6 @@ namespace AppModel.Entity
          #region Serialization
          public void ReadBinary(BinaryReader reader)
          {
-            int size;
-      
             // Properties
             Id =  reader.ReadString();
             ObjectType =  reader.ReadString();
@@ -123,19 +129,21 @@ namespace AppModel.Entity
             Position =  reader.ReadInt32();
 
             // ParamContent
-            size = reader.ReadInt32();
-            if (size > 0)
             {
-                this.ParamContent = new Collection<ParamContent>();
-                for(int i=0;i<size;i++){
-                    ParamContent o = new ParamContent();
-                    o.ReadBinary(reader);
-                    this.AddParamContent(o);
-                }
-            }
-            else
-            {
-                this.ParamContent = new Collection<ParamContent>();
+               int size = reader.ReadInt32();
+               if (size > 0)
+               {
+                   this.ParamContent = new Collection<ParamContent>();
+                   for(int i=0;i<size;i++){
+                       ParamContent o = new ParamContent();
+                       o.ReadBinary(reader);
+                       this.AddParamContent(o);
+                   }
+               }
+               else
+               {
+                   this.ParamContent = new Collection<ParamContent>();
+               }
             }
          }
          

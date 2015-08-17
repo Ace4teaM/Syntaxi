@@ -28,6 +28,10 @@ namespace EditorModel.Entity
     public partial class EditorSampleCode : ISerializable    {
          #region Constructor
          public EditorSampleCode(){
+            // Text
+            this.text = String.Empty;
+            // ObjectSyntaxType
+            this.objectsyntaxtype = String.Empty;
          }
          
          public EditorSampleCode(String text, String objectsyntaxtype) : this(){
@@ -79,8 +83,6 @@ namespace EditorModel.Entity
          #region Serialization
          public void ReadBinary(BinaryReader reader)
          {
-            int size;
-      
             // Properties
             Text =  reader.ReadString();
             ObjectSyntaxType =  reader.ReadString();
