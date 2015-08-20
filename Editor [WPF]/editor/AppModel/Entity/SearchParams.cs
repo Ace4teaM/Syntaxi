@@ -18,6 +18,7 @@ using Lib;
 using AppModel.Domain;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Xml;
 
 namespace AppModel.Entity
 {
@@ -26,7 +27,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class SearchParams : ISerializable , INotifyPropertyChanged    {
+    public partial class SearchParams : ISerializable, IEntitySerializable , INotifyPropertyChanged    {
          #region Constructor
          public SearchParams(){
             // InputDir
@@ -109,6 +110,108 @@ namespace AppModel.Entity
             writer.Write(InputFilter);
             writer.Write(Recursive);
        }
+
+
+        /// <summary>
+        /// Convertie l'instance en élément XML
+        /// </summary>
+        /// <param name="parent">Élément parent reçevant le nouveau noeud</param>
+        /// <returns>Text XML du document</returns>
+        public string ToXml(XmlElement parent)
+        {
+            XmlElement curMember = null;
+            XmlDocument doc = null;
+            // Element parent ?
+            if (parent != null)
+            {
+                doc = parent.OwnerDocument;
+            }
+            else
+            {
+                doc = new XmlDocument();
+                parent = doc.CreateElement("root");
+                doc.AppendChild(parent);
+            }
+    
+            //Ecrit au format XML
+            XmlElement cur = doc.CreateElement("SearchParams");
+            parent.AppendChild(cur);
+                
+            //
+            // Fields
+            //
+            
+       		// Assigne le membre InputDir
+            curMember = doc.CreateElement("InputDir");
+            curMember.AppendChild(doc.CreateTextNode(inputdir.ToString()));
+            cur.AppendChild(curMember);
+
+       		// Assigne le membre InputFilter
+            curMember = doc.CreateElement("InputFilter");
+            curMember.AppendChild(doc.CreateTextNode(inputfilter.ToString()));
+            cur.AppendChild(curMember);
+
+       		// Assigne le membre Recursive
+            curMember = doc.CreateElement("Recursive");
+            curMember.AppendChild(doc.CreateTextNode(recursive.ToString()));
+            cur.AppendChild(curMember);
+            
+            //
+            // Aggregations
+            //
+
+            parent.AppendChild(cur);
+            return doc.InnerXml;
+        }
+    	
+        /// <summary>
+        /// Initialise l'instance avec les données de l'élément XML
+        /// </summary>
+        /// <param name="element">Élément contenant les information sur l'objet</param>
+        /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
+        public void FromXml(XmlElement element)
+        {
+            foreach (XmlElement m in element.ChildNodes)
+            {
+                string property_value = m.InnerText.Trim();
+                // charge les paramètres
+                switch (m.Name)
+                {
+                  //
+                  // Fields
+                  //
+
+                  // Assigne le membre InputDir
+                  case "InputDir":
+                  {
+                     this.inputdir = property_value;
+                  }
+                  break;
+                  // Assigne le membre InputFilter
+                  case "InputFilter":
+                  {
+                     this.inputfilter = property_value;
+                  }
+                  break;
+                  // Assigne le membre Recursive
+                  case "Recursive":
+                  {
+                     bool value;
+                     if(bool.TryParse(property_value,out value)==false)
+                        this.Recursive = new Boolean();
+                     else
+                        this.Recursive = value;
+                  }
+                  break;
+
+                  //
+                  // Aggregations
+                  //
+                  
+       			}
+            }
+        }
+
        #endregion // Serialization
 
       }

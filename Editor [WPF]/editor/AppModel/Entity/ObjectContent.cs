@@ -18,6 +18,7 @@ using Lib;
 using AppModel.Domain;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Xml;
 using System.Data.SqlClient;
 
 namespace AppModel.Entity
@@ -27,7 +28,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class ObjectContent : ISerializable , INotifyPropertyChanged , IEntity    {
+    public partial class ObjectContent : ISerializable, IEntitySerializable , INotifyPropertyChanged , IEntity    {
          #region Constructor
          public ObjectContent(){
 
@@ -163,6 +164,143 @@ namespace AppModel.Entity
                     col.WriteBinary(writer);
             }
        }
+
+
+        /// <summary>
+        /// Convertie l'instance en élément XML
+        /// </summary>
+        /// <param name="parent">Élément parent reçevant le nouveau noeud</param>
+        /// <returns>Text XML du document</returns>
+        public string ToXml(XmlElement parent)
+        {
+            XmlElement curMember = null;
+            XmlDocument doc = null;
+            // Element parent ?
+            if (parent != null)
+            {
+                doc = parent.OwnerDocument;
+            }
+            else
+            {
+                doc = new XmlDocument();
+                parent = doc.CreateElement("root");
+                doc.AppendChild(parent);
+            }
+    
+            //Ecrit au format XML
+            XmlElement cur = doc.CreateElement("ObjectContent");
+            parent.AppendChild(cur);
+                
+            //
+            // Fields
+            //
+            
+       		// Assigne le membre Id
+            curMember = doc.CreateElement("Id");
+            curMember.AppendChild(doc.CreateTextNode(id.ToString()));
+            cur.AppendChild(curMember);
+
+       		// Assigne le membre ObjectType
+            curMember = doc.CreateElement("ObjectType");
+            curMember.AppendChild(doc.CreateTextNode(objecttype.ToString()));
+            cur.AppendChild(curMember);
+
+       		// Assigne le membre Filename
+            curMember = doc.CreateElement("Filename");
+            curMember.AppendChild(doc.CreateTextNode(filename.ToString()));
+            cur.AppendChild(curMember);
+
+       		// Assigne le membre Position
+            curMember = doc.CreateElement("Position");
+            curMember.AppendChild(doc.CreateTextNode(position.ToString()));
+            cur.AppendChild(curMember);
+            
+            //
+            // Aggregations
+            //
+
+            // ParamContent
+            {
+               curMember = doc.CreateElement("ParamContent");
+               if (this.paramcontent.Count > 0)
+               {
+                   foreach (var col in this.paramcontent)
+                       col.ToXml(curMember);
+               }
+               cur.AppendChild(curMember);
+            }
+
+            parent.AppendChild(cur);
+            return doc.InnerXml;
+        }
+    	
+        /// <summary>
+        /// Initialise l'instance avec les données de l'élément XML
+        /// </summary>
+        /// <param name="element">Élément contenant les information sur l'objet</param>
+        /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
+        public void FromXml(XmlElement element)
+        {
+            foreach (XmlElement m in element.ChildNodes)
+            {
+                string property_value = m.InnerText.Trim();
+                // charge les paramètres
+                switch (m.Name)
+                {
+                  //
+                  // Fields
+                  //
+
+                  // Assigne le membre Id
+                  case "Id":
+                  {
+                     this.id = property_value;
+                  }
+                  break;
+                  // Assigne le membre ObjectType
+                  case "ObjectType":
+                  {
+                     this.objecttype = property_value;
+                  }
+                  break;
+                  // Assigne le membre Filename
+                  case "Filename":
+                  {
+                     this.filename = property_value;
+                  }
+                  break;
+                  // Assigne le membre Position
+                  case "Position":
+                  {
+                     int value;
+                     if(int.TryParse(property_value,out value)==false)
+                        this.Position = new Int32();
+                     else
+                        this.Position = value;
+                  }
+                  break;
+
+                  //
+                  // Aggregations
+                  //
+                  
+                  // Assigne la collection ParamContent
+                  case "ParamContent":
+                     {
+                        foreach (XmlElement c in m.ChildNodes)
+                        {
+                           if("ParamContent" == m.Name){
+                               ParamContent value = new ParamContent();
+                               value.FromXml(c);
+                               this.AddParamContent(value);
+                           }
+                        }
+                     }
+                     break;
+       			}
+            }
+        }
+
        #endregion // Serialization
        
        #region IEntity

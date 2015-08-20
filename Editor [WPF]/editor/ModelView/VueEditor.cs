@@ -10,6 +10,8 @@ using AppModel.Entity;
 using AppModel.Domain;
 using EditorModel.Entity;
 using Lib;
+using System.IO;
+using System.Xml;
 
 namespace editor.ModelView
 {
@@ -18,7 +20,12 @@ namespace editor.ModelView
         App app = Application.Current as App;
         public VueEditor()
         {
-            if (app.Project!=null)
+            ListObjectContent();
+        }
+
+        public void ListObjectContent()
+        {
+            if (app.Project != null)
                 ObjectContentList = new ObservableCollection<ObjectContent>(app.Project.ObjectContent);
         }
 
@@ -295,8 +302,15 @@ namespace editor.ModelView
                             if (entity is ObjectContent)
                             {
                                 ObjectContent e = entity as ObjectContent;
+                                // Ajoute au projet en cours
                                 app.Project.AddObjectContent(e);
+                                // Regénére des identifiants uniques pour la base de données
                                 e.Id = Guid.NewGuid().ToString("N");
+                                foreach(var p in e.ParamContent)
+                                    p.Id = Guid.NewGuid().ToString("N");
+                                // Ajoute à l'interface
+                                if (this.ObjectContentList.Contains(e) == false)
+                                    this.ObjectContentList.Add(e);
                             }
                             if (entity is ParamContent)
                             {
@@ -338,6 +352,120 @@ namespace editor.ModelView
                     });
 
                 return this.entityChange;
+            }
+        }
+        #endregion
+        #region EntityCopy
+        private ICommand entityCopy;
+        public ICommand EntityCopy
+        {
+            get
+            {
+                if (this.entityCopy == null)
+                    this.entityCopy = new DelegateCommand(() =>
+                    {
+                        IEntity entity = ((DelegateCommand)this.entityCopy).GetParam() as IEntity;
+                        if (entity is IEntitySerializable)
+                        {
+                            IEntitySerializable serial = entity as IEntitySerializable;
+                            /*using (MemoryStream memStream = new MemoryStream())
+                            {
+                                BinaryWriter writer = new BinaryWriter(memStream);
+                                // Serialise le nom de la classe
+                                writer.Write(serial.GetType().Name);
+                                // Serialise les données
+                                serial.WriteBinary(writer);
+                                Clipboard.SetData("Entity", memStream.ToArray());
+                            }
+                            */
+                            string xml = serial.ToXml(null);
+                            Clipboard.SetText(xml);
+                        }
+                    });
+
+                return this.entityCopy;
+            }
+        }
+        #endregion
+        #region EntityPaste
+        private ICommand entityPaste;
+        public ICommand EntityPaste
+        {
+            get
+            {
+                if (this.entityPaste == null)
+                    this.entityPaste = new DelegateCommand(() =>
+                    {
+                        if (Clipboard.ContainsText())
+                        {
+                            // initialise le document XML
+                            XmlDocument doc = new XmlDocument();
+                            string xml = Clipboard.GetText();//Clipboard.GetData("text/xml") as string
+                            if (xml == null)
+                                return;
+                            doc.LoadXml(xml);
+
+                            //obtient le premier élément
+                            XmlNode n = doc.DocumentElement.FirstChild;
+                            while (n != null)
+                            {
+                                if(n.NodeType != XmlNodeType.Element)
+                                {
+                                    n = n.NextSibling;
+                                    continue;
+                                }
+
+                                XmlElement e = n as XmlElement;
+                                IEntity insertEntity = null;
+                                if (e.LocalName == "Project")
+                                {
+                                    Project p = new Project();
+                                    p.EntityState = EntityState.Added;
+                                    p.FromXml(e);
+                                    insertEntity = p;
+                                    Console.WriteLine("import Project");
+                                }
+                                else if (e.LocalName == "ObjectContent")
+                                {
+                                    ObjectContent p = new ObjectContent();
+                                    p.EntityState = EntityState.Added;
+                                    p.FromXml(e);
+                                    insertEntity = p;
+                                    Console.WriteLine("import ObjectContent");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("unknown element " + e.LocalName);
+                                }
+
+                                // Notify l'insertion de la nouvelle entité
+                                if (EntityChange.CanExecute(insertEntity))
+                                    EntityChange.Execute(insertEntity);
+
+                                //suivant
+                                n = n.NextSibling;
+                            }
+
+                        }
+                        /*
+                        if (Clipboard.ContainsData("Entity"))
+                        {
+                            byte[] data = Clipboard.GetData("Entity") as byte[];
+                            if (data == null)
+                                return;
+                            using (MemoryStream memStream = new MemoryStream(data))
+                            {
+                                BinaryReader reader = new BinaryReader(memStream);
+                                // Déserialise le nom de la classe
+                                string type = reader.ReadString();
+                                Console.WriteLine(type);
+                                // Déserialise les données
+                                // serial.ReadBinary(reader);
+                            }
+                        }*/
+                    });
+
+                return this.entityPaste;
             }
         }
         #endregion

@@ -18,6 +18,7 @@ using Lib;
 using AppModel.Domain;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Xml;
 
 namespace AppModel.Entity
 {
@@ -26,7 +27,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class ObjectSyntax : ISerializable , INotifyPropertyChanged    {
+    public partial class ObjectSyntax : ISerializable, IEntitySerializable , INotifyPropertyChanged    {
          #region Constructor
          public ObjectSyntax(){
             // ContentRegEx
@@ -119,6 +120,115 @@ namespace AppModel.Entity
             writer.Write(ObjectType);
             writer.Write(ObjectDesc);
        }
+
+
+        /// <summary>
+        /// Convertie l'instance en élément XML
+        /// </summary>
+        /// <param name="parent">Élément parent reçevant le nouveau noeud</param>
+        /// <returns>Text XML du document</returns>
+        public string ToXml(XmlElement parent)
+        {
+            XmlElement curMember = null;
+            XmlDocument doc = null;
+            // Element parent ?
+            if (parent != null)
+            {
+                doc = parent.OwnerDocument;
+            }
+            else
+            {
+                doc = new XmlDocument();
+                parent = doc.CreateElement("root");
+                doc.AppendChild(parent);
+            }
+    
+            //Ecrit au format XML
+            XmlElement cur = doc.CreateElement("ObjectSyntax");
+            parent.AppendChild(cur);
+                
+            //
+            // Fields
+            //
+            
+       		// Assigne le membre ContentRegEx
+            curMember = doc.CreateElement("ContentRegEx");
+            curMember.AppendChild(doc.CreateTextNode(contentregex.ToString()));
+            cur.AppendChild(curMember);
+
+       		// Assigne le membre ParamRegEx
+            curMember = doc.CreateElement("ParamRegEx");
+            curMember.AppendChild(doc.CreateTextNode(paramregex.ToString()));
+            cur.AppendChild(curMember);
+
+       		// Assigne le membre ObjectType
+            curMember = doc.CreateElement("ObjectType");
+            curMember.AppendChild(doc.CreateTextNode(objecttype.ToString()));
+            cur.AppendChild(curMember);
+
+       		// Assigne le membre ObjectDesc
+            curMember = doc.CreateElement("ObjectDesc");
+            curMember.AppendChild(doc.CreateTextNode(objectdesc.ToString()));
+            cur.AppendChild(curMember);
+            
+            //
+            // Aggregations
+            //
+
+            parent.AppendChild(cur);
+            return doc.InnerXml;
+        }
+    	
+        /// <summary>
+        /// Initialise l'instance avec les données de l'élément XML
+        /// </summary>
+        /// <param name="element">Élément contenant les information sur l'objet</param>
+        /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
+        public void FromXml(XmlElement element)
+        {
+            foreach (XmlElement m in element.ChildNodes)
+            {
+                string property_value = m.InnerText.Trim();
+                // charge les paramètres
+                switch (m.Name)
+                {
+                  //
+                  // Fields
+                  //
+
+                  // Assigne le membre ContentRegEx
+                  case "ContentRegEx":
+                  {
+                     this.contentregex = property_value;
+                  }
+                  break;
+                  // Assigne le membre ParamRegEx
+                  case "ParamRegEx":
+                  {
+                     this.paramregex = property_value;
+                  }
+                  break;
+                  // Assigne le membre ObjectType
+                  case "ObjectType":
+                  {
+                     this.objecttype = property_value;
+                  }
+                  break;
+                  // Assigne le membre ObjectDesc
+                  case "ObjectDesc":
+                  {
+                     this.objectdesc = property_value;
+                  }
+                  break;
+
+                  //
+                  // Aggregations
+                  //
+                  
+       			}
+            }
+        }
+
        #endregion // Serialization
 
       }

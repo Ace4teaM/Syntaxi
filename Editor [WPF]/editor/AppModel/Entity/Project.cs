@@ -18,6 +18,7 @@ using Lib;
 using AppModel.Domain;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Xml;
 using System.Data.SqlClient;
 
 namespace AppModel.Entity
@@ -27,7 +28,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class Project : ISerializable , INotifyPropertyChanged , IEntity    {
+    public partial class Project : ISerializable, IEntitySerializable , INotifyPropertyChanged , IEntity    {
          #region Constructor
          public Project(){
 
@@ -292,6 +293,213 @@ namespace AppModel.Entity
                     col.WriteBinary(writer);
             }
        }
+
+
+        /// <summary>
+        /// Convertie l'instance en élément XML
+        /// </summary>
+        /// <param name="parent">Élément parent reçevant le nouveau noeud</param>
+        /// <returns>Text XML du document</returns>
+        public string ToXml(XmlElement parent)
+        {
+            XmlElement curMember = null;
+            XmlDocument doc = null;
+            // Element parent ?
+            if (parent != null)
+            {
+                doc = parent.OwnerDocument;
+            }
+            else
+            {
+                doc = new XmlDocument();
+                parent = doc.CreateElement("root");
+                doc.AppendChild(parent);
+            }
+    
+            //Ecrit au format XML
+            XmlElement cur = doc.CreateElement("Project");
+            parent.AppendChild(cur);
+                
+            //
+            // Fields
+            //
+            
+       		// Assigne le membre Name
+            curMember = doc.CreateElement("Name");
+            curMember.AppendChild(doc.CreateTextNode(name.ToString()));
+            cur.AppendChild(curMember);
+
+       		// Assigne le membre Version
+            curMember = doc.CreateElement("Version");
+            curMember.AppendChild(doc.CreateTextNode(version.ToString()));
+            cur.AppendChild(curMember);
+            
+            //
+            // Aggregations
+            //
+
+            // ObjectContent
+            {
+               curMember = doc.CreateElement("ObjectContent");
+               if (this.objectcontent.Count > 0)
+               {
+                   foreach (var col in this.objectcontent)
+                       col.ToXml(curMember);
+               }
+               cur.AppendChild(curMember);
+            }
+
+            // SearchParams
+            {
+               curMember = doc.CreateElement("SearchParams");
+               if (this.searchparams.Count > 0)
+               {
+                   foreach (var col in this.searchparams)
+                       col.ToXml(curMember);
+               }
+               cur.AppendChild(curMember);
+            }
+
+            // ObjectSyntax
+            {
+               curMember = doc.CreateElement("ObjectSyntax");
+               if (this.objectsyntax.Count > 0)
+               {
+                   foreach (var col in this.objectsyntax)
+                       col.ToXml(curMember);
+               }
+               cur.AppendChild(curMember);
+            }
+
+            // ParamSyntax
+            {
+               curMember = doc.CreateElement("ParamSyntax");
+               if (this.paramsyntax.Count > 0)
+               {
+                   foreach (var col in this.paramsyntax)
+                       col.ToXml(curMember);
+               }
+               cur.AppendChild(curMember);
+            }
+
+            // DatabaseSource
+            {
+               curMember = doc.CreateElement("DatabaseSource");
+               if (this.databasesource.Count > 0)
+               {
+                   foreach (var col in this.databasesource)
+                       col.ToXml(curMember);
+               }
+               cur.AppendChild(curMember);
+            }
+
+            parent.AppendChild(cur);
+            return doc.InnerXml;
+        }
+    	
+        /// <summary>
+        /// Initialise l'instance avec les données de l'élément XML
+        /// </summary>
+        /// <param name="element">Élément contenant les information sur l'objet</param>
+        /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
+        public void FromXml(XmlElement element)
+        {
+            foreach (XmlElement m in element.ChildNodes)
+            {
+                string property_value = m.InnerText.Trim();
+                // charge les paramètres
+                switch (m.Name)
+                {
+                  //
+                  // Fields
+                  //
+
+                  // Assigne le membre Name
+                  case "Name":
+                  {
+                     this.name = property_value;
+                  }
+                  break;
+                  // Assigne le membre Version
+                  case "Version":
+                  {
+                     this.version = property_value;
+                  }
+                  break;
+
+                  //
+                  // Aggregations
+                  //
+                  
+                  // Assigne la collection ObjectContent
+                  case "ObjectContent":
+                     {
+                        foreach (XmlElement c in m.ChildNodes)
+                        {
+                           if("ObjectContent" == m.Name){
+                               ObjectContent value = new ObjectContent();
+                               value.FromXml(c);
+                               this.AddObjectContent(value);
+                           }
+                        }
+                     }
+                     break;
+                  // Assigne la collection SearchParams
+                  case "SearchParams":
+                     {
+                        foreach (XmlElement c in m.ChildNodes)
+                        {
+                           if("SearchParams" == m.Name){
+                               SearchParams value = new SearchParams();
+                               value.FromXml(c);
+                               this.AddSearchParams(value);
+                           }
+                        }
+                     }
+                     break;
+                  // Assigne la collection ObjectSyntax
+                  case "ObjectSyntax":
+                     {
+                        foreach (XmlElement c in m.ChildNodes)
+                        {
+                           if("ObjectSyntax" == m.Name){
+                               ObjectSyntax value = new ObjectSyntax();
+                               value.FromXml(c);
+                               this.AddObjectSyntax(value);
+                           }
+                        }
+                     }
+                     break;
+                  // Assigne la collection ParamSyntax
+                  case "ParamSyntax":
+                     {
+                        foreach (XmlElement c in m.ChildNodes)
+                        {
+                           if("ParamSyntax" == m.Name){
+                               ParamSyntax value = new ParamSyntax();
+                               value.FromXml(c);
+                               this.AddParamSyntax(value);
+                           }
+                        }
+                     }
+                     break;
+                  // Assigne la collection DatabaseSource
+                  case "DatabaseSource":
+                     {
+                        foreach (XmlElement c in m.ChildNodes)
+                        {
+                           if("DatabaseSource" == m.Name){
+                               DatabaseSource value = new DatabaseSource();
+                               value.FromXml(c);
+                               this.AddDatabaseSource(value);
+                           }
+                        }
+                     }
+                     break;
+       			}
+            }
+        }
+
        #endregion // Serialization
        
        #region IEntity

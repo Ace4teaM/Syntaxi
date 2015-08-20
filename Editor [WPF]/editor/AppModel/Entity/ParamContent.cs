@@ -18,6 +18,7 @@ using Lib;
 using AppModel.Domain;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Xml;
 using System.Data.SqlClient;
 
 namespace AppModel.Entity
@@ -27,7 +28,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class ParamContent : ISerializable , INotifyPropertyChanged , IEntity    {
+    public partial class ParamContent : ISerializable, IEntitySerializable , INotifyPropertyChanged , IEntity    {
          #region Constructor
          public ParamContent(){
             // Id
@@ -110,6 +111,104 @@ namespace AppModel.Entity
             writer.Write(ParamName);
             writer.Write(ParamValue);
        }
+
+
+        /// <summary>
+        /// Convertie l'instance en élément XML
+        /// </summary>
+        /// <param name="parent">Élément parent reçevant le nouveau noeud</param>
+        /// <returns>Text XML du document</returns>
+        public string ToXml(XmlElement parent)
+        {
+            XmlElement curMember = null;
+            XmlDocument doc = null;
+            // Element parent ?
+            if (parent != null)
+            {
+                doc = parent.OwnerDocument;
+            }
+            else
+            {
+                doc = new XmlDocument();
+                parent = doc.CreateElement("root");
+                doc.AppendChild(parent);
+            }
+    
+            //Ecrit au format XML
+            XmlElement cur = doc.CreateElement("ParamContent");
+            parent.AppendChild(cur);
+                
+            //
+            // Fields
+            //
+            
+       		// Assigne le membre Id
+            curMember = doc.CreateElement("Id");
+            curMember.AppendChild(doc.CreateTextNode(id.ToString()));
+            cur.AppendChild(curMember);
+
+       		// Assigne le membre ParamName
+            curMember = doc.CreateElement("ParamName");
+            curMember.AppendChild(doc.CreateTextNode(paramname.ToString()));
+            cur.AppendChild(curMember);
+
+       		// Assigne le membre ParamValue
+            curMember = doc.CreateElement("ParamValue");
+            curMember.AppendChild(doc.CreateTextNode(paramvalue.ToString()));
+            cur.AppendChild(curMember);
+            
+            //
+            // Aggregations
+            //
+
+            parent.AppendChild(cur);
+            return doc.InnerXml;
+        }
+    	
+        /// <summary>
+        /// Initialise l'instance avec les données de l'élément XML
+        /// </summary>
+        /// <param name="element">Élément contenant les information sur l'objet</param>
+        /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
+        public void FromXml(XmlElement element)
+        {
+            foreach (XmlElement m in element.ChildNodes)
+            {
+                string property_value = m.InnerText.Trim();
+                // charge les paramètres
+                switch (m.Name)
+                {
+                  //
+                  // Fields
+                  //
+
+                  // Assigne le membre Id
+                  case "Id":
+                  {
+                     this.id = property_value;
+                  }
+                  break;
+                  // Assigne le membre ParamName
+                  case "ParamName":
+                  {
+                     this.paramname = property_value;
+                  }
+                  break;
+                  // Assigne le membre ParamValue
+                  case "ParamValue":
+                  {
+                     this.paramvalue = property_value;
+                  }
+                  break;
+
+                  //
+                  // Aggregations
+                  //
+                  
+       			}
+            }
+        }
+
        #endregion // Serialization
        
        #region IEntity
