@@ -26,7 +26,6 @@
     
     <StackPanel Orientation="Vertical">
         <TextBlock Style="{StaticResource TitleStyle}" Text="{Binding ObjectType}"></TextBlock>
-        <TextBox Style="{StaticResource SectionEditStyle}" Text="{Binding ObjectDesc}"></TextBox>
         <TextBlock Style="{StaticResource SectionTitleStyle}">Expression de contenu</TextBlock>
         <TextBox Style="{StaticResource SectionEditStyle}" Text="{Binding ContentRegEx}"></TextBox>
         <TextBlock Style="{StaticResource SectionTitleStyle}">Expression de paramètre</TextBlock>

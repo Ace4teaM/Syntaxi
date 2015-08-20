@@ -156,6 +156,9 @@
     <Compile Include="View\ObjectSyntaxEdit.xaml.cs">
       <DependentUpon>ObjectSyntaxEdit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ObjectSyntaxGrid.xaml.cs">
+      <DependentUpon>ObjectSyntaxGrid.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ObjectSyntaxList.xaml.cs">
       <DependentUpon>ObjectSyntaxList.xaml</DependentUpon>
     </Compile>
@@ -239,6 +242,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ObjectSyntaxEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ObjectSyntaxGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
