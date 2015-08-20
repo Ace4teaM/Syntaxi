@@ -40,6 +40,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Controls.Input.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,6 +55,24 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="WPFFolderBrowser">
       <HintPath>packages\WPFFolderBrowser.1.0.2\lib\WPFFolderBrowser.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock">
+      <HintPath>packages\Extended.Wpf.Toolkit.2.5\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero">
+      <HintPath>packages\Extended.Wpf.Toolkit.2.5\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro">
+      <HintPath>packages\Extended.Wpf.Toolkit.2.5\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010">
+      <HintPath>packages\Extended.Wpf.Toolkit.2.5\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.DataGrid">
+      <HintPath>packages\Extended.Wpf.Toolkit.2.5\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>packages\Extended.Wpf.Toolkit.2.5\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -70,7 +89,37 @@
     <Compile Include="AppModel\Entity\Project.cs" />
     <Compile Include="AppModel\Entity\SearchParams.cs" />
     <Compile Include="AppModel\Extend\DatabaseSource.cs" />
+    <Compile Include="AppModel\Format\Bool.cs" />
+    <Compile Include="AppModel\Format\Guid.cs" />
+    <Compile Include="AppModel\Format\Integer.cs" />
+    <Compile Include="AppModel\Format\Mail.cs" />
+    <Compile Include="AppModel\Format\Name.cs" />
+    <Compile Include="AppModel\Format\NotEmpty.cs" />
+    <Compile Include="AppModel\Format\Numeric.cs" />
+    <Compile Include="AppModel\Format\PrefixeParam.cs" />
+    <Compile Include="AppModel\Format\StringParam.cs" />
     <Compile Include="AppModel\Interface\IApp.cs" />
+    <Compile Include="AppModel\View\DatabaseProviderCombo.xaml.cs">
+      <DependentUpon>DatabaseProviderCombo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AppModel\View\Edit_DatabaseSource.xaml.cs">
+      <DependentUpon>Edit_DatabaseSource.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AppModel\View\Edit_ObjectContent.xaml.cs">
+      <DependentUpon>Edit_ObjectContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AppModel\View\Edit_ObjectSyntax.xaml.cs">
+      <DependentUpon>Edit_ObjectSyntax.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AppModel\View\Edit_ParamContent.xaml.cs">
+      <DependentUpon>Edit_ParamContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AppModel\View\Edit_ParamSyntax.xaml.cs">
+      <DependentUpon>Edit_ParamSyntax.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AppModel\View\Edit_SearchParams.xaml.cs">
+      <DependentUpon>Edit_SearchParams.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EditorModel\Entity\EditorSampleCode.cs" />
     <Compile Include="EditorModel\Entity\EditorStates.cs" />
     <Compile Include="Lib\DelegateCommand.cs" />
@@ -78,6 +127,8 @@
     <Compile Include="Lib\EntityReferences.cs" />
     <Compile Include="Lib\IEntity.cs" />
     <Compile Include="Lib\IEntityFactory.cs" />
+    <Compile Include="Lib\IEntitySerializable.cs" />
+    <Compile Include="Lib\IEntityValidable.cs" />
     <Compile Include="Lib\SqlPostgresFactory.cs" />
     <Compile Include="Lib\SqlServerFactory.cs" />
     <Compile Include="Lib\SqlODBCFactory.cs" />
@@ -87,11 +138,11 @@
     <Compile Include="View\CodeSampleEdit.xaml.cs">
       <DependentUpon>CodeSampleEdit.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\DatabaseProviderCombo.xaml.cs">
-      <DependentUpon>DatabaseProviderCombo.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\DatabaseSourceGrid.xaml.cs">
       <DependentUpon>DatabaseSourceGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\EditView.xaml.cs">
+      <DependentUpon>EditView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Menu.xaml.cs">
       <DependentUpon>Menu.xaml</DependentUpon>
@@ -123,6 +174,34 @@
     <Compile Include="View\VueHome.xaml.cs">
       <DependentUpon>VueHome.xaml</DependentUpon>
     </Compile>
+    <Page Include="AppModel\View\DatabaseProviderCombo.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AppModel\View\Edit_DatabaseSource.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AppModel\View\Edit_ObjectContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AppModel\View\Edit_ObjectSyntax.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AppModel\View\Edit_ParamContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AppModel\View\Edit_ParamSyntax.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AppModel\View\Edit_SearchParams.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -139,13 +218,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\DatabaseProviderCombo.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="View\DatabaseSourceGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\EditView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Menu.xaml">
       <SubType>Designer</SubType>

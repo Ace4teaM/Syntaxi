@@ -15,6 +15,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Collections.ObjectModel;
 using Lib;
+using AppModel.Format;
 using AppModel.Domain;
 using System.IO;
 using System.Runtime.Serialization;
@@ -28,7 +29,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class ParamContent : ISerializable, IEntitySerializable , INotifyPropertyChanged , IEntity    {
+    public partial class ParamContent : ISerializable, IEntitySerializable , INotifyPropertyChanged , IEntity , IDataErrorInfo, IEntityValidable    {
          #region Constructor
          public ParamContent(){
             // Id
@@ -57,7 +58,7 @@ namespace AppModel.Entity
          #endregion // State
         
          #region Fields
-         // 
+         // Identifiant
          protected String id;
          public String Id { get{ return id; } set{ id = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Id")); } }
          // Nom
@@ -85,130 +86,139 @@ namespace AppModel.Entity
          }
 
          #endregion // Methods
-         #region ISerializable
-          // Implement this method to serialize data. The method is called on serialization.
-          public void GetObjectData(SerializationInfo info, StreamingContext context)
-          {
-              info.AddValue("Id", Id, typeof(String));
-              info.AddValue("ParamName", ParamName, typeof(String));
-              info.AddValue("ParamValue", ParamValue, typeof(String));
-          }
-         #endregion // ISerializable
-    
-         #region Serialization
-         public void ReadBinary(BinaryReader reader)
-         {
-            // Properties
-            Id =  reader.ReadString();
-            ParamName =  reader.ReadString();
-            ParamValue =  reader.ReadString();
-         }
-         
-         public void WriteBinary(BinaryWriter writer)
-         {
-            // Properties
-            writer.Write(Id);
-            writer.Write(ParamName);
-            writer.Write(ParamValue);
+
+       #region ISerializable
+        // Implement this method to serialize data. The method is called on serialization.
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Id", Id, typeof(String));
+            info.AddValue("ParamName", ParamName, typeof(String));
+            info.AddValue("ParamValue", ParamValue, typeof(String));
+                 }
+       #endregion // ISerializable
+       
+       #region Serialization
+       public void ReadBinary(BinaryReader reader)
+       {
+          // Properties
+          Id =  reader.ReadString();
+          ParamName =  reader.ReadString();
+          ParamValue =  reader.ReadString();
        }
-
-
-        /// <summary>
-        /// Convertie l'instance en élément XML
-        /// </summary>
-        /// <param name="parent">Élément parent reçevant le nouveau noeud</param>
-        /// <returns>Text XML du document</returns>
-        public string ToXml(XmlElement parent)
-        {
-            XmlElement curMember = null;
-            XmlDocument doc = null;
-            // Element parent ?
-            if (parent != null)
-            {
-                doc = parent.OwnerDocument;
-            }
-            else
-            {
-                doc = new XmlDocument();
-                parent = doc.CreateElement("root");
-                doc.AppendChild(parent);
-            }
-    
-            //Ecrit au format XML
-            XmlElement cur = doc.CreateElement("ParamContent");
-            parent.AppendChild(cur);
-                
-            //
-            // Fields
-            //
-            
+       
+       public void WriteBinary(BinaryWriter writer)
+       {
+          // Properties
+          writer.Write(Id);
+          writer.Write(ParamName);
+          writer.Write(ParamValue);}
+       
+       
+       /// <summary>
+       /// Convertie l'instance en élément XML
+       /// </summary>
+       /// <param name="parent">Élément parent reçevant le nouveau noeud</param>
+       /// <returns>Text XML du document</returns>
+       public string ToXml(XmlElement parent)
+       {
+          XmlElement curMember = null;
+          XmlDocument doc = null;
+          // Element parent ?
+          if (parent != null)
+          {
+              doc = parent.OwnerDocument;
+          }
+          else
+          {
+              doc = new XmlDocument();
+              parent = doc.CreateElement("root");
+              doc.AppendChild(parent);
+          }
+       
+          //Ecrit au format XML
+          XmlElement cur = doc.CreateElement("ParamContent");
+          parent.AppendChild(cur);
+              
+          //
+          // Fields
+          //
+          
        		// Assigne le membre Id
-            curMember = doc.CreateElement("Id");
-            curMember.AppendChild(doc.CreateTextNode(id.ToString()));
-            cur.AppendChild(curMember);
-
+          if (id != null)
+          {
+              curMember = doc.CreateElement("Id");
+              curMember.AppendChild(doc.CreateTextNode(id.ToString()));
+              cur.AppendChild(curMember);
+          }
+       
        		// Assigne le membre ParamName
-            curMember = doc.CreateElement("ParamName");
-            curMember.AppendChild(doc.CreateTextNode(paramname.ToString()));
-            cur.AppendChild(curMember);
-
+          if (paramname != null)
+          {
+              curMember = doc.CreateElement("ParamName");
+              curMember.AppendChild(doc.CreateTextNode(paramname.ToString()));
+              cur.AppendChild(curMember);
+          }
+       
        		// Assigne le membre ParamValue
-            curMember = doc.CreateElement("ParamValue");
-            curMember.AppendChild(doc.CreateTextNode(paramvalue.ToString()));
-            cur.AppendChild(curMember);
-            
-            //
-            // Aggregations
-            //
-
-            parent.AppendChild(cur);
-            return doc.InnerXml;
-        }
-    	
-        /// <summary>
-        /// Initialise l'instance avec les données de l'élément XML
-        /// </summary>
-        /// <param name="element">Élément contenant les information sur l'objet</param>
-        /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
-        public void FromXml(XmlElement element)
-        {
-            foreach (XmlElement m in element.ChildNodes)
-            {
-                string property_value = m.InnerText.Trim();
-                // charge les paramètres
-                switch (m.Name)
+          if (paramvalue != null)
+          {
+              curMember = doc.CreateElement("ParamValue");
+              curMember.AppendChild(doc.CreateTextNode(paramvalue.ToString()));
+              cur.AppendChild(curMember);
+          }
+          
+          //
+          // Aggregations
+          //
+       
+          parent.AppendChild(cur);
+          return doc.InnerXml;
+       }
+       
+       /// <summary>
+       /// Initialise l'instance avec les données de l'élément XML
+       /// </summary>
+       /// <param name="element">Élément contenant les information sur l'objet</param>
+       /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
+       public void FromXml(XmlElement element)
+       {
+          foreach (XmlElement m in element.ChildNodes)
+          {
+              string property_value = m.InnerText.Trim();
+              // charge les paramètres
+              switch (m.Name)
+              {
+                //
+                // Fields
+                //
+       
+                // Assigne le membre Id
+                case "Id":
                 {
-                  //
-                  // Fields
-                  //
-
-                  // Assigne le membre Id
-                  case "Id":
-                  {
-                     this.id = property_value;
-                  }
-                  break;
-                  // Assigne le membre ParamName
-                  case "ParamName":
-                  {
-                     this.paramname = property_value;
-                  }
-                  break;
-                  // Assigne le membre ParamValue
-                  case "ParamValue":
-                  {
-                     this.paramvalue = property_value;
-                  }
-                  break;
-
-                  //
-                  // Aggregations
-                  //
-                  
+                   this.id = property_value;
+                }
+                break;
+                // Assigne le membre ParamName
+                case "ParamName":
+                {
+                   this.paramname = property_value;
+                }
+                break;
+                // Assigne le membre ParamValue
+                case "ParamValue":
+                {
+                   this.paramvalue = property_value;
+                }
+                break;
+       
+                //
+                // Aggregations
+                //
+                
        			}
-            }
-        }
-
+          }
+       }
+       
        #endregion // Serialization
        
        #region IEntity
@@ -344,6 +354,110 @@ namespace AppModel.Entity
              ParamValue = reader["ParamValue"].ToString();
        }
        #endregion // IEntity
+       #region Validation
+       #region IDataErrorInfo
+       // Validation globale de l'entité
+       public string Error
+       {
+          get
+          {
+              string all_mess = "";
+              string msg;
+              all_mess += ((msg = this["Id"]) != String.Empty) ? (GetPropertyDesc("Id") + " :\n\t" + msg + "\n") : String.Empty;
+              all_mess += ((msg = this["ParamName"]) != String.Empty) ? (GetPropertyDesc("ParamName") + " :\n\t" + msg + "\n") : String.Empty;
+              all_mess += ((msg = this["ParamValue"]) != String.Empty) ? (GetPropertyDesc("ParamValue") + " :\n\t" + msg + "\n") : String.Empty;
+              return all_mess;
+          }
+       }
+       
+       // Validation par propriété
+       public string this[string propertyName]
+       {
+          get
+          {
+              string code;
+              CheckField(propertyName, out code);
+              
+              if (String.IsNullOrEmpty(code) == false)
+                  return GetPropertyDesc(propertyName) + ":\n" + code;
+                  
+              return String.Empty;
+          }
+       }
+       
+       public static string GetClassDesc()
+       {
+          return "Paramètre d'un objet";
+       }
+       
+       public static string GetPropertyDesc(string propertyName)
+       {
+          switch (propertyName)
+          {
+       
+              case "Id":
+                  return "Identifiant";
+       
+              case "ParamName":
+                  return "Nom";
+       
+              case "ParamValue":
+                  return "Valeur";
+          }
+          return "";
+       }
+       #endregion
+       
+       #region IEntityValidable
+       // Test la validité de tous les champs
+       public bool IsValid(){
+          string errorCode;
+          
+          if(CheckField("Id", out errorCode) == false)
+             return false;
+          if(CheckField("ParamName", out errorCode) == false)
+             return false;
+          if(CheckField("ParamValue", out errorCode) == false)
+             return false;
+          return true;
+       }
+       
+       // Test la validité d'un champ
+       public bool CheckField(string propertyName, out string errorCode){
+           errorCode = String.Empty;
+           
+           switch (propertyName)
+           {
+               case "Id":
+                 // Obligatoire
+                 if(this.Id == null){
+                   errorCode = "NOT_NULL_RESTRICTION";
+                   return false;
+                 }
+                 return AppModel.Format.Guid.Validate(this.Id.ToString(),ref errorCode);
+       
+               case "ParamName":
+                 // Obligatoire
+                 if(this.ParamName == null){
+                   errorCode = "NOT_NULL_RESTRICTION";
+                   return false;
+                 }
+                 break;
+       
+               case "ParamValue":
+                 // Obligatoire
+                 if(this.ParamValue == null){
+                   errorCode = "NOT_NULL_RESTRICTION";
+                   return false;
+                 }
+                 break;
+       
+           }
+           
+           return true;
+       }
+       #endregion
+       #endregion // Validation
       }
 
 }

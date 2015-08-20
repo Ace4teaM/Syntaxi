@@ -16,14 +16,6 @@ namespace Lib
         Deleted
     }
 
-    public interface IEntitySerializable
-    {
-        void ReadBinary(BinaryReader reader);
-        void WriteBinary(BinaryWriter writer);
-        void FromXml(XmlElement element);
-        string ToXml(XmlElement parent);
-    }
-    
     public interface IEntity
     {
         IEntityFactory Factory { get; set; }

@@ -1,0 +1,32 @@
+﻿<!--
+   Vue d'édition de la classe SearchParams
+
+   !!Attention!!
+   Ce code source est généré automatiquement, toutes modifications seront perdues
+-->
+<UserControl x:Class="AppModel.View.Edit_SearchParams"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
+             xmlns:v="clr-namespace:AppModel.View" 
+             mc:Ignorable="d" 
+             d:DesignWidth="300">
+    <Grid>
+        <StackPanel Name="itemGroups" Orientation="Vertical">
+            <DockPanel Name="itemGroup_InputDir">
+               <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,5,0,5">Dossier de recherche</TextBlock>
+               <TextBox Name="InputDir" Text="{Binding Path=InputDir, TargetNullValue='', UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" />
+            </DockPanel>
+            <DockPanel Name="itemGroup_InputFilter">
+               <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,5,0,5">Filtre de recherche sur les nom de fichiers</TextBlock>
+               <TextBox Name="InputFilter" Text="{Binding Path=InputFilter, TargetNullValue='', UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" />
+            </DockPanel>
+            <DockPanel Name="itemGroup_Recursive">
+               <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,5,0,5">Récursif</TextBlock>
+               <CheckBox Name="Recursive" IsChecked="{Binding Path=Recursive}" />
+            </DockPanel>
+         </StackPanel>
+    </Grid>
+</UserControl>

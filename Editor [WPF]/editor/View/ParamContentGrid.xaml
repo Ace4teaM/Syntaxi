@@ -7,6 +7,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
           AutoGenerateColumns="False">
+    <DataGrid.ContextMenu>
+        <ContextMenu>
+            <MenuItem x:Name="PropertiesMenuItem" Header="Propriétés" Click="PropertiesMenuItem_Click"></MenuItem>
+        </ContextMenu>
+    </DataGrid.ContextMenu>
     <DataGrid.Columns>
         <DataGridTextColumn Width="120" Header="Type" Binding="{Binding ParamName}"></DataGridTextColumn>
         <DataGridTextColumn Width="*" Header="Valeur" Binding="{Binding ParamValue}"></DataGridTextColumn>

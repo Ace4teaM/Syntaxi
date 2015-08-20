@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using AppModel.View;
 
 namespace editor.View
 {
@@ -23,6 +24,23 @@ namespace editor.View
         public SearchParamsGrid()
         {
             InitializeComponent();
+        }
+
+        private void PropertiesMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Window wnd = new Window();
+            wnd.Content = new EditView();
+            wnd.Owner = Application.Current.MainWindow;
+            wnd.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            wnd.WindowStyle = WindowStyle.ToolWindow;
+            wnd.Title = "Recherche";
+            wnd.Width = 400;
+
+            Edit_SearchParams view = new Edit_SearchParams();
+            view.DataContext = this.SelectedItem;
+            ((EditView)wnd.Content).AddView(view);
+
+            wnd.ShowDialog();
         }
     }
 }

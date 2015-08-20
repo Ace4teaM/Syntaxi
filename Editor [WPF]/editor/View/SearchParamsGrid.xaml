@@ -6,6 +6,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="340" d:DesignWidth="687"
           AutoGenerateColumns="False">
+    <DataGrid.ContextMenu>
+        <ContextMenu>
+            <MenuItem x:Name="PropertiesMenuItem" Header="Propriétés" Click="PropertiesMenuItem_Click"></MenuItem>
+        </ContextMenu>
+    </DataGrid.ContextMenu>
     <DataGrid.Columns>
         <DataGridTextColumn Width="*" Header="Emplacement" Binding="{Binding InputDir}"></DataGridTextColumn>
         <DataGridTextColumn Width="auto" Header="Filtre" Binding="{Binding InputFilter}"></DataGridTextColumn>

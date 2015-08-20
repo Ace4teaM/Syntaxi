@@ -13,6 +13,12 @@
     <DataGrid.Resources>
         <domain:DatabaseProviderConverter x:Key="databaseProviderConverter" />
     </DataGrid.Resources>
+    <DataGrid.ContextMenu>
+        <ContextMenu>
+            <MenuItem x:Name="SetAsDefaultMenuItem" Header="Définir par défaut" Click="MenuItem_Click"></MenuItem>
+            <MenuItem x:Name="PropertiesMenuItem" Header="Propriétés" Click="PropertiesMenuItem_Click"></MenuItem>
+        </ContextMenu>
+    </DataGrid.ContextMenu>
     <DataGrid.Columns>
         <DataGridTextColumn Width="auto" Header="Défaut" Binding="{Binding IsDefault}"></DataGridTextColumn>
         <DataGridTextColumn Width="auto" Header="ID" Binding="{Binding Id}"></DataGridTextColumn>
@@ -30,9 +36,4 @@
         </DataGridTemplateColumn>
         <DataGridTextColumn Width="*" Header="Chaine de connexion" Binding="{Binding ConnectionString}"></DataGridTextColumn>
     </DataGrid.Columns>
-    <DataGrid.ContextMenu>
-        <ContextMenu>
-            <MenuItem Header="Définir par défaut" Click="MenuItem_Click"></MenuItem>
-        </ContextMenu>
-    </DataGrid.ContextMenu>
 </local:EditableDataGrid>
