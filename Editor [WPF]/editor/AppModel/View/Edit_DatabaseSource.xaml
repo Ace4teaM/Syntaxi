@@ -19,13 +19,9 @@
                <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,5,0,5">Identifiant de la source</TextBlock>
                <TextBox Name="Id" Text="{Binding Path=Id, TargetNullValue='', UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" />
             </DockPanel>
-            <DockPanel Name="itemGroup_Provider2">
-               <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,5,0,5">Fournisseur de données</TextBlock>
-               <v:DatabaseProvider2Combo SelectedValuePath="Tag" SelectedValue="{Binding Path=Provider2, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" />
-            </DockPanel>
             <DockPanel Name="itemGroup_Provider">
                <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,5,0,5">Fournisseur de données</TextBlock>
-               <v:DatabaseProviderCombo SelectedValuePath="Tag" SelectedValue="{Binding Path=Provider, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" />
+               <v:DatabaseProviderCombo SelectedValue="{Binding Path=Provider, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" />
             </DockPanel>
             <DockPanel Name="itemGroup_ConnectionString">
                <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,5,0,5">Chaine de connexion</TextBlock>

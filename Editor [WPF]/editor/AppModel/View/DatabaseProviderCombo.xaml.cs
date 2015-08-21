@@ -23,6 +23,10 @@ namespace AppModel.View
         public DatabaseProviderCombo()
         {
             InitializeComponent();
+            
+            this.ItemsSource = AppModel.Domain.DatabaseProviderConverter.ItemsSource;
+            this.SelectedValuePath = "Value";
+            this.DisplayMemberPath= "Key";
         }
     }
 }

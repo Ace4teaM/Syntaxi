@@ -81,7 +81,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AppModel\Domain\DatabaseProvider.cs" />
-    <Compile Include="AppModel\Domain\DatabaseProvider2.cs" />
     <Compile Include="AppModel\Entity\DatabaseSource.cs" />
     <Compile Include="AppModel\Entity\ObjectContent.cs" />
     <Compile Include="AppModel\Entity\ObjectSyntax.cs" />
@@ -100,9 +99,6 @@
     <Compile Include="AppModel\Format\PrefixeParam.cs" />
     <Compile Include="AppModel\Format\StringParam.cs" />
     <Compile Include="AppModel\Interface\IApp.cs" />
-    <Compile Include="AppModel\View\DatabaseProvider2Combo.xaml.cs">
-      <DependentUpon>DatabaseProvider2Combo.xaml</DependentUpon>
-    </Compile>
     <Compile Include="AppModel\View\DatabaseProviderCombo.xaml.cs">
       <DependentUpon>DatabaseProviderCombo.xaml</DependentUpon>
     </Compile>
@@ -182,10 +178,6 @@
     <Compile Include="View\VueHome.xaml.cs">
       <DependentUpon>VueHome.xaml</DependentUpon>
     </Compile>
-    <Page Include="AppModel\View\DatabaseProvider2Combo.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="AppModel\View\DatabaseProviderCombo.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

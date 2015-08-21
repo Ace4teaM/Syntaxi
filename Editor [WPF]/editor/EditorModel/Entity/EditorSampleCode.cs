@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using Lib;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Xml;
 
 namespace EditorModel.Entity
 {
@@ -25,7 +26,7 @@ namespace EditorModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class EditorSampleCode : ISerializable    {
+    public partial class EditorSampleCode : ISerializable, IEntitySerializable    {
          #region Constructor
          public EditorSampleCode(){
             // Text
@@ -71,30 +72,124 @@ namespace EditorModel.Entity
          }
 
          #endregion // Methods
-         #region ISerializable
-          // Implement this method to serialize data. The method is called on serialization.
-          public void GetObjectData(SerializationInfo info, StreamingContext context)
-          {
-              info.AddValue("Text", Text, typeof(String));
-              info.AddValue("ObjectSyntaxType", ObjectSyntaxType, typeof(String));
-          }
-         #endregion // ISerializable
-    
-         #region Serialization
-         public void ReadBinary(BinaryReader reader)
-         {
-            // Properties
-            Text =  reader.ReadString();
-            ObjectSyntaxType =  reader.ReadString();
-         }
-         
-         public void WriteBinary(BinaryWriter writer)
-         {
-            // Properties
-            writer.Write(Text);
-            writer.Write(ObjectSyntaxType);
+
+       #region ISerializable
+        // Implement this method to serialize data. The method is called on serialization.
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Text", Text, typeof(String));
+            info.AddValue("ObjectSyntaxType", ObjectSyntaxType, typeof(String));
+                 }
+       #endregion // ISerializable
+       
+       #region Serialization
+       public void ReadBinary(BinaryReader reader)
+       {
+          // Properties
+          Text =  reader.ReadString();
+          ObjectSyntaxType =  reader.ReadString();
        }
+       
+       public void WriteBinary(BinaryWriter writer)
+       {
+          // Properties
+          writer.Write(Text);
+          writer.Write(ObjectSyntaxType);}
+       
+       
+       /// <summary>
+       /// Convertie l'instance en élément XML
+       /// </summary>
+       /// <param name="parent">Élément parent reçevant le nouveau noeud</param>
+       /// <returns>Text XML du document</returns>
+       public string ToXml(XmlElement parent)
+       {
+          XmlElement curMember = null;
+          XmlDocument doc = null;
+          // Element parent ?
+          if (parent != null)
+          {
+              doc = parent.OwnerDocument;
+          }
+          else
+          {
+              doc = new XmlDocument();
+              parent = doc.CreateElement("root");
+              doc.AppendChild(parent);
+          }
+       
+          //Ecrit au format XML
+          XmlElement cur = doc.CreateElement("EditorSampleCode");
+          parent.AppendChild(cur);
+              
+          //
+          // Fields
+          //
+          
+       		// Assigne le membre Text
+          if (text != null)
+          {
+              curMember = doc.CreateElement("Text");
+              curMember.AppendChild(doc.CreateTextNode(text.ToString()));
+              cur.AppendChild(curMember);
+          }
+       
+       		// Assigne le membre ObjectSyntaxType
+          if (objectsyntaxtype != null)
+          {
+              curMember = doc.CreateElement("ObjectSyntaxType");
+              curMember.AppendChild(doc.CreateTextNode(objectsyntaxtype.ToString()));
+              cur.AppendChild(curMember);
+          }
+          
+          //
+          // Aggregations
+          //
+       
+          parent.AppendChild(cur);
+          return doc.InnerXml;
+       }
+       
+       /// <summary>
+       /// Initialise l'instance avec les données de l'élément XML
+       /// </summary>
+       /// <param name="element">Élément contenant les information sur l'objet</param>
+       /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
+       public void FromXml(XmlElement element)
+       {
+          foreach (XmlElement m in element.ChildNodes)
+          {
+              string property_value = m.InnerText.Trim();
+              // charge les paramètres
+              switch (m.Name)
+              {
+                //
+                // Fields
+                //
+       
+                // Assigne le membre Text
+                case "Text":
+                {
+                   this.text = property_value;
+                }
+                break;
+                // Assigne le membre ObjectSyntaxType
+                case "ObjectSyntaxType":
+                {
+                   this.objectsyntaxtype = property_value;
+                }
+                break;
+       
+                //
+                // Aggregations
+                //
+                
+       			}
+          }
+       }
+       
        #endregion // Serialization
+
 
       }
 

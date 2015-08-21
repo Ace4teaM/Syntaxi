@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using editor;
 
-namespace editor.AppModel.Extend
+namespace AppModel.Extend
 {
     public partial class DatabaseSource
     {

@@ -12,7 +12,6 @@
              AutoGenerateColumns="False">
     <DataGrid.Resources>
         <domain:DatabaseProviderConverter x:Key="databaseProviderConverter" />
-        <domain:DatabaseProvider2Converter x:Key="databaseProvider2Converter" />
     </DataGrid.Resources>
     <DataGrid.ContextMenu>
         <ContextMenu>
@@ -32,18 +31,6 @@
             <DataGridTemplateColumn.CellEditingTemplate>
                 <DataTemplate>
                     <v:DatabaseProviderCombo SelectedValue="{Binding Provider}"></v:DatabaseProviderCombo>
-                </DataTemplate>
-            </DataGridTemplateColumn.CellEditingTemplate>
-        </DataGridTemplateColumn>
-        <DataGridTemplateColumn Width="100" Header="Fournisseur2">
-            <DataGridTemplateColumn.CellTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Provider2}"></TextBlock>
-                </DataTemplate>
-            </DataGridTemplateColumn.CellTemplate>
-            <DataGridTemplateColumn.CellEditingTemplate>
-                <DataTemplate>
-                    <v:DatabaseProviderCombo SelectedValue="{Binding Provider2, Converter={StaticResource databaseProvider2Converter}}"></v:DatabaseProviderCombo>
                 </DataTemplate>
             </DataGridTemplateColumn.CellEditingTemplate>
         </DataGridTemplateColumn>

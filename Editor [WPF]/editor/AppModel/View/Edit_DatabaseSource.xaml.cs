@@ -44,7 +44,6 @@ namespace AppModel.View
 
              // desactive tout
              me.itemGroup_Id.IsEnabled = false;
-             me.itemGroup_Provider2.IsEnabled = false;
              me.itemGroup_Provider.IsEnabled = false;
              me.itemGroup_ConnectionString.IsEnabled = false;             
 
@@ -55,9 +54,6 @@ namespace AppModel.View
                  {
                      case "Id":
                          me.itemGroup_Id.IsEnabled = true;
-                         break;
-                     case "Provider2":
-                         me.itemGroup_Provider2.IsEnabled = true;
                          break;
                      case "Provider":
                          me.itemGroup_Provider.IsEnabled = true;
@@ -88,7 +84,6 @@ namespace AppModel.View
 
              // desactive tout
              me.itemGroup_Id.Visibility = Visibility.Collapsed;
-             me.itemGroup_Provider2.Visibility = Visibility.Collapsed;
              me.itemGroup_Provider.Visibility = Visibility.Collapsed;
              me.itemGroup_ConnectionString.Visibility = Visibility.Collapsed;             
 
@@ -103,12 +98,6 @@ namespace AppModel.View
                          // place l'élément en bas de la pile (permet le tri par visibilité)
                          me.itemGroups.Children.Remove(me.itemGroup_Id);
                          me.itemGroups.Children.Add(me.itemGroup_Id);
-                         break;
-                     case "Provider2":
-                         me.itemGroup_Provider2.Visibility = Visibility.Visible;
-                         // place l'élément en bas de la pile (permet le tri par visibilité)
-                         me.itemGroups.Children.Remove(me.itemGroup_Provider2);
-                         me.itemGroups.Children.Add(me.itemGroup_Provider2);
                          break;
                      case "Provider":
                          me.itemGroup_Provider.Visibility = Visibility.Visible;
@@ -139,13 +128,11 @@ namespace AppModel.View
                
                 // rend les éléments visibles
                 this.itemGroup_Id.Visibility = Visibility.Visible;
-                this.itemGroup_Provider2.Visibility = Visibility.Visible;
                 this.itemGroup_Provider.Visibility = Visibility.Visible;
                 this.itemGroup_ConnectionString.Visibility = Visibility.Visible;                
 
                 // active / desactive l'édition
                this.itemGroup_Id.IsEnabled = false; //<< par defaut les identifiants ne sont pas editable
-               this.itemGroup_Provider2.IsEnabled = value;
                this.itemGroup_Provider.IsEnabled = value;
                this.itemGroup_ConnectionString.IsEnabled = value;
 

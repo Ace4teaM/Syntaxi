@@ -227,11 +227,11 @@ namespace editor.ModelView
                         IEntityFactory factory;
                         switch (source.Provider)
                         {
-                            case DatabaseProvider.ODBC:
+                            case DatabaseProvider.Odbc:
                                 factory = new SqlOdbcFactory();
                                 ((SqlOdbcFactory)factory).SetConnection(source.ConnectionString);
                                 break;
-                            case DatabaseProvider.Postgres:
+                            case DatabaseProvider.PostgreSQL:
                                 factory = new SqlPostgresFactory();
                                 ((SqlPostgresFactory)factory).SetConnection(source.ConnectionString);
                                 break;
