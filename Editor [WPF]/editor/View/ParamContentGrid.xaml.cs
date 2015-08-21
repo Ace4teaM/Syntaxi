@@ -29,18 +29,11 @@ namespace editor.View
 
         private void PropertiesMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Window wnd = new Window();
-            wnd.Content = new EditView();
-            wnd.Owner = Application.Current.MainWindow;
-            wnd.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            wnd.WindowStyle = WindowStyle.ToolWindow;
-            wnd.Title = "Données du paramètre";
-            wnd.Width = 400;
-
             Edit_ParamContent view = new Edit_ParamContent();
             view.DataContext = this.SelectedItem;
-            ((EditView)wnd.Content).AddView(view);
+            view.Width = 500;
 
+            EditWindow wnd = new EditWindow("Données du paramètre", view);
             wnd.ShowDialog();
         }
     }

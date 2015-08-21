@@ -37,18 +37,11 @@ namespace editor.View
 
         private void PropertiesMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Window wnd = new Window();
-            wnd.Content = new EditView();
-            wnd.Owner = Application.Current.MainWindow;
-            wnd.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            wnd.WindowStyle = WindowStyle.ToolWindow;
-            wnd.Title = "Source de données";
-            wnd.Width = 400;
-
             Edit_DatabaseSource view = new Edit_DatabaseSource();
             view.DataContext = this.SelectedItem;
-            ((EditView)wnd.Content).AddView(view);
+            view.Width = 500;
 
+            EditWindow wnd = new EditWindow("Source de données", view);
             wnd.ShowDialog();
         }
     }
