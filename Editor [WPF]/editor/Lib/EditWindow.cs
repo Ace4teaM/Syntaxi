@@ -8,7 +8,7 @@ using editor.View;
 
 namespace Lib
 {
-    class EditWindow : Window
+    public class EditWindow : Window
     {
         public EditWindow()
         {
