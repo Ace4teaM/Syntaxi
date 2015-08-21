@@ -14,33 +14,47 @@ using System.Windows.Data;
 
 namespace AppModel.Domain
 {
-    public enum DatabaseProvider : int
-    {
-      ODBC = 0,
-      Postgres = 1,
-      SqlServer = 2
-    }
-    
-    
-    public class DatabaseProviderConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            DatabaseProvider? format = value as DatabaseProvider?;
-            if (format == null)
-            {
-                return null;
-            }
-
-            return (int)format;
-        }
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            int parseValue;
-            if (false == int.TryParse(value.ToString(), out parseValue))
-                return null;
-
-            return (DatabaseProvider)parseValue;
-        }
-    }
+   public static class DatabaseProvider
+   {
+      public const string ODBC = "Odbc";
+      public const string Postgres = "Postgre SQL";
+      public const string SqlServer = "Sql Server";
+   }
+   
+   public class DatabaseProviderConverter : IValueConverter
+   {
+     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+     {
+         if (value as string == null)
+             return null;
+   
+         switch (value as string)
+         {
+             case DatabaseProvider.ODBC:
+                 return "Odbc";
+             case DatabaseProvider.Postgres:
+                 return "Postgre SQL";
+             case DatabaseProvider.SqlServer:
+                 return "Sql Server";
+         }
+   
+         return null;
+     }
+     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+     {
+         if (value as string == null)
+             return null;
+   
+         switch (value as string)
+         {
+             case "Odbc":
+                 return DatabaseProvider.ODBC;
+             case "Postgre SQL":
+                 return DatabaseProvider.Postgres;
+             case "Sql Server":
+                 return DatabaseProvider.SqlServer;
+         }
+         return null;
+     }
+   }
 }

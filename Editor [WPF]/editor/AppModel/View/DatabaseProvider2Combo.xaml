@@ -1,4 +1,4 @@
-﻿<ComboBox x:Class="AppModel.View.DatabaseProviderCombo"
+﻿<ComboBox x:Class="AppModel.View.DatabaseProvider2Combo"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,7 +6,7 @@
              mc:Ignorable="d" 
              SelectedValuePath="Tag"
              d:DesignHeight="300" d:DesignWidth="300">
-      <ComboBoxItem Tag="Odbc">ODBC</ComboBoxItem>
-      <ComboBoxItem Tag="Postgre SQL">Postgres</ComboBoxItem>
-      <ComboBoxItem Tag="Sql Server">SqlServer</ComboBoxItem>
+      <ComboBoxItem Tag="0">ODBC</ComboBoxItem>
+      <ComboBoxItem Tag="1">SqlServer</ComboBoxItem>
+      <ComboBoxItem Tag="2">Postgres</ComboBoxItem>
 </ComboBox>

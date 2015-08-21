@@ -33,14 +33,17 @@ namespace AppModel.Entity
          public DatabaseSource(){
             // Id
             this.id = String.Empty;
+            // Provider2
+            this.provider2 = new Int32();
             // Provider
-            this.provider = new Int32();
+            this.provider = String.Empty;
             // ConnectionString
             this.connectionstring = String.Empty;
          }
          
-         public DatabaseSource(String id, DatabaseProvider? provider, String connectionstring) : this(){
+         public DatabaseSource(String id, DatabaseProvider2? provider2, string provider, String connectionstring) : this(){
             this.id = id;
+            this.provider2 = provider2;
             this.provider = provider;
             this.connectionstring = connectionstring;
          }
@@ -61,8 +64,11 @@ namespace AppModel.Entity
          protected String id;
          public String Id { get{ return id; } set{ id = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Id")); } }
          // Fournisseur de données
-         protected DatabaseProvider? provider;
-         public DatabaseProvider? Provider { get{ return provider; } set{ provider = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Provider")); } }
+         protected DatabaseProvider2? provider2;
+         public DatabaseProvider2? Provider2 { get{ return provider2; } set{ provider2 = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Provider2")); } }
+         // Fournisseur de données
+         protected string provider;
+         public string Provider { get{ return provider; } set{ provider = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Provider")); } }
          // Chaine de connexion
          protected String connectionstring;
          public String ConnectionString { get{ return connectionstring; } set{ connectionstring = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ConnectionString")); } }
@@ -79,6 +85,7 @@ namespace AppModel.Entity
          {
              string result = this.GetType().Name+":"+Environment.NewLine+"-----------------------------"+Environment.NewLine;
              result += "Id = " + Id + Environment.NewLine;
+             result += "Provider2 = " + Provider2 + Environment.NewLine;
              result += "Provider = " + Provider + Environment.NewLine;
              result += "ConnectionString = " + ConnectionString + Environment.NewLine;
              return result;
@@ -91,7 +98,8 @@ namespace AppModel.Entity
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("Id", Id, typeof(String));
-            info.AddValue("Provider", Provider, typeof(int));
+            info.AddValue("Provider2", Provider2, typeof(int));
+            info.AddValue("Provider", Provider, typeof(string));
             info.AddValue("ConnectionString", ConnectionString, typeof(String));
                  }
        #endregion // ISerializable
@@ -101,7 +109,8 @@ namespace AppModel.Entity
        {
           // Properties
           Id =  reader.ReadString();
-          Provider = (DatabaseProvider) reader.ReadInt32();
+          Provider2 = (DatabaseProvider2) reader.ReadInt32();
+          Provider =  reader.ReadString();
           ConnectionString =  reader.ReadString();
        }
        
@@ -109,7 +118,8 @@ namespace AppModel.Entity
        {
           // Properties
           writer.Write(Id);
-          writer.Write((Int32)Provider.Value);
+          writer.Write((Int32)Provider2.Value);
+          writer.Write(Provider);
           writer.Write(ConnectionString);}
        
        
@@ -147,6 +157,14 @@ namespace AppModel.Entity
           {
               curMember = doc.CreateElement("Id");
               curMember.AppendChild(doc.CreateTextNode(id.ToString()));
+              cur.AppendChild(curMember);
+          }
+       
+       		// Assigne le membre Provider2
+          if (provider2 != null)
+          {
+              curMember = doc.CreateElement("Provider2");
+              curMember.AppendChild(doc.CreateTextNode(provider2.ToString()));
               cur.AppendChild(curMember);
           }
        
@@ -197,14 +215,20 @@ namespace AppModel.Entity
                    this.id = property_value;
                 }
                 break;
-                // Assigne le membre Provider
-                case "Provider":
+                // Assigne le membre Provider2
+                case "Provider2":
                 {
                    int value;
                    if(int.TryParse(property_value,out value)==false)
-                      this.Provider = new Int32();
+                      this.Provider2 = new Int32();
                    else
-                      this.Provider = (DatabaseProvider)value;
+                      this.Provider2 = (DatabaseProvider2)value;
+                }
+                break;
+                // Assigne le membre Provider
+                case "Provider":
+                {
+                   this.provider = property_value;
                 }
                 break;
                 // Assigne le membre ConnectionString
@@ -234,6 +258,7 @@ namespace AppModel.Entity
               string all_mess = "";
               string msg;
               all_mess += ((msg = this["Id"]) != String.Empty) ? (GetPropertyDesc("Id") + " :\n\t" + msg + "\n") : String.Empty;
+              all_mess += ((msg = this["Provider2"]) != String.Empty) ? (GetPropertyDesc("Provider2") + " :\n\t" + msg + "\n") : String.Empty;
               all_mess += ((msg = this["Provider"]) != String.Empty) ? (GetPropertyDesc("Provider") + " :\n\t" + msg + "\n") : String.Empty;
               all_mess += ((msg = this["ConnectionString"]) != String.Empty) ? (GetPropertyDesc("ConnectionString") + " :\n\t" + msg + "\n") : String.Empty;
               return all_mess;
@@ -268,6 +293,9 @@ namespace AppModel.Entity
               case "Id":
                   return "Identifiant de la source";
        
+              case "Provider2":
+                  return "Fournisseur de données";
+       
               case "Provider":
                   return "Fournisseur de données";
        
@@ -284,6 +312,8 @@ namespace AppModel.Entity
           string errorCode;
           
           if(CheckField("Id", out errorCode) == false)
+             return false;
+          if(CheckField("Provider2", out errorCode) == false)
              return false;
           if(CheckField("Provider", out errorCode) == false)
              return false;
@@ -305,6 +335,11 @@ namespace AppModel.Entity
                    return false;
                  }
                  return AppModel.Format.Name.Validate(this.Id.ToString(),ref errorCode);
+       
+               case "Provider2":
+                 if(this.Provider2 == null)
+                   break;
+                 break;
        
                case "Provider":
                  if(this.Provider == null)

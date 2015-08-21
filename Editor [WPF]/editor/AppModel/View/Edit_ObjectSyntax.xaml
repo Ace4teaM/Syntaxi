@@ -13,7 +13,8 @@
              xmlns:v="clr-namespace:AppModel.View" 
              mc:Ignorable="d" 
              d:DesignWidth="300">
-    <UniformGrid Columns="1" Name="itemGroups" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Grid>
+        <StackPanel Name="itemGroups" Orientation="Vertical">
             <DockPanel Name="itemGroup_ContentRegEx">
                <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,5,0,5">Expression de contenu</TextBlock>
                <TextBox Name="ContentRegEx" Text="{Binding Path=ContentRegEx, TargetNullValue='', UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" />
@@ -30,5 +31,6 @@
                <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,5,0,5">Description</TextBlock>
                <TextBox Name="ObjectDesc" Text="{Binding Path=ObjectDesc, TargetNullValue='', UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" />
             </DockPanel>
-    </UniformGrid>
+         </StackPanel>
+    </Grid>
 </UserControl>
