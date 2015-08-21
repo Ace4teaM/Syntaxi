@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using AppModel.Entity;
-using editor.View;
 using EditorModel.Entity;
 using Lib;
 using Microsoft.Win32;
