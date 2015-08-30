@@ -28,7 +28,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class DatabaseSource : ISerializable, IEntitySerializable , INotifyPropertyChanged , IDataErrorInfo, IEntityValidable    {
+    public partial class DatabaseSource : IEntity, ISerializable, IEntitySerializable, INotifyPropertyChanged, IDataErrorInfo, IEntityValidable    {
          #region Constructor
          public DatabaseSource(){
             // Id
@@ -45,6 +45,8 @@ namespace AppModel.Entity
             this.connectionstring = connectionstring;
          }
          #endregion // Constructor
+         
+          public string EntityName { get{ return "DatabaseSource"; } }
 
          #region INotifyPropertyChanged
          public event PropertyChangedEventHandler PropertyChanged;

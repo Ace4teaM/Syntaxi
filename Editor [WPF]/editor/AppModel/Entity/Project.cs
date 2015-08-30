@@ -29,7 +29,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class Project : ISerializable, IEntitySerializable , INotifyPropertyChanged , IEntity , IDataErrorInfo, IEntityValidable    {
+    public partial class Project : IEntity, ISerializable, IEntitySerializable, INotifyPropertyChanged, IEntityPersistent, IDataErrorInfo, IEntityValidable    {
          #region Constructor
          public Project(){
 
@@ -54,6 +54,8 @@ namespace AppModel.Entity
             this.version = version;
          }
          #endregion // Constructor
+         
+          public string EntityName { get{ return "Project"; } }
 
          #region INotifyPropertyChanged
          public event PropertyChangedEventHandler PropertyChanged;
@@ -509,7 +511,7 @@ namespace AppModel.Entity
        
        #endregion // Serialization
        
-       #region IEntity
+       #region IEntityPersistent
        public IEntityFactory Factory{get;set;}
        
        public string TableName { get{ return "T_PROJECT";} }
@@ -518,7 +520,7 @@ namespace AppModel.Entity
        public string[] GetPrimaryIdentifier() { return PrimaryIdentifier; }
        
        // Identifiants
-       public bool CompareIdentifier(IEntity e)
+       public bool CompareIdentifier(IEntityPersistent e)
        {
            Project b = e as Project;
            if(b==null)
@@ -625,7 +627,7 @@ namespace AppModel.Entity
        {
           SqlDataReader reader = _reader as SqlDataReader;
        }
-       #endregion // IEntity
+       #endregion // IEntityPersistent
        #region Validation
        #region IDataErrorInfo
        // Validation globale de l'entité

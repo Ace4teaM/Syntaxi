@@ -29,7 +29,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class ParamContent : ISerializable, IEntitySerializable , INotifyPropertyChanged , IEntity , IDataErrorInfo, IEntityValidable    {
+    public partial class ParamContent : IEntity, ISerializable, IEntitySerializable, INotifyPropertyChanged, IEntityPersistent, IDataErrorInfo, IEntityValidable    {
          #region Constructor
          public ParamContent(){
             // Id
@@ -46,6 +46,8 @@ namespace AppModel.Entity
             this.paramvalue = paramvalue;
          }
          #endregion // Constructor
+         
+          public string EntityName { get{ return "ParamContent"; } }
 
          #region INotifyPropertyChanged
          public event PropertyChangedEventHandler PropertyChanged;
@@ -221,7 +223,7 @@ namespace AppModel.Entity
        
        #endregion // Serialization
        
-       #region IEntity
+       #region IEntityPersistent
        public IEntityFactory Factory{get;set;}
        
        public string TableName { get{ return "T_PARAM_CONTENT";} }
@@ -230,7 +232,7 @@ namespace AppModel.Entity
        public string[] GetPrimaryIdentifier() { return PrimaryIdentifier; }
        
        // Identifiants
-       public bool CompareIdentifier(IEntity e)
+       public bool CompareIdentifier(IEntityPersistent e)
        {
            ParamContent b = e as ParamContent;
            if(b==null)
@@ -353,7 +355,7 @@ namespace AppModel.Entity
           if (reader["ParamValue"] != null)
              ParamValue = reader["ParamValue"].ToString();
        }
-       #endregion // IEntity
+       #endregion // IEntityPersistent
        #region Validation
        #region IDataErrorInfo
        // Validation globale de l'entité

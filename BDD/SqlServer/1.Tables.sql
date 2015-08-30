@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      Microsoft SQL Server 2012                    */
-/* Created on:     13/08/2015 18:25:46                          */
+/* Created on:     30/08/2015 13:43:08                          */
 /*==============================================================*/
 
 
@@ -48,8 +48,8 @@ create table T_OBJECT_CONTENT (
    OBJECT_CONTENT_ID    varchar(60)          not null,
    OBJECTTYPE           varchar(60)          not null,
    FILENAME             varchar(128)         not null,
-   POSITION             int                  not null,
-   constraint PK_T_OBJECT_CONTENT primary key (OBJECT_CONTENT_ID)
+   FILEPOSITION         int                  not null,
+   constraint PK_T_OBJECT_CONTENT primary key nonclustered (OBJECT_CONTENT_ID)
 )
 go
 
@@ -61,7 +61,7 @@ create table T_PARAM_CONTENT (
    OBJECT_CONTENT_ID    varchar(60)          null,
    PARAMNAME            varchar(60)          not null,
    PARAMVALUE           varchar(128)         null,
-   constraint PK_T_PARAM_CONTENT primary key (PARAM_CONTENT_ID)
+   constraint PK_T_PARAM_CONTENT primary key nonclustered (PARAM_CONTENT_ID)
 )
 go
 
@@ -71,7 +71,7 @@ go
 create table T_PROJECT (
    NAME                 varchar(64)          not null,
    VERSION              varchar(16)          not null,
-   constraint PK_T_PROJECT primary key (NAME, VERSION)
+   constraint PK_T_PROJECT primary key nonclustered (NAME, VERSION)
 )
 go
 
@@ -85,7 +85,7 @@ go
 alter table T_PARAM_CONTENT
    add constraint FK_T_PARAM_CONTENT_REFERENCE_3_T_OBJECT_CONTENT foreign key (OBJECT_CONTENT_ID)
       references T_OBJECT_CONTENT (OBJECT_CONTENT_ID)
-         
+         on update cascade on delete cascade 
          not for replication
 go
 

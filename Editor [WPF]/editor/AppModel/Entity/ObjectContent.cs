@@ -29,7 +29,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class ObjectContent : ISerializable, IEntitySerializable , INotifyPropertyChanged , IEntity , IDataErrorInfo, IEntityValidable    {
+    public partial class ObjectContent : IEntity, ISerializable, IEntitySerializable, INotifyPropertyChanged, IEntityPersistent, IDataErrorInfo, IEntityValidable    {
          #region Constructor
          public ObjectContent(){
 
@@ -52,6 +52,8 @@ namespace AppModel.Entity
             this.position = position;
          }
          #endregion // Constructor
+         
+          public string EntityName { get{ return "ObjectContent"; } }
 
          #region INotifyPropertyChanged
          public event PropertyChangedEventHandler PropertyChanged;
@@ -313,7 +315,7 @@ namespace AppModel.Entity
        
        #endregion // Serialization
        
-       #region IEntity
+       #region IEntityPersistent
        public IEntityFactory Factory{get;set;}
        
        public string TableName { get{ return "T_OBJECT_CONTENT";} }
@@ -322,7 +324,7 @@ namespace AppModel.Entity
        public string[] GetPrimaryIdentifier() { return PrimaryIdentifier; }
        
        // Identifiants
-       public bool CompareIdentifier(IEntity e)
+       public bool CompareIdentifier(IEntityPersistent e)
        {
            ObjectContent b = e as ObjectContent;
            if(b==null)
@@ -499,7 +501,7 @@ namespace AppModel.Entity
           if (reader["FilePosition"] != null)
              Position = int.Parse(reader["FilePosition"].ToString());
        }
-       #endregion // IEntity
+       #endregion // IEntityPersistent
        #region Validation
        #region IDataErrorInfo
        // Validation globale de l'entité

@@ -28,7 +28,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class ParamSyntax : ISerializable, IEntitySerializable , INotifyPropertyChanged , IDataErrorInfo, IEntityValidable    {
+    public partial class ParamSyntax : IEntity, ISerializable, IEntitySerializable, INotifyPropertyChanged, IDataErrorInfo, IEntityValidable    {
          #region Constructor
          public ParamSyntax(){
             // ContentRegEx
@@ -45,6 +45,8 @@ namespace AppModel.Entity
             this.paramtype = paramtype;
          }
          #endregion // Constructor
+         
+          public string EntityName { get{ return "ParamSyntax"; } }
 
          #region INotifyPropertyChanged
          public event PropertyChangedEventHandler PropertyChanged;

@@ -28,7 +28,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class ObjectSyntax : ISerializable, IEntitySerializable , INotifyPropertyChanged , IDataErrorInfo, IEntityValidable    {
+    public partial class ObjectSyntax : IEntity, ISerializable, IEntitySerializable, INotifyPropertyChanged, IDataErrorInfo, IEntityValidable    {
          #region Constructor
          public ObjectSyntax(){
             // ContentRegEx
@@ -48,6 +48,8 @@ namespace AppModel.Entity
             this.objectdesc = objectdesc;
          }
          #endregion // Constructor
+         
+          public string EntityName { get{ return "ObjectSyntax"; } }
 
          #region INotifyPropertyChanged
          public event PropertyChangedEventHandler PropertyChanged;

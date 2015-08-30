@@ -26,7 +26,7 @@ namespace EditorModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class EditorStates : ISerializable, IEntitySerializable    {
+    public partial class EditorStates : IEntity, ISerializable, IEntitySerializable    {
          #region Constructor
          public EditorStates(){
 
@@ -43,6 +43,8 @@ namespace EditorModel.Entity
             this.selecteddatabasesourceid = selecteddatabasesourceid;
          }
          #endregion // Constructor
+         
+          public string EntityName { get{ return "EditorStates"; } }
 
          #region State
         private EntityState entityState;

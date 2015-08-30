@@ -128,6 +128,7 @@
     <Compile Include="Lib\EntityReferences.cs" />
     <Compile Include="Lib\IEntity.cs" />
     <Compile Include="Lib\IEntityFactory.cs" />
+    <Compile Include="Lib\IEntityPersistent.cs" />
     <Compile Include="Lib\IEntitySerializable.cs" />
     <Compile Include="Lib\IEntityValidable.cs" />
     <Compile Include="Lib\SqlPostgresFactory.cs" />

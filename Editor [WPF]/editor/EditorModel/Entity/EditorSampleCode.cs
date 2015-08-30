@@ -26,7 +26,7 @@ namespace EditorModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class EditorSampleCode : ISerializable, IEntitySerializable    {
+    public partial class EditorSampleCode : IEntity, ISerializable, IEntitySerializable    {
          #region Constructor
          public EditorSampleCode(){
             // Text
@@ -40,6 +40,8 @@ namespace EditorModel.Entity
             this.objectsyntaxtype = objectsyntaxtype;
          }
          #endregion // Constructor
+         
+          public string EntityName { get{ return "EditorSampleCode"; } }
 
          #region State
         private EntityState entityState;

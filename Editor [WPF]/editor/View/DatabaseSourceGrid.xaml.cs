@@ -32,7 +32,9 @@ namespace editor.View
         {
             App app = Application.Current as App;
             if (this.SelectedItem != null && this.SelectedItem is DatabaseSource)
+            {
                 app.States.SelectedDatabaseSourceId = (this.SelectedItem as DatabaseSource).Id;
+            }
         }
 
         private void PropertiesMenuItem_Click(object sender, RoutedEventArgs e)

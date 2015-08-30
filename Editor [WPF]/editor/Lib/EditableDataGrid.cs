@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -34,9 +33,9 @@ namespace Lib
             if (e.EditAction == DataGridEditAction.Cancel)
                 return;
 
-            if (e.Row.Item is IEntity)
+            if (e.Row.Item is IEntityPersistent)
             {
-                IEntity entity = e.Row.Item as IEntity;
+                IEntityPersistent entity = e.Row.Item as IEntityPersistent;
                 if (entity.EntityState == EntityState.Added)
                     return;
                 entity.EntityState = EntityState.Modified;
@@ -47,9 +46,9 @@ namespace Lib
         {
             this.EditMode = true;
 
-            if (e.Row.IsNewItem && e.Row.Item is IEntity)
+            if (e.Row.IsNewItem && e.Row.Item is IEntityPersistent)
             {
-                IEntity entity = e.Row.Item as IEntity;
+                IEntityPersistent entity = e.Row.Item as IEntityPersistent;
                 entity.EntityState = EntityState.Added;
             }
         }
@@ -58,9 +57,9 @@ namespace Lib
         {
             this.EditMode = false;
 
-            if (e.Row.Item is IEntity)
+            if (e.Row.Item is IEntityPersistent)
             {
-                IEntity entity = e.Row.Item as IEntity;
+                IEntityPersistent entity = e.Row.Item as IEntityPersistent;
                 //notify
                 ICommand cmd = ViewModelBase.FindParentCommand(this, "EntityChange");
                 if (cmd != null && cmd.CanExecute(entity))
@@ -76,7 +75,7 @@ namespace Lib
                 {
                     foreach (var item in this.SelectedItems)
                     {
-                        IEntity entity = item as IEntity;
+                        IEntityPersistent entity = item as IEntityPersistent;
                         if (entity != null)
                         {
                             entity.EntityState = EntityState.Deleted;
@@ -89,7 +88,7 @@ namespace Lib
                 }
                 else
                 {
-                    IEntity entity = this.SelectedItem as IEntity;
+                    IEntityPersistent entity = this.SelectedItem as IEntityPersistent;
                     if (entity != null)
                     {
                         entity.EntityState = EntityState.Deleted;
@@ -105,7 +104,7 @@ namespace Lib
             {
                 if (this.SelectedItem != null)
                 {
-                    IEntity entity = this.SelectedItem as IEntity;
+                    IEntityPersistent entity = this.SelectedItem as IEntityPersistent;
                     if (entity != null)
                     {
                         //command

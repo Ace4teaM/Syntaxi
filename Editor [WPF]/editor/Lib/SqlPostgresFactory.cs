@@ -14,7 +14,7 @@ using System.Data.Common;
 
 namespace Lib
 {
-    public class SqlPostgresFactory : EntityReferences<IEntity>, IEntityFactory
+    public class SqlPostgresFactory : EntityReferences<IEntityPersistent>, IEntityFactory
     {
         private  string connectionString;
         private  int maxPersistantConnection = 4;
@@ -24,7 +24,7 @@ namespace Lib
         public   bool useCachedAssociation = false;
         public   int CommandTimeout = 10;
 
-        public List<IEntity> GetReferences()
+        public List<IEntityPersistent> GetReferences()
         {
             return References;
         }
@@ -231,7 +231,7 @@ namespace Lib
         }
         
         // Commit les modifications
-        public void Commit(IEntity[] entities )
+        public void Commit(IEntityPersistent[] entities )
         {
             //begin transaction
             //...
@@ -244,11 +244,11 @@ namespace Lib
                         EntityState state = this.Changes[sel];
 
                         if (state == EntityState.Modified)
-                            (sel as IEntity).Update();
+                            (sel as IEntityPersistent).Update();
                         else if (state == EntityState.Deleted)
-                            (sel as IEntity).Delete();
+                            (sel as IEntityPersistent).Delete();
                         else if (state == EntityState.Added)
-                            (sel as IEntity).Insert();
+                            (sel as IEntityPersistent).Insert();
                     }
                 }
 
@@ -267,11 +267,11 @@ namespace Lib
                 foreach (var es in this.Changes)
                 {
                     if (es.Value == EntityState.Modified)
-                        (es.Key as IEntity).Update();
+                        (es.Key as IEntityPersistent).Update();
                     else if (es.Value == EntityState.Deleted)
-                        (es.Key as IEntity).Delete();
+                        (es.Key as IEntityPersistent).Delete();
                     else if (es.Value == EntityState.Added)
-                        (es.Key as IEntity).Insert();
+                        (es.Key as IEntityPersistent).Insert();
                 }
 
                 // ok
@@ -284,7 +284,7 @@ namespace Lib
         }
 
         // Annule les modifications
-        public void Undo(IEntity[] entities)
+        public void Undo(IEntityPersistent[] entities)
         {
             //begin transaction
             //...
@@ -296,7 +296,7 @@ namespace Lib
                 {
                     if (this.Changes.ContainsKey(sel))
                     {
-                        (sel as IEntity).Load();
+                        (sel as IEntityPersistent).Load();
                     }
                 }
 
@@ -314,7 +314,7 @@ namespace Lib
                 //modifie les entités
                 foreach (var es in this.Changes)
                 {
-                    (es.Key as IEntity).Load();
+                    (es.Key as IEntityPersistent).Load();
                 }
 
                 // ok
@@ -325,9 +325,9 @@ namespace Lib
             //...
         }
 
-        public IEnumerable Factory<T>() where T : IEntity, new() { return new EntityFactory<T>(this); }
+        public IEnumerable Factory<T>() where T : IEntityPersistent, new() { return new EntityFactory<T>(this); }
 
-        public class EntityFactory<T> : IEnumerable where T : IEntity, new()
+        public class EntityFactory<T> : IEnumerable where T : IEntityPersistent, new()
         {
             private SqlPostgresFactory db;
             private string q;
@@ -349,7 +349,7 @@ namespace Lib
             }
         }
 
-        public class EntityEnum<T> : IEnumerator where T : IEntity, new()
+        public class EntityEnum<T> : IEnumerator where T : IEntityPersistent, new()
         {
             private NpgsqlDataReader reader;
             private NpgsqlConnection conn;

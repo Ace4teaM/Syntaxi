@@ -28,7 +28,7 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class SearchParams : ISerializable, IEntitySerializable , INotifyPropertyChanged , IDataErrorInfo, IEntityValidable    {
+    public partial class SearchParams : IEntity, ISerializable, IEntitySerializable, INotifyPropertyChanged, IDataErrorInfo, IEntityValidable    {
          #region Constructor
          public SearchParams(){
             // InputDir
@@ -45,6 +45,8 @@ namespace AppModel.Entity
             this.recursive = recursive;
          }
          #endregion // Constructor
+         
+          public string EntityName { get{ return "SearchParams"; } }
 
          #region INotifyPropertyChanged
          public event PropertyChangedEventHandler PropertyChanged;

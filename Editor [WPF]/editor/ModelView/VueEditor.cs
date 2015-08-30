@@ -293,7 +293,7 @@ namespace editor.ModelView
                 if (this.entityChange == null)
                     this.entityChange = new DelegateCommand(() =>
                     {
-                        IEntity entity = ((DelegateCommand)this.entityChange).GetParam() as IEntity;
+                        IEntityPersistent entity = ((DelegateCommand)this.entityChange).GetParam() as IEntityPersistent;
                         if (entity == null)
                             return;
 
