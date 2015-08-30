@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using AppModel.Entity;
+using DesktopApp.Event;
 using EditorModel.Entity;
 using Lib;
 using Microsoft.Win32;
@@ -18,7 +19,7 @@ namespace editor
     /// <summary>
     /// Logique d'interaction pour App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App : Application, IEventProcess
     {
         public String Version = "1.0";
         public string ProjectFileName;
@@ -442,6 +443,15 @@ typedef struct _NP_HANDLE_HEADER{
             {
                 e.LoadParamContent();
             }
+        }
+
+        //-----------------------------------------------------------------------------------------
+        // IEventProcess
+        //-----------------------------------------------------------------------------------------
+        public void ProcessEvent(object from, object _this, IEvent e)
+        {
+            if (this.MainWindow != null && this.MainWindow is IEventProcess)
+                (this.MainWindow as IEventProcess).ProcessEvent(from, this, e);
         }
     }
 }

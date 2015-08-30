@@ -122,6 +122,7 @@
     </Compile>
     <Compile Include="EditorModel\Entity\EditorSampleCode.cs" />
     <Compile Include="EditorModel\Entity\EditorStates.cs" />
+    <Compile Include="Event\EntityCreateEvent.cs" />
     <Compile Include="Lib\DelegateCommand.cs" />
     <Compile Include="Lib\EditableDataGrid.cs" />
     <Compile Include="Lib\EditWindow.cs" />
@@ -131,6 +132,8 @@
     <Compile Include="Lib\IEntityPersistent.cs" />
     <Compile Include="Lib\IEntitySerializable.cs" />
     <Compile Include="Lib\IEntityValidable.cs" />
+    <Compile Include="Lib\IEvent.cs" />
+    <Compile Include="Lib\IEventProcess.cs" />
     <Compile Include="Lib\SqlPostgresFactory.cs" />
     <Compile Include="Lib\SqlServerFactory.cs" />
     <Compile Include="Lib\SqlODBCFactory.cs" />
