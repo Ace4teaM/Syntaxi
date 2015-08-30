@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using editor;
 
-namespace AppModel.Extend
+namespace AppModel.Entity
 {
     public partial class DatabaseSource
     {
@@ -19,7 +19,7 @@ namespace AppModel.Extend
                     app.Project != null
                     && app.States != null
                     && app.States.SelectedDatabaseSourceId != null
-                    && app.Project.DatabaseSource.Where(p => (p.Id == app.States.SelectedDatabaseSourceId)).SingleOrDefault() != null
+                    && app.States.SelectedDatabaseSourceId == this.Id
                );
             }
         }
