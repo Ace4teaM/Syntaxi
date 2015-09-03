@@ -30,7 +30,7 @@ namespace editor.View
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            App app = Application.Current as App;
+            editor.App app = Application.Current as editor.App;
             if (this.SelectedItem != null && this.SelectedItem is DatabaseSource)
             {
                 app.States.SelectedDatabaseSourceId = (this.SelectedItem as DatabaseSource).Id;

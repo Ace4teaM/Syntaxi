@@ -39,13 +39,16 @@ namespace AppModel.Entity
             this.objecttype = String.Empty;
             // ObjectDesc
             this.objectdesc = String.Empty;
+            // GroupName
+            this.groupname = String.Empty;
          }
          
-         public ObjectSyntax(String contentregex, String paramregex, String objecttype, String objectdesc) : this(){
+         public ObjectSyntax(String contentregex, String paramregex, String objecttype, String objectdesc, String groupname) : this(){
             this.contentregex = contentregex;
             this.paramregex = paramregex;
             this.objecttype = objecttype;
             this.objectdesc = objectdesc;
+            this.groupname = groupname;
          }
          #endregion // Constructor
          
@@ -74,6 +77,9 @@ namespace AppModel.Entity
          // Description
          protected String objectdesc;
          public String ObjectDesc { get{ return objectdesc; } set{ objectdesc = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ObjectDesc")); } }
+         // Groupe
+         protected String groupname;
+         public String GroupName { get{ return groupname; } set{ groupname = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("GroupName")); } }
          #endregion // Fields
 
          #region Associations
@@ -90,6 +96,7 @@ namespace AppModel.Entity
              result += "ParamRegEx = " + ParamRegEx + Environment.NewLine;
              result += "ObjectType = " + ObjectType + Environment.NewLine;
              result += "ObjectDesc = " + ObjectDesc + Environment.NewLine;
+             result += "GroupName = " + GroupName + Environment.NewLine;
              return result;
          }
 
@@ -103,6 +110,7 @@ namespace AppModel.Entity
             info.AddValue("ParamRegEx", ParamRegEx, typeof(String));
             info.AddValue("ObjectType", ObjectType, typeof(String));
             info.AddValue("ObjectDesc", ObjectDesc, typeof(String));
+            info.AddValue("GroupName", GroupName, typeof(String));
                  }
        #endregion // ISerializable
        
@@ -114,6 +122,7 @@ namespace AppModel.Entity
           ParamRegEx =  reader.ReadString();
           ObjectType =  reader.ReadString();
           ObjectDesc =  reader.ReadString();
+          GroupName =  reader.ReadString();
        }
        
        public void WriteBinary(BinaryWriter writer)
@@ -122,7 +131,8 @@ namespace AppModel.Entity
           writer.Write(ContentRegEx);
           writer.Write(ParamRegEx);
           writer.Write(ObjectType);
-          writer.Write(ObjectDesc);}
+          writer.Write(ObjectDesc);
+          writer.Write(GroupName);}
        
        
        /// <summary>
@@ -185,6 +195,14 @@ namespace AppModel.Entity
               curMember.AppendChild(doc.CreateTextNode(objectdesc.ToString()));
               cur.AppendChild(curMember);
           }
+       
+       		// Assigne le membre GroupName
+          if (groupname != null)
+          {
+              curMember = doc.CreateElement("GroupName");
+              curMember.AppendChild(doc.CreateTextNode(groupname.ToString()));
+              cur.AppendChild(curMember);
+          }
           
           //
           // Aggregations
@@ -235,6 +253,12 @@ namespace AppModel.Entity
                    this.objectdesc = property_value;
                 }
                 break;
+                // Assigne le membre GroupName
+                case "GroupName":
+                {
+                   this.groupname = property_value;
+                }
+                break;
        
                 //
                 // Aggregations
@@ -259,6 +283,7 @@ namespace AppModel.Entity
               all_mess += ((msg = this["ParamRegEx"]) != String.Empty) ? (GetPropertyDesc("ParamRegEx") + " :\n\t" + msg + "\n") : String.Empty;
               all_mess += ((msg = this["ObjectType"]) != String.Empty) ? (GetPropertyDesc("ObjectType") + " :\n\t" + msg + "\n") : String.Empty;
               all_mess += ((msg = this["ObjectDesc"]) != String.Empty) ? (GetPropertyDesc("ObjectDesc") + " :\n\t" + msg + "\n") : String.Empty;
+              all_mess += ((msg = this["GroupName"]) != String.Empty) ? (GetPropertyDesc("GroupName") + " :\n\t" + msg + "\n") : String.Empty;
               return all_mess;
           }
        }
@@ -299,6 +324,9 @@ namespace AppModel.Entity
        
               case "ObjectDesc":
                   return "Description";
+       
+              case "GroupName":
+                  return "Groupe";
           }
           return "";
        }
@@ -316,6 +344,8 @@ namespace AppModel.Entity
           if(CheckField("ObjectType", out errorCode) == false)
              return false;
           if(CheckField("ObjectDesc", out errorCode) == false)
+             return false;
+          if(CheckField("GroupName", out errorCode) == false)
              return false;
           return true;
        }
@@ -346,6 +376,11 @@ namespace AppModel.Entity
        
                case "ObjectDesc":
                  if(this.ObjectDesc == null)
+                   break;
+                 break;
+       
+               case "GroupName":
+                 if(this.GroupName == null)
                    break;
                  break;
        

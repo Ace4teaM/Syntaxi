@@ -45,7 +45,8 @@ namespace AppModel.View
              // desactive tout
              me.itemGroup_ContentRegEx.IsEnabled = false;
              me.itemGroup_ParamRegEx.IsEnabled = false;
-             me.itemGroup_ParamType.IsEnabled = false;             
+             me.itemGroup_ParamType.IsEnabled = false;
+             me.itemGroup_GroupName.IsEnabled = false;             
 
              // active les éléments demandés
              foreach (string s in _args)
@@ -60,6 +61,9 @@ namespace AppModel.View
                          break;
                      case "ParamType":
                          me.itemGroup_ParamType.IsEnabled = true;
+                         break;
+                     case "GroupName":
+                         me.itemGroup_GroupName.IsEnabled = true;
                          break;
                }
             }
@@ -85,7 +89,8 @@ namespace AppModel.View
              // desactive tout
              me.itemGroup_ContentRegEx.Visibility = Visibility.Collapsed;
              me.itemGroup_ParamRegEx.Visibility = Visibility.Collapsed;
-             me.itemGroup_ParamType.Visibility = Visibility.Collapsed;             
+             me.itemGroup_ParamType.Visibility = Visibility.Collapsed;
+             me.itemGroup_GroupName.Visibility = Visibility.Collapsed;             
 
 
              // active les éléments demandés
@@ -111,6 +116,12 @@ namespace AppModel.View
                          me.itemGroups.Children.Remove(me.itemGroup_ParamType);
                          me.itemGroups.Children.Add(me.itemGroup_ParamType);
                          break;
+                     case "GroupName":
+                         me.itemGroup_GroupName.Visibility = Visibility.Visible;
+                         // place l'élément en bas de la pile (permet le tri par visibilité)
+                         me.itemGroups.Children.Remove(me.itemGroup_GroupName);
+                         me.itemGroups.Children.Add(me.itemGroup_GroupName);
+                         break;
               }
             }
         }
@@ -129,12 +140,14 @@ namespace AppModel.View
                 // rend les éléments visibles
                 this.itemGroup_ContentRegEx.Visibility = Visibility.Visible;
                 this.itemGroup_ParamRegEx.Visibility = Visibility.Visible;
-                this.itemGroup_ParamType.Visibility = Visibility.Visible;                
+                this.itemGroup_ParamType.Visibility = Visibility.Visible;
+                this.itemGroup_GroupName.Visibility = Visibility.Visible;                
 
                 // active / desactive l'édition
                this.itemGroup_ContentRegEx.IsEnabled = value;
                this.itemGroup_ParamRegEx.IsEnabled = value;
                this.itemGroup_ParamType.IsEnabled = value;
+               this.itemGroup_GroupName.IsEnabled = value;
 
             }
         }

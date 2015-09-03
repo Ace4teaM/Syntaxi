@@ -46,7 +46,8 @@ namespace AppModel.View
              me.itemGroup_ContentRegEx.IsEnabled = false;
              me.itemGroup_ParamRegEx.IsEnabled = false;
              me.itemGroup_ObjectType.IsEnabled = false;
-             me.itemGroup_ObjectDesc.IsEnabled = false;             
+             me.itemGroup_ObjectDesc.IsEnabled = false;
+             me.itemGroup_GroupName.IsEnabled = false;             
 
              // active les éléments demandés
              foreach (string s in _args)
@@ -64,6 +65,9 @@ namespace AppModel.View
                          break;
                      case "ObjectDesc":
                          me.itemGroup_ObjectDesc.IsEnabled = true;
+                         break;
+                     case "GroupName":
+                         me.itemGroup_GroupName.IsEnabled = true;
                          break;
                }
             }
@@ -90,7 +94,8 @@ namespace AppModel.View
              me.itemGroup_ContentRegEx.Visibility = Visibility.Collapsed;
              me.itemGroup_ParamRegEx.Visibility = Visibility.Collapsed;
              me.itemGroup_ObjectType.Visibility = Visibility.Collapsed;
-             me.itemGroup_ObjectDesc.Visibility = Visibility.Collapsed;             
+             me.itemGroup_ObjectDesc.Visibility = Visibility.Collapsed;
+             me.itemGroup_GroupName.Visibility = Visibility.Collapsed;             
 
 
              // active les éléments demandés
@@ -122,6 +127,12 @@ namespace AppModel.View
                          me.itemGroups.Children.Remove(me.itemGroup_ObjectDesc);
                          me.itemGroups.Children.Add(me.itemGroup_ObjectDesc);
                          break;
+                     case "GroupName":
+                         me.itemGroup_GroupName.Visibility = Visibility.Visible;
+                         // place l'élément en bas de la pile (permet le tri par visibilité)
+                         me.itemGroups.Children.Remove(me.itemGroup_GroupName);
+                         me.itemGroups.Children.Add(me.itemGroup_GroupName);
+                         break;
               }
             }
         }
@@ -141,13 +152,15 @@ namespace AppModel.View
                 this.itemGroup_ContentRegEx.Visibility = Visibility.Visible;
                 this.itemGroup_ParamRegEx.Visibility = Visibility.Visible;
                 this.itemGroup_ObjectType.Visibility = Visibility.Visible;
-                this.itemGroup_ObjectDesc.Visibility = Visibility.Visible;                
+                this.itemGroup_ObjectDesc.Visibility = Visibility.Visible;
+                this.itemGroup_GroupName.Visibility = Visibility.Visible;                
 
                 // active / desactive l'édition
                this.itemGroup_ContentRegEx.IsEnabled = value;
                this.itemGroup_ParamRegEx.IsEnabled = value;
                this.itemGroup_ObjectType.IsEnabled = value;
                this.itemGroup_ObjectDesc.IsEnabled = value;
+               this.itemGroup_GroupName.IsEnabled = value;
 
             }
         }

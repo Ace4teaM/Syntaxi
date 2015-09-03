@@ -6,7 +6,7 @@ using Lib;
 
 namespace Lib
 {
-    public class EntityReferences<T> where T : IEntity
+    public class EntityReferences<T> where T : IEntityPersistent
     {
         //cache des entités
         private List<T> references = new List<T>();
@@ -15,11 +15,11 @@ namespace Lib
         // private List<EntityState> changes = new List<EntityState>();//modifs des entités
         //  public List<EntityState> Changes { get { return changes; } }//modifs des entités
 
-        private Dictionary<IEntity, EntityState> changes = new Dictionary<IEntity, EntityState>();
-        public Dictionary<IEntity, EntityState> Changes { get { return changes; } }//modifs des entités
+        private Dictionary<IEntityPersistent, EntityState> changes = new Dictionary<IEntityPersistent, EntityState>();
+        public Dictionary<IEntityPersistent, EntityState> Changes { get { return changes; } }//modifs des entités
 
         // Obtient l'état d'une entité
-        public EntityState GetState(IEntity entity)
+        public EntityState GetState(IEntityPersistent entity)
         {
             if (this.Changes.ContainsKey(entity))
                 return this.Changes[entity];
@@ -28,7 +28,7 @@ namespace Lib
         }
 
         // Modifie l'état d'une entité
-        public void SetState(IEntity entity, EntityState state)
+        public void SetState(IEntityPersistent entity, EntityState state)
         {
             if (state == EntityState.Unmodified)
             {

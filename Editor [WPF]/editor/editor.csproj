@@ -80,6 +80,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AppModel.cs" />
     <Compile Include="AppModel\Domain\DatabaseProvider.cs" />
     <Compile Include="AppModel\Entity\DatabaseSource.cs" />
     <Compile Include="AppModel\Entity\ObjectContent.cs" />

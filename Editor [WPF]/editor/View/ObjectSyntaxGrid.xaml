@@ -13,6 +13,7 @@
         </ContextMenu>
     </DataGrid.ContextMenu>
     <DataGrid.Columns>
+        <DataGridTextColumn Width="120" Header="Groupe" Binding="{Binding GroupName}"></DataGridTextColumn>
         <DataGridTextColumn Width="120" Header="Type" Binding="{Binding ObjectType}"></DataGridTextColumn>
         <DataGridTextColumn Width="*" Header="Description" Binding="{Binding ObjectDesc}"></DataGridTextColumn>
     </DataGrid.Columns>

@@ -10,12 +10,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Globalization;
+
 namespace AppModel.Domain
 {
-    public enum DatabaseProvider : int
-    {
-      ODBC = 0,
-      Postgres = 1,
-      SqlServer = 2
-    }
+
+   public static class DatabaseProvider
+   {
+      public const int Odbc = 0;
+      public const int SqlServer = 1;
+      public const int PostgreSQL = 2;
+   }
+
 }

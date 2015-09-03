@@ -7,7 +7,9 @@
 */
 
 using System;
-using AppModel.Entity;using AppModel.Domain;
+using Lib;
+using AppModel.Entity;
+using AppModel.Domain;
 
 namespace AppModel.Interface
 {
@@ -18,14 +20,41 @@ namespace AppModel.Interface
     public interface IApp
     {
          #region Methods
-         // 
+         
+         /// <summary>
+         /// Sauvegarde le projet dans un fichier
+         /// </summary>
          void SaveProject (String Filename);
-         // 
+         
+         /// <summary>
+         /// Charge le projet depuis un fichier
+         /// </summary>
          void LoadProject (String Filename);
-         // 
+         
+         /// <summary>
+         /// Initialise le projet
+         /// </summary>
          void InitialiseProject ();
-         // 
+         
+         /// <summary>
+         /// Ajoute les objets d'un répertoire
+         /// </summary>
          void AddObjects (String inputDir, String inputFilter, bool bRecursive);
+         
+         /// <summary>
+         /// Exporte le objets dans une base de données
+         /// </summary>
+         void Export (IEntityFactory factory);
+         
+         /// <summary>
+         /// Importe les objets depuis une base de données
+         /// </summary>
+         void Import (IEntityFactory factory);
+         
+         /// <summary>
+         /// Importe des objets de syntaxe depuis un répertoire
+         /// </summary>
+         void ImportSyntaxDirectory (string path);
          #endregion // Methods
      }
 }

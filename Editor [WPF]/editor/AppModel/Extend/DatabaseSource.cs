@@ -14,7 +14,7 @@ namespace AppModel.Entity
         public bool IsDefault{
             get
             {
-                App app = Application.Current as App;
+                editor.App app = Application.Current as editor.App;
                 return (
                     app.Project != null
                     && app.States != null

@@ -17,7 +17,7 @@ namespace editor.ModelView
 {
     class VueEditor : ViewModelBase
     {
-        App app = Application.Current as App;
+        editor.App app = Application.Current as editor.App;
         public VueEditor()
         {
             ListObjectContent();
@@ -189,7 +189,7 @@ namespace editor.ModelView
                         dialog.InitialDirectory = app.ProjectFilePath;
                         if (dialog.ShowDialog() == true)
                         {
-                            app.ImportSyntaxDirectory(dialog.FileName);
+                            app.appModel.ImportSyntaxDirectory(dialog.FileName);
                             OnPropertyChanged("ObjectSyntaxList");
                         }
                     });
@@ -244,7 +244,7 @@ namespace editor.ModelView
                                 return;
                         }
 
-                        app.Export(factory);
+                        app.appModel.Export(factory);
 
                         /*SqlServerFactory factory = new SqlServerFactory();
                         factory.SetConnection(@"Server=THOMAS-PC\SQLSERVEREXPRESS;Database=syntaxi;Trusted_Connection=True;");
@@ -275,7 +275,7 @@ namespace editor.ModelView
                     {
                         SqlOdbcFactory factory = new SqlOdbcFactory();
                         factory.SetConnection(@"DSN=Syntaxi;");
-                        app.Import(factory);
+                        app.appModel.Import(factory);
                         ObjectContentList = new ObservableCollection<ObjectContent>(app.Project.ObjectContent);
                         CurObjectContent = ObjectContentList.FirstOrDefault();
                     });

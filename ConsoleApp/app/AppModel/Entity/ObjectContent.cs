@@ -15,9 +15,11 @@ using System.Globalization;
 using System.Reflection;
 using System.Collections.ObjectModel;
 using Lib;
+using AppModel.Format;
 using AppModel.Domain;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Xml;
 using System.Data.SqlClient;
 
 namespace AppModel.Entity
@@ -27,12 +29,20 @@ namespace AppModel.Entity
     /// </summary>
    [Serializable]
 
-    public partial class ObjectContent : ISerializable , INotifyPropertyChanged , IEntity    {
+    public partial class ObjectContent : IEntity, ISerializable, IEntitySerializable, INotifyPropertyChanged, IEntityPersistent, IDataErrorInfo, IEntityValidable    {
          #region Constructor
          public ObjectContent(){
 
             // ParamContent
             this.paramcontent = new Collection<ParamContent>();
+            // Id
+            this.id = String.Empty;
+            // ObjectType
+            this.objecttype = String.Empty;
+            // Filename
+            this.filename = String.Empty;
+            // Position
+            this.position = new Int32();
          }
          
          public ObjectContent(String id, String objecttype, String filename, int position) : this(){
@@ -42,6 +52,8 @@ namespace AppModel.Entity
             this.position = position;
          }
          #endregion // Constructor
+         
+          public string EntityName { get{ return "ObjectContent"; } }
 
          #region INotifyPropertyChanged
          public event PropertyChangedEventHandler PropertyChanged;
@@ -100,64 +112,210 @@ namespace AppModel.Entity
          }
 
          #endregion // Methods
-         #region ISerializable
-          // Implement this method to serialize data. The method is called on serialization.
-          public void GetObjectData(SerializationInfo info, StreamingContext context)
+
+       #region ISerializable
+        // Implement this method to serialize data. The method is called on serialization.
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Id", Id, typeof(String));
+            info.AddValue("ObjectType", ObjectType, typeof(String));
+            info.AddValue("Filename", Filename, typeof(String));
+            info.AddValue("Position", Position, typeof(int));
+                 }
+       #endregion // ISerializable
+       
+       #region Serialization
+       public void ReadBinary(BinaryReader reader)
+       {
+          // Properties
+          Id =  reader.ReadString();
+          ObjectType =  reader.ReadString();
+          Filename =  reader.ReadString();
+          Position =  reader.ReadInt32();
+       
+          // ParamContent
           {
-              info.AddValue("Id", Id, typeof(String));
-              info.AddValue("ObjectType", ObjectType, typeof(String));
-              info.AddValue("Filename", Filename, typeof(String));
-              info.AddValue("Position", Position, typeof(int));
+             int size = reader.ReadInt32();
+             if (size > 0)
+             {
+                 this.ParamContent = new Collection<ParamContent>();
+                 for(int i=0;i<size;i++){
+                     ParamContent o = new ParamContent();
+                     o.ReadBinary(reader);
+                     this.AddParamContent(o);
+                 }
+             }
+             else
+             {
+                 this.ParamContent = new Collection<ParamContent>();
+             }
           }
-         #endregion // ISerializable
-    
-         #region Serialization
-         public void ReadBinary(BinaryReader reader)
-         {
-            int size;
-      
-            // Properties
-            Id =  reader.ReadString();
-            ObjectType =  reader.ReadString();
-            Filename =  reader.ReadString();
-            Position =  reader.ReadInt32();
-
-            // ParamContent
-            size = reader.ReadInt32();
-            if (size > 0)
-            {
-                this.ParamContent = new Collection<ParamContent>();
-                for(int i=0;i<size;i++){
-                    ParamContent o = new ParamContent();
-                    o.ReadBinary(reader);
-                    this.AddParamContent(o);
-                }
-            }
-            else
-            {
-                this.ParamContent = new Collection<ParamContent>();
-            }
-         }
-         
-         public void WriteBinary(BinaryWriter writer)
-         {
-            // Properties
-            writer.Write(Id);
-            writer.Write(ObjectType);
-            writer.Write(Filename);
-            writer.Write(Position);
-
-            // ParamContent
-            writer.Write(this.paramcontent.Count);
-            if (this.paramcontent.Count > 0)
-            {
-                foreach (var col in this.paramcontent)
-                    col.WriteBinary(writer);
-            }
        }
+       
+       public void WriteBinary(BinaryWriter writer)
+       {
+          // Properties
+          writer.Write(Id);
+          writer.Write(ObjectType);
+          writer.Write(Filename);
+          writer.Write(Position);
+       
+          // ParamContent
+          writer.Write(this.paramcontent.Count);
+          if (this.paramcontent.Count > 0)
+          {
+              foreach (var col in this.paramcontent)
+                  col.WriteBinary(writer);
+          }}
+       
+       
+       /// <summary>
+       /// Convertie l'instance en élément XML
+       /// </summary>
+       /// <param name="parent">Élément parent reçevant le nouveau noeud</param>
+       /// <returns>Text XML du document</returns>
+       public string ToXml(XmlElement parent)
+       {
+          XmlElement curMember = null;
+          XmlDocument doc = null;
+          // Element parent ?
+          if (parent != null)
+          {
+              doc = parent.OwnerDocument;
+          }
+          else
+          {
+              doc = new XmlDocument();
+              parent = doc.CreateElement("root");
+              doc.AppendChild(parent);
+          }
+       
+          //Ecrit au format XML
+          XmlElement cur = doc.CreateElement("ObjectContent");
+          parent.AppendChild(cur);
+              
+          //
+          // Fields
+          //
+          
+       		// Assigne le membre Id
+          if (id != null)
+          {
+              curMember = doc.CreateElement("Id");
+              curMember.AppendChild(doc.CreateTextNode(id.ToString()));
+              cur.AppendChild(curMember);
+          }
+       
+       		// Assigne le membre ObjectType
+          if (objecttype != null)
+          {
+              curMember = doc.CreateElement("ObjectType");
+              curMember.AppendChild(doc.CreateTextNode(objecttype.ToString()));
+              cur.AppendChild(curMember);
+          }
+       
+       		// Assigne le membre Filename
+          if (filename != null)
+          {
+              curMember = doc.CreateElement("Filename");
+              curMember.AppendChild(doc.CreateTextNode(filename.ToString()));
+              cur.AppendChild(curMember);
+          }
+       
+       		// Assigne le membre Position
+          curMember = doc.CreateElement("Position");
+          curMember.AppendChild(doc.CreateTextNode(position.ToString()));
+          cur.AppendChild(curMember);
+          
+          //
+          // Aggregations
+          //
+       
+          // ParamContent
+          {
+             curMember = doc.CreateElement("ParamContent");
+             if (this.paramcontent.Count > 0)
+             {
+                 foreach (var col in this.paramcontent)
+                     col.ToXml(curMember);
+             }
+             cur.AppendChild(curMember);
+          }
+       
+          parent.AppendChild(cur);
+          return doc.InnerXml;
+       }
+       
+       /// <summary>
+       /// Initialise l'instance avec les données de l'élément XML
+       /// </summary>
+       /// <param name="element">Élément contenant les information sur l'objet</param>
+       /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
+       public void FromXml(XmlElement element)
+       {
+          foreach (XmlElement m in element.ChildNodes)
+          {
+              string property_value = m.InnerText.Trim();
+              // charge les paramètres
+              switch (m.Name)
+              {
+                //
+                // Fields
+                //
+       
+                // Assigne le membre Id
+                case "Id":
+                {
+                   this.id = property_value;
+                }
+                break;
+                // Assigne le membre ObjectType
+                case "ObjectType":
+                {
+                   this.objecttype = property_value;
+                }
+                break;
+                // Assigne le membre Filename
+                case "Filename":
+                {
+                   this.filename = property_value;
+                }
+                break;
+                // Assigne le membre Position
+                case "Position":
+                {
+                   int value;
+                   if(int.TryParse(property_value,out value)==false)
+                      this.Position = new Int32();
+                   else
+                      this.Position = value;
+                }
+                break;
+       
+                //
+                // Aggregations
+                //
+                
+                // Assigne la collection ParamContent
+                case "ParamContent":
+                   {
+                      foreach (XmlElement c in m.ChildNodes)
+                      {
+                         if("ParamContent" == m.Name){
+                             ParamContent value = new ParamContent();
+                             value.FromXml(c);
+                             this.AddParamContent(value);
+                         }
+                      }
+                   }
+                   break;
+       			}
+          }
+       }
+       
        #endregion // Serialization
        
-       #region IEntity
+       #region IEntityPersistent
        public IEntityFactory Factory{get;set;}
        
        public string TableName { get{ return "T_OBJECT_CONTENT";} }
@@ -166,7 +324,7 @@ namespace AppModel.Entity
        public string[] GetPrimaryIdentifier() { return PrimaryIdentifier; }
        
        // Identifiants
-       public bool CompareIdentifier(IEntity e)
+       public bool CompareIdentifier(IEntityPersistent e)
        {
            ObjectContent b = e as ObjectContent;
            if(b==null)
@@ -343,7 +501,120 @@ namespace AppModel.Entity
           if (reader["FilePosition"] != null)
              Position = int.Parse(reader["FilePosition"].ToString());
        }
-       #endregion // IEntity
+       #endregion // IEntityPersistent
+       #region Validation
+       #region IDataErrorInfo
+       // Validation globale de l'entité
+       public string Error
+       {
+          get
+          {
+              string all_mess = "";
+              string msg;
+              all_mess += ((msg = this["Id"]) != String.Empty) ? (GetPropertyDesc("Id") + " :\n\t" + msg + "\n") : String.Empty;
+              all_mess += ((msg = this["ObjectType"]) != String.Empty) ? (GetPropertyDesc("ObjectType") + " :\n\t" + msg + "\n") : String.Empty;
+              all_mess += ((msg = this["Filename"]) != String.Empty) ? (GetPropertyDesc("Filename") + " :\n\t" + msg + "\n") : String.Empty;
+              all_mess += ((msg = this["Position"]) != String.Empty) ? (GetPropertyDesc("Position") + " :\n\t" + msg + "\n") : String.Empty;
+              return all_mess;
+          }
+       }
+       
+       // Validation par propriété
+       public string this[string propertyName]
+       {
+          get
+          {
+              string code;
+              CheckField(propertyName, out code);
+              
+              if (String.IsNullOrEmpty(code) == false)
+                  return GetPropertyDesc(propertyName) + ":\n" + code;
+                  
+              return String.Empty;
+          }
+       }
+       
+       public static string GetClassDesc()
+       {
+          return "";
+       }
+       
+       public static string GetPropertyDesc(string propertyName)
+       {
+          switch (propertyName)
+          {
+       
+              case "Id":
+                  return "Identifiant";
+       
+              case "ObjectType":
+                  return "Type d'objet";
+       
+              case "Filename":
+                  return "Emplacement du fichier source";
+       
+              case "Position":
+                  return "Position de départ dans le fichier source";
+          }
+          return "";
+       }
+       #endregion
+       
+       #region IEntityValidable
+       // Test la validité de tous les champs
+       public bool IsValid(){
+          string errorCode;
+          
+          if(CheckField("Id", out errorCode) == false)
+             return false;
+          if(CheckField("ObjectType", out errorCode) == false)
+             return false;
+          if(CheckField("Filename", out errorCode) == false)
+             return false;
+          if(CheckField("Position", out errorCode) == false)
+             return false;
+          return true;
+       }
+       
+       // Test la validité d'un champ
+       public bool CheckField(string propertyName, out string errorCode){
+           errorCode = String.Empty;
+           
+           switch (propertyName)
+           {
+               case "Id":
+                 // Obligatoire
+                 if(this.Id == null){
+                   errorCode = "NOT_NULL_RESTRICTION";
+                   return false;
+                 }
+                 return AppModel.Format.Guid.Validate(this.Id.ToString(),ref errorCode);
+       
+               case "ObjectType":
+                 // Obligatoire
+                 if(this.ObjectType == null){
+                   errorCode = "NOT_NULL_RESTRICTION";
+                   return false;
+                 }
+                 return AppModel.Format.Name.Validate(this.ObjectType.ToString(),ref errorCode);
+       
+               case "Filename":
+                 // Obligatoire
+                 if(this.Filename == null){
+                   errorCode = "NOT_NULL_RESTRICTION";
+                   return false;
+                 }
+                 break;
+       
+               case "Position":
+                 break;
+       
+           }
+           
+           return true;
+       }
+       #endregion
+       #endregion // Validation
       }
 
 }

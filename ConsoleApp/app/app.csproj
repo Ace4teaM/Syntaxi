@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppModel.cs" />
     <Compile Include="AppModel\Domain\DatabaseProvider.cs" />
     <Compile Include="AppModel\Entity\DatabaseSource.cs" />
     <Compile Include="AppModel\Entity\ObjectContent.cs" />
@@ -48,10 +49,22 @@
     <Compile Include="AppModel\Entity\ParamSyntax.cs" />
     <Compile Include="AppModel\Entity\Project.cs" />
     <Compile Include="AppModel\Entity\SearchParams.cs" />
+    <Compile Include="AppModel\Format\Bool.cs" />
+    <Compile Include="AppModel\Format\Guid.cs" />
+    <Compile Include="AppModel\Format\Integer.cs" />
+    <Compile Include="AppModel\Format\Mail.cs" />
+    <Compile Include="AppModel\Format\Name.cs" />
+    <Compile Include="AppModel\Format\NotEmpty.cs" />
+    <Compile Include="AppModel\Format\Numeric.cs" />
+    <Compile Include="AppModel\Format\PrefixeParam.cs" />
+    <Compile Include="AppModel\Format\StringParam.cs" />
     <Compile Include="AppModel\Interface\IApp.cs" />
     <Compile Include="Lib\EntityReferences.cs" />
     <Compile Include="Lib\IEntity.cs" />
     <Compile Include="Lib\IEntityFactory.cs" />
+    <Compile Include="Lib\IEntityPersistent.cs" />
+    <Compile Include="Lib\IEntitySerializable.cs" />
+    <Compile Include="Lib\IEntityValidable.cs" />
     <Compile Include="Lib\SqlServerFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

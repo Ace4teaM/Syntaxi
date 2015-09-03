@@ -31,7 +31,7 @@ namespace editor.View
 
         private void OpenBtn_Click(object sender, RoutedEventArgs e)
         {
-            App app = Application.Current as App;
+            editor.App app = Application.Current as editor.App;
             MainWindow wnd = app.MainWindow as MainWindow;
 
             OpenFileDialog dlg = new OpenFileDialog();
@@ -62,7 +62,7 @@ namespace editor.View
 
         private void NewBtn_Click(object sender, RoutedEventArgs e)
         {
-            App app = Application.Current as App;
+            editor.App app = Application.Current as editor.App;
             MainWindow wnd = app.MainWindow as MainWindow;
 
             // dossier d'enregistrement
@@ -84,11 +84,13 @@ namespace editor.View
             switch (this.ProjectTypeCb.SelectedValue as string)
             {
                 /*case "c#":
-                    app.Project = app.MakeCSharpProject(this.NameTb.Text, this.VersionTb.Text);
+                    app.Project = new Project(this.NameTb.Text, this.VersionTb.Text);
+                    app.appModel.AddCSharpSyntax();
                     app.Editor = app.MakeCSharpStates();
                     break;*/
                 case "c++":
-                    app.Project = app.MakeCppProject(this.NameTb.Text, this.VersionTb.Text);
+                    app.Project = new Project(this.NameTb.Text, this.VersionTb.Text);
+                    app.appModel.AddCppSyntax();
                     app.States = app.MakeCppStates();
                     break;
                 case "empty":

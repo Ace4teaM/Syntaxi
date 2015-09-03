@@ -21,7 +21,6 @@ namespace AppModel.Domain
       public const int SqlServer = 1;
       public const int PostgreSQL = 2;
    }
-
    public class DatabaseProviderConverter : IValueConverter
    {
    

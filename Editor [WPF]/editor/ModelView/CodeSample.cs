@@ -12,7 +12,7 @@ namespace editor.ModelView
 {
     class CodeSample : ViewModelBase
     {
-        App app = Application.Current as App;
+        editor.App app = Application.Current as editor.App;
         public CodeSample()
         {
             this.states = app.States;

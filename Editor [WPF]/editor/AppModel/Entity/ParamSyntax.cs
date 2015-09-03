@@ -37,12 +37,15 @@ namespace AppModel.Entity
             this.paramregex = String.Empty;
             // ParamType
             this.paramtype = String.Empty;
+            // GroupName
+            this.groupname = String.Empty;
          }
          
-         public ParamSyntax(String contentregex, String paramregex, String paramtype) : this(){
+         public ParamSyntax(String contentregex, String paramregex, String paramtype, String groupname) : this(){
             this.contentregex = contentregex;
             this.paramregex = paramregex;
             this.paramtype = paramtype;
+            this.groupname = groupname;
          }
          #endregion // Constructor
          
@@ -68,6 +71,9 @@ namespace AppModel.Entity
          // Type
          protected String paramtype;
          public String ParamType { get{ return paramtype; } set{ paramtype = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("ParamType")); } }
+         // Groupe
+         protected String groupname;
+         public String GroupName { get{ return groupname; } set{ groupname = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("GroupName")); } }
          #endregion // Fields
 
          #region Associations
@@ -83,6 +89,7 @@ namespace AppModel.Entity
              result += "ContentRegEx = " + ContentRegEx + Environment.NewLine;
              result += "ParamRegEx = " + ParamRegEx + Environment.NewLine;
              result += "ParamType = " + ParamType + Environment.NewLine;
+             result += "GroupName = " + GroupName + Environment.NewLine;
              return result;
          }
 
@@ -95,6 +102,7 @@ namespace AppModel.Entity
             info.AddValue("ContentRegEx", ContentRegEx, typeof(String));
             info.AddValue("ParamRegEx", ParamRegEx, typeof(String));
             info.AddValue("ParamType", ParamType, typeof(String));
+            info.AddValue("GroupName", GroupName, typeof(String));
                  }
        #endregion // ISerializable
        
@@ -105,6 +113,7 @@ namespace AppModel.Entity
           ContentRegEx =  reader.ReadString();
           ParamRegEx =  reader.ReadString();
           ParamType =  reader.ReadString();
+          GroupName =  reader.ReadString();
        }
        
        public void WriteBinary(BinaryWriter writer)
@@ -112,7 +121,8 @@ namespace AppModel.Entity
           // Properties
           writer.Write(ContentRegEx);
           writer.Write(ParamRegEx);
-          writer.Write(ParamType);}
+          writer.Write(ParamType);
+          writer.Write(GroupName);}
        
        
        /// <summary>
@@ -167,6 +177,14 @@ namespace AppModel.Entity
               curMember.AppendChild(doc.CreateTextNode(paramtype.ToString()));
               cur.AppendChild(curMember);
           }
+       
+       		// Assigne le membre GroupName
+          if (groupname != null)
+          {
+              curMember = doc.CreateElement("GroupName");
+              curMember.AppendChild(doc.CreateTextNode(groupname.ToString()));
+              cur.AppendChild(curMember);
+          }
           
           //
           // Aggregations
@@ -211,6 +229,12 @@ namespace AppModel.Entity
                    this.paramtype = property_value;
                 }
                 break;
+                // Assigne le membre GroupName
+                case "GroupName":
+                {
+                   this.groupname = property_value;
+                }
+                break;
        
                 //
                 // Aggregations
@@ -234,6 +258,7 @@ namespace AppModel.Entity
               all_mess += ((msg = this["ContentRegEx"]) != String.Empty) ? (GetPropertyDesc("ContentRegEx") + " :\n\t" + msg + "\n") : String.Empty;
               all_mess += ((msg = this["ParamRegEx"]) != String.Empty) ? (GetPropertyDesc("ParamRegEx") + " :\n\t" + msg + "\n") : String.Empty;
               all_mess += ((msg = this["ParamType"]) != String.Empty) ? (GetPropertyDesc("ParamType") + " :\n\t" + msg + "\n") : String.Empty;
+              all_mess += ((msg = this["GroupName"]) != String.Empty) ? (GetPropertyDesc("GroupName") + " :\n\t" + msg + "\n") : String.Empty;
               return all_mess;
           }
        }
@@ -271,6 +296,9 @@ namespace AppModel.Entity
        
               case "ParamType":
                   return "Type";
+       
+              case "GroupName":
+                  return "Groupe";
           }
           return "";
        }
@@ -286,6 +314,8 @@ namespace AppModel.Entity
           if(CheckField("ParamRegEx", out errorCode) == false)
              return false;
           if(CheckField("ParamType", out errorCode) == false)
+             return false;
+          if(CheckField("GroupName", out errorCode) == false)
              return false;
           return true;
        }
@@ -308,6 +338,11 @@ namespace AppModel.Entity
        
                case "ParamType":
                  if(this.ParamType == null)
+                   break;
+                 break;
+       
+               case "GroupName":
+                 if(this.GroupName == null)
                    break;
                  break;
        
