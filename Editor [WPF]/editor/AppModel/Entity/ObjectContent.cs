@@ -45,6 +45,18 @@ namespace AppModel.Entity
             this.position = new Int32();
          }
          
+         // copie
+         public ObjectContent(ObjectContent src) : this(){
+            // Id
+            this.id = src.id;
+            // ObjectType
+            this.objecttype = src.objecttype;
+            // Filename
+            this.filename = src.filename;
+            // Position
+            this.position = src.position;
+         }
+
          public ObjectContent(String id, String objecttype, String filename, int position) : this(){
             this.id = id;
             this.objecttype = objecttype;

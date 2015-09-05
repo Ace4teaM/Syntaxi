@@ -41,6 +41,18 @@ namespace AppModel.Entity
             this.groupname = String.Empty;
          }
          
+         // copie
+         public ParamSyntax(ParamSyntax src) : this(){
+            // ContentRegEx
+            this.contentregex = src.contentregex;
+            // ParamRegEx
+            this.paramregex = src.paramregex;
+            // ParamType
+            this.paramtype = src.paramtype;
+            // GroupName
+            this.groupname = src.groupname;
+         }
+
          public ParamSyntax(String contentregex, String paramregex, String paramtype, String groupname) : this(){
             this.contentregex = contentregex;
             this.paramregex = paramregex;

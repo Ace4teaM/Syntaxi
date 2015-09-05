@@ -39,6 +39,16 @@ namespace AppModel.Entity
             this.connectionstring = String.Empty;
          }
          
+         // copie
+         public DatabaseSource(DatabaseSource src) : this(){
+            // Id
+            this.id = src.id;
+            // Provider
+            this.provider = src.provider;
+            // ConnectionString
+            this.connectionstring = src.connectionstring;
+         }
+
          public DatabaseSource(String id, int? provider, String connectionstring) : this(){
             this.id = id;
             this.provider = provider;

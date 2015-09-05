@@ -40,6 +40,16 @@ namespace AppModel.Entity
             this.paramvalue = String.Empty;
          }
          
+         // copie
+         public ParamContent(ParamContent src) : this(){
+            // Id
+            this.id = src.id;
+            // ParamName
+            this.paramname = src.paramname;
+            // ParamValue
+            this.paramvalue = src.paramvalue;
+         }
+
          public ParamContent(String id, String paramname, String paramvalue) : this(){
             this.id = id;
             this.paramname = paramname;

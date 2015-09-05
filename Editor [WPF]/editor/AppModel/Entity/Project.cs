@@ -49,6 +49,14 @@ namespace AppModel.Entity
             this.version = String.Empty;
          }
          
+         // copie
+         public Project(Project src) : this(){
+            // Name
+            this.name = src.name;
+            // Version
+            this.version = src.version;
+         }
+
          public Project(String name, String version) : this(){
             this.name = name;
             this.version = version;

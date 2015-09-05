@@ -167,16 +167,18 @@ typedef struct _NP_HANDLE_HEADER{
             appModel.project.ObjectContent.Clear();
             foreach (var s in appModel.project.SearchParams)
             {
-                string inputDir = s.InputDir;
+                SearchParams search = new SearchParams(s);
 
                 // Fix les chemins relatifs
-                if (inputDir.StartsWith(@".\"))
-                    inputDir = this.ProjectFilePath + @"\" + inputDir.Substring(2);
-                else if (inputDir.StartsWith(@".."))
-                    inputDir = this.ProjectFilePath + @"\" + inputDir;
+                if (s.InputDir.StartsWith(@".\"))
+                    search.InputDir = this.ProjectFilePath + @"\" + s.InputDir.Substring(2);
+                else if (s.InputDir.StartsWith(@".."))
+                    search.InputDir = this.ProjectFilePath + @"\" + s.InputDir;
+                else
+                    search.InputDir = s.InputDir;
 
                 //
-                appModel.AddObjects(inputDir, s.InputFilter, s.Recursive);
+                appModel.AddObjects(search);
             }
         }
         

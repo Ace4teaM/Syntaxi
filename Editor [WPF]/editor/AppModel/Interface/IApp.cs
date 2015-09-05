@@ -32,14 +32,9 @@ namespace AppModel.Interface
          void LoadProject (String Filename);
          
          /// <summary>
-         /// Initialise le projet
-         /// </summary>
-         void InitialiseProject ();
-         
-         /// <summary>
          /// Ajoute les objets d'un répertoire
          /// </summary>
-         void AddObjects (String inputDir, String inputFilter, bool bRecursive);
+         void AddObjects (SearchParams search);
          
          /// <summary>
          /// Exporte le objets dans une base de données

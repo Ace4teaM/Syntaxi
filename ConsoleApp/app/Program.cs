@@ -45,6 +45,8 @@ namespace app
                 public string inputProjectFile = null;
                 // Dossier des objets de syntaxes
                 public string syntaxDir = null;
+                // Groupe
+                public string groupName = null;
 
                 /// <summary>
                 /// Lit les argument depuis la ligne de commande
@@ -89,6 +91,9 @@ namespace app
                                     break;
                                 case 's':
                                     syntaxDir = args[++c];
+                                    break;
+                                case 'g':
+                                    groupName = args[++c];
                                     break;
                                 default:
                                     c++;
@@ -145,7 +150,7 @@ namespace app
                         break;
                     // Ajoute des paramétres de recherche
                     case "add":
-                        appModel.AddSearch(options.inputDir, options.inputFilter, options.recursive);
+                        appModel.AddSearch(options.groupName, options.inputDir, options.inputFilter, options.recursive);
                         break;
                     // Scan les données
                     case "scan":
@@ -200,16 +205,18 @@ namespace app
                 appModel.project.ObjectContent.Clear();
                 foreach (var s in appModel.project.SearchParams)
                 {
-                    string inputDir = s.InputDir;
+                    SearchParams search = new SearchParams(s);
 
                     // Fix les chemins relatifs
-                    if (inputDir.StartsWith(@".\"))
-                        inputDir = ProjectFilePath + @"\" + inputDir.Substring(2);
-                    else if (inputDir.StartsWith(@".."))
-                        inputDir = ProjectFilePath + @"\" + inputDir;
+                    if (s.InputDir.StartsWith(@".\"))
+                        search.InputDir = ProjectFilePath + @"\" + s.InputDir.Substring(2);
+                    else if (s.InputDir.StartsWith(@".."))
+                        search.InputDir = ProjectFilePath + @"\" + s.InputDir;
+                    else
+                        search.InputDir = s.InputDir;
 
                     //
-                    appModel.AddObjects(inputDir, s.InputFilter, s.Recursive);
+                    appModel.AddObjects(search);
                 }
             }
         

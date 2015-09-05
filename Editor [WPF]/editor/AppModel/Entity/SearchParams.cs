@@ -37,12 +37,27 @@ namespace AppModel.Entity
             this.inputfilter = String.Empty;
             // Recursive
             this.recursive = new Boolean();
+            // GroupName
+            this.groupname = String.Empty;
          }
          
-         public SearchParams(String inputdir, String inputfilter, bool recursive) : this(){
+         // copie
+         public SearchParams(SearchParams src) : this(){
+            // InputDir
+            this.inputdir = src.inputdir;
+            // InputFilter
+            this.inputfilter = src.inputfilter;
+            // Recursive
+            this.recursive = src.recursive;
+            // GroupName
+            this.groupname = src.groupname;
+         }
+
+         public SearchParams(String inputdir, String inputfilter, bool recursive, string groupname) : this(){
             this.inputdir = inputdir;
             this.inputfilter = inputfilter;
             this.recursive = recursive;
+            this.groupname = groupname;
          }
          #endregion // Constructor
          
@@ -68,6 +83,9 @@ namespace AppModel.Entity
          // Récursif
          protected bool recursive;
          public bool Recursive { get{ return recursive; } set{ recursive = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("Recursive")); } }
+         // Groupe de syntaxe
+         protected string groupname;
+         public string GroupName { get{ return groupname; } set{ groupname = value;  if (this.PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs("GroupName")); } }
          #endregion // Fields
 
          #region Associations
@@ -83,6 +101,7 @@ namespace AppModel.Entity
              result += "InputDir = " + InputDir + Environment.NewLine;
              result += "InputFilter = " + InputFilter + Environment.NewLine;
              result += "Recursive = " + Recursive + Environment.NewLine;
+             result += "GroupName = " + GroupName + Environment.NewLine;
              return result;
          }
 
@@ -95,6 +114,7 @@ namespace AppModel.Entity
             info.AddValue("InputDir", InputDir, typeof(String));
             info.AddValue("InputFilter", InputFilter, typeof(String));
             info.AddValue("Recursive", Recursive, typeof(bool));
+            info.AddValue("GroupName", GroupName, typeof(string));
                  }
        #endregion // ISerializable
        
@@ -105,6 +125,7 @@ namespace AppModel.Entity
           InputDir =  reader.ReadString();
           InputFilter =  reader.ReadString();
           Recursive =  reader.ReadBoolean();
+          GroupName =  reader.ReadString();
        }
        
        public void WriteBinary(BinaryWriter writer)
@@ -112,7 +133,8 @@ namespace AppModel.Entity
           // Properties
           writer.Write(InputDir);
           writer.Write(InputFilter);
-          writer.Write(Recursive);}
+          writer.Write(Recursive);
+          writer.Write(GroupName);}
        
        
        /// <summary>
@@ -164,6 +186,14 @@ namespace AppModel.Entity
           curMember = doc.CreateElement("Recursive");
           curMember.AppendChild(doc.CreateTextNode(recursive.ToString()));
           cur.AppendChild(curMember);
+       
+       		// Assigne le membre GroupName
+          if (groupname != null)
+          {
+              curMember = doc.CreateElement("GroupName");
+              curMember.AppendChild(doc.CreateTextNode(groupname.ToString()));
+              cur.AppendChild(curMember);
+          }
           
           //
           // Aggregations
@@ -212,6 +242,12 @@ namespace AppModel.Entity
                       this.Recursive = value;
                 }
                 break;
+                // Assigne le membre GroupName
+                case "GroupName":
+                {
+                   this.groupname = property_value;
+                }
+                break;
        
                 //
                 // Aggregations
@@ -235,6 +271,7 @@ namespace AppModel.Entity
               all_mess += ((msg = this["InputDir"]) != String.Empty) ? (GetPropertyDesc("InputDir") + " :\n\t" + msg + "\n") : String.Empty;
               all_mess += ((msg = this["InputFilter"]) != String.Empty) ? (GetPropertyDesc("InputFilter") + " :\n\t" + msg + "\n") : String.Empty;
               all_mess += ((msg = this["Recursive"]) != String.Empty) ? (GetPropertyDesc("Recursive") + " :\n\t" + msg + "\n") : String.Empty;
+              all_mess += ((msg = this["GroupName"]) != String.Empty) ? (GetPropertyDesc("GroupName") + " :\n\t" + msg + "\n") : String.Empty;
               return all_mess;
           }
        }
@@ -272,6 +309,9 @@ namespace AppModel.Entity
        
               case "Recursive":
                   return "Récursif";
+       
+              case "GroupName":
+                  return "Groupe de syntaxe";
           }
           return "";
        }
@@ -287,6 +327,8 @@ namespace AppModel.Entity
           if(CheckField("InputFilter", out errorCode) == false)
              return false;
           if(CheckField("Recursive", out errorCode) == false)
+             return false;
+          if(CheckField("GroupName", out errorCode) == false)
              return false;
           return true;
        }
@@ -314,6 +356,11 @@ namespace AppModel.Entity
                  break;
        
                case "Recursive":
+                 break;
+       
+               case "GroupName":
+                 if(this.GroupName == null)
+                   break;
                  break;
        
            }

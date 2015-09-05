@@ -45,7 +45,8 @@ namespace AppModel.View
              // desactive tout
              me.itemGroup_InputDir.IsEnabled = false;
              me.itemGroup_InputFilter.IsEnabled = false;
-             me.itemGroup_Recursive.IsEnabled = false;             
+             me.itemGroup_Recursive.IsEnabled = false;
+             me.itemGroup_GroupName.IsEnabled = false;             
 
              // active les éléments demandés
              foreach (string s in _args)
@@ -60,6 +61,9 @@ namespace AppModel.View
                          break;
                      case "Recursive":
                          me.itemGroup_Recursive.IsEnabled = true;
+                         break;
+                     case "GroupName":
+                         me.itemGroup_GroupName.IsEnabled = true;
                          break;
                }
             }
@@ -85,7 +89,8 @@ namespace AppModel.View
              // desactive tout
              me.itemGroup_InputDir.Visibility = Visibility.Collapsed;
              me.itemGroup_InputFilter.Visibility = Visibility.Collapsed;
-             me.itemGroup_Recursive.Visibility = Visibility.Collapsed;             
+             me.itemGroup_Recursive.Visibility = Visibility.Collapsed;
+             me.itemGroup_GroupName.Visibility = Visibility.Collapsed;             
 
 
              // active les éléments demandés
@@ -111,6 +116,12 @@ namespace AppModel.View
                          me.itemGroups.Children.Remove(me.itemGroup_Recursive);
                          me.itemGroups.Children.Add(me.itemGroup_Recursive);
                          break;
+                     case "GroupName":
+                         me.itemGroup_GroupName.Visibility = Visibility.Visible;
+                         // place l'élément en bas de la pile (permet le tri par visibilité)
+                         me.itemGroups.Children.Remove(me.itemGroup_GroupName);
+                         me.itemGroups.Children.Add(me.itemGroup_GroupName);
+                         break;
               }
             }
         }
@@ -129,12 +140,14 @@ namespace AppModel.View
                 // rend les éléments visibles
                 this.itemGroup_InputDir.Visibility = Visibility.Visible;
                 this.itemGroup_InputFilter.Visibility = Visibility.Visible;
-                this.itemGroup_Recursive.Visibility = Visibility.Visible;                
+                this.itemGroup_Recursive.Visibility = Visibility.Visible;
+                this.itemGroup_GroupName.Visibility = Visibility.Visible;                
 
                 // active / desactive l'édition
                this.itemGroup_InputDir.IsEnabled = value;
                this.itemGroup_InputFilter.IsEnabled = value;
                this.itemGroup_Recursive.IsEnabled = value;
+               this.itemGroup_GroupName.IsEnabled = value;
 
             }
         }

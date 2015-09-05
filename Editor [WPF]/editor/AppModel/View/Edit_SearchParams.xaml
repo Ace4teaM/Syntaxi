@@ -27,6 +27,10 @@
                <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,5,0,5">Récursif</TextBlock>
                <CheckBox Name="Recursive" IsChecked="{Binding Path=Recursive}" />
             </DockPanel>
+            <DockPanel Name="itemGroup_GroupName">
+               <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,5,0,5">Groupe de syntaxe</TextBlock>
+               <TextBox Name="GroupName" Text="{Binding Path=GroupName, TargetNullValue='', UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" />
+            </DockPanel>
          </StackPanel>
     </Grid>
 </UserControl>

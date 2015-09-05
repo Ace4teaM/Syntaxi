@@ -13,6 +13,7 @@
     </DataGrid.ContextMenu>
     <DataGrid.Columns>
         <DataGridTextColumn Width="*" Header="Emplacement" Binding="{Binding InputDir}"></DataGridTextColumn>
+        <DataGridTextColumn Width="auto" Header="Groupe" Binding="{Binding GroupName}"></DataGridTextColumn>
         <DataGridTextColumn Width="auto" Header="Filtre" Binding="{Binding InputFilter}"></DataGridTextColumn>
         <DataGridCheckBoxColumn Width="auto" Header="Recursif" Binding="{Binding Recursive}"></DataGridCheckBoxColumn>
     </DataGrid.Columns>

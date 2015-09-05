@@ -106,30 +106,25 @@ namespace AppModel
             file.Close();
         }
 
-        public void InitialiseProject()
+        public void AddSearch(string groupName,string inputDir, string inputFilter, bool bRecursive)
         {
-            throw new NotImplementedException();
+            project.SearchParams.Add(new SearchParams(inputDir, inputFilter, bRecursive, groupName));
         }
 
-        public void AddSearch(string inputDir, string inputFilter, bool bRecursive)
-        {
-            project.SearchParams.Add(new SearchParams(inputDir, inputFilter, bRecursive));
-        }
-
-        public void AddObjects(string inputDir, string inputFilter, bool bRecursive)
+        public void AddObjects(SearchParams search)
         {
             // Liste des objets trouvés
             List<ObjectContent> objets = new List<ObjectContent>();
 
             // Liste les fichiers
-            string[] srcPaths = Directory.GetFiles(inputDir, inputFilter, (bRecursive == true ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly));
+            string[] srcPaths = Directory.GetFiles(search.InputDir, search.InputFilter, (search.Recursive == true ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly));
 
             // Scan les fichiers
             foreach (var filePath in srcPaths)
             {
                 Console.WriteLine(String.Format("Scan file: {0}", filePath));
                 //Log(String.Format("Scan file: {0}", filePath));
-                string relativeFileName = filePath.Substring(inputDir.Length);
+                string relativeFileName = filePath.Substring(search.InputDir.Length);
                 string text = string.Empty;
                 using (StreamReader streamReader = new StreamReader(filePath, Encoding.UTF8))
                 {
@@ -137,9 +132,9 @@ namespace AppModel
                 }
 
                 // Scan les objets
-                foreach (ObjectSyntax curSyntax in project.ObjectSyntax)
+                foreach (ObjectSyntax curSyntax in project.ObjectSyntax.Where(p => p.GroupName.ToLower() == search.GroupName.ToLower()))
                 {
-                    ScanFile(text, relativeFileName, curSyntax, objets);
+                    ScanFile(curSyntax.GroupName, text, relativeFileName, curSyntax, objets);
                 }
 
                 // Log
@@ -154,10 +149,11 @@ namespace AppModel
         /// <summary>
         /// Scan un fichier à la recherche d'objets
         /// </summary>
+        /// <param name="groupName">Nom du groupe de syntaxe à scanner</param>
         /// <param name="text">Texte du code à analyser</param>
         /// <param name="filePath">Chemin d'accès relatif au fichier analysé</param>
         /// <param name="syntax">Syntaxe utilisé pour scaner le texte</param>
-        public void ScanFile(string text, string filePath, ObjectSyntax syntax, List<ObjectContent> objList)
+        public void ScanFile(string groupName,string text, string filePath, ObjectSyntax syntax, List<ObjectContent> objList)
         {
             // Convertie en expression reguliere
             Regex content = new Regex(syntax.ContentRegEx, RegexOptions.Multiline | RegexOptions.IgnoreCase);
@@ -174,11 +170,11 @@ namespace AppModel
                 o.Id = Guid.NewGuid().ToString("N");
 
                 // Extrer les paramètres implicite de l'expression régulière
-                foreach (string groupName in content.GetGroupNames())
+                foreach (string regexGroupName in content.GetGroupNames())
                 {
-                    if (groupName != "content" && groupName != "0")
+                    if (regexGroupName != "content" && regexGroupName != "0")
                     {
-                        o.ParamContent.Add(new ParamContent(Guid.NewGuid().ToString("N"), groupName, match.Groups[groupName].Value));
+                        o.ParamContent.Add(new ParamContent(Guid.NewGuid().ToString("N"), regexGroupName, match.Groups[regexGroupName].Value));
                         //Log(String.Format("\tAdd param '{0}' as '{1}'", groupName, match.Groups[groupName].Value));
                     }
                 }
@@ -187,7 +183,7 @@ namespace AppModel
                 string objet_text = match.Groups["content"].Value;
 
                 // Extrer les groupes de parametres
-                foreach (ParamSyntax g in project.ParamSyntax)
+                foreach (ParamSyntax g in project.ParamSyntax.Where(p => p.GroupName.ToLower() == groupName.ToLower()))
                 {
                     // Convertie en expression reguliere
                     Regex pContent = new Regex(g.ContentRegEx, RegexOptions.Multiline | RegexOptions.IgnoreCase);

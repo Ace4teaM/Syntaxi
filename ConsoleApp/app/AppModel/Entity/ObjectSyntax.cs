@@ -43,6 +43,20 @@ namespace AppModel.Entity
             this.groupname = String.Empty;
          }
          
+         // copie
+         public ObjectSyntax(ObjectSyntax src) : this(){
+            // ContentRegEx
+            this.contentregex = src.contentregex;
+            // ParamRegEx
+            this.paramregex = src.paramregex;
+            // ObjectType
+            this.objecttype = src.objecttype;
+            // ObjectDesc
+            this.objectdesc = src.objectdesc;
+            // GroupName
+            this.groupname = src.groupname;
+         }
+
          public ObjectSyntax(String contentregex, String paramregex, String objecttype, String objectdesc, String groupname) : this(){
             this.contentregex = contentregex;
             this.paramregex = paramregex;
