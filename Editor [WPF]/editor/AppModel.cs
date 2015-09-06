@@ -17,6 +17,10 @@ namespace AppModel
 {
     public class App : IApp
     {
+        // version interne du model de fichier
+        // incrémenté à chaque modification du model
+        private Int32 version = 1;
+
         // Projet en cours
         public Project project;
 
@@ -85,11 +89,39 @@ namespace AppModel
             project.ObjectSyntax.Add(objSyntax);
         }
 
+        public void ReadFileSignature(BinaryReader reader)
+        {
+            if (reader.BaseStream.Length < sizeof(char) * 3 + sizeof(Int32))
+                throw new ApplicationException("Invalid file size");
+            char[] fileMagic;
+            Int32 fileVersion = 0;
+            fileMagic = reader.ReadChars(3);
+            fileVersion = reader.ReadInt32();
+
+            if (!(fileMagic[0] == 'S' && fileMagic[1] == 'X' && fileMagic[2] == 'I'))
+                throw new ApplicationException("Invalid file signature");
+
+            if (fileVersion != this.version)
+                throw new ApplicationException("Invalid file version");
+        }
+
+        public void WriteFileSignature(BinaryWriter writer)
+        {
+            writer.Write('S');
+            writer.Write('X');
+            writer.Write('I');
+            writer.Write(this.version);
+        }
+
         public void SaveProject(String Filename)
         {
-            // Sauvegarde le projet
             FileStream file = File.Open(Filename, FileMode.OpenOrCreate);
             BinaryWriter writer = new BinaryWriter(file);
+
+            // Ecrit la signature
+            WriteFileSignature(writer);
+
+            // Sauvegarde le projet
             project.WriteBinary(writer);
             writer.Close();
             file.Close();
@@ -97,9 +129,13 @@ namespace AppModel
 
         public void LoadProject(String Filename)
         {
-            // Sauvegarde le projet
             FileStream file = File.Open(Filename, FileMode.Open);
             BinaryReader reader = new BinaryReader(file);
+
+            // Vérifie la signature
+            ReadFileSignature(reader);
+
+            // Charge le projet
             project = new Project();
             project.ReadBinary(reader);
             reader.Close();
