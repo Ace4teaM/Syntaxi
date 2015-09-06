@@ -49,10 +49,11 @@ namespace editor.View
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(app.MainWindow, "Impossible de charger le projet.\n"+ex.Message, "Oups", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show(app.MainWindow, "Impossible de charger le projet.\n" + ex.Message, "Oups", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
             }
+            else return;
 
             //
             VueEditor view = new VueEditor();
