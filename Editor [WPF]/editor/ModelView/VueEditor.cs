@@ -54,6 +54,11 @@ namespace editor.ModelView
             }
         }
         //
+        public Collection<ObjectSyntax> ObjectSyntaxList
+        {
+            get { return app.Project.ObjectSyntax; }
+        }
+        //
         private ObjectSyntax curObjectSyntax;
         public ObjectSyntax CurObjectSyntax {
             get { return curObjectSyntax; }
@@ -62,12 +67,28 @@ namespace editor.ModelView
                 if (curObjectSyntax != null)
                     CurEditorSampleCode = app.States.EditorSampleCode.Where(p => p.ObjectSyntaxType == curObjectSyntax.ObjectType).FirstOrDefault();
                 OnPropertyChanged("CurObjectSyntax");
+                OnPropertyChanged("ParamSyntaxList");
             }
         }
         //
-        public Collection<ObjectSyntax> ObjectSyntaxList
+        public Collection<ParamSyntax> ParamSyntaxList
         {
-            get { return app.Project.ObjectSyntax; }
+            get {
+                if (CurObjectSyntax != null)
+                    return new Collection<ParamSyntax>(app.Project.ParamSyntax.Where(p => p.GroupName.ToLower() == CurObjectSyntax.GroupName.ToLower()).ToArray());
+                return null;
+            }
+        }
+        //
+        private ObjectSyntax curParamSyntax;
+        public ObjectSyntax CurParamSyntax
+        {
+            get { return curParamSyntax; }
+            set
+            {
+                curParamSyntax = value;
+                OnPropertyChanged("CurParamSyntax");
+            }
         }
         //
         private ObservableCollection<ObjectContent> objectContentList;
@@ -223,41 +244,35 @@ namespace editor.ModelView
                             return;
                         }
 
-                        // Initialise la factory
-                        IEntityFactory factory;
-                        switch (source.Provider)
+                        try
                         {
-                            case DatabaseProvider.Odbc:
-                                factory = new SqlOdbcFactory();
-                                ((SqlOdbcFactory)factory).SetConnection(source.ConnectionString);
-                                break;
-                            case DatabaseProvider.PostgreSQL:
-                                factory = new SqlPostgresFactory();
-                                ((SqlPostgresFactory)factory).SetConnection(source.ConnectionString);
-                                break;
-                            case DatabaseProvider.SqlServer:
-                                factory = new SqlServerFactory();
-                                ((SqlServerFactory)factory).SetConnection(source.ConnectionString);
-                                break;
-                            default:
-                                MessageBox.Show("La source de données ne correspond pas à une source valide.", "Source de données");
-                                return;
+                            // Initialise la factory
+                            IEntityFactory factory;
+                            switch (source.Provider)
+                            {
+                                case DatabaseProvider.Odbc:
+                                    factory = new SqlOdbcFactory();
+                                    ((SqlOdbcFactory)factory).SetConnection(source.ConnectionString);
+                                    break;
+                                case DatabaseProvider.PostgreSQL:
+                                    factory = new SqlPostgresFactory();
+                                    ((SqlPostgresFactory)factory).SetConnection(source.ConnectionString);
+                                    break;
+                                case DatabaseProvider.SqlServer:
+                                    factory = new SqlServerFactory();
+                                    ((SqlServerFactory)factory).SetConnection(source.ConnectionString);
+                                    break;
+                                default:
+                                    MessageBox.Show("La source de données ne correspond pas à une source valide.", "Source de données");
+                                    return;
+                            }
+
+                            app.appModel.Export(factory);
                         }
-
-                        app.appModel.Export(factory);
-
-                        /*SqlServerFactory factory = new SqlServerFactory();
-                        factory.SetConnection(@"Server=THOMAS-PC\SQLSERVEREXPRESS;Database=syntaxi;Trusted_Connection=True;");
-                        //factory.SetConnection(@"Server=BDE-PORT\SQLSERVER2012;Database=syntaxi;Trusted_Connection=True;");
-                        app.Export(sqlFactory);
-
-                        SqlOdbcFactory factory = new SqlOdbcFactory();
-                        factory.SetConnection(@"DSN=Syntaxi;");
-                        app.Export(factory);
-
-                        SqlPostgresFactory factory = new SqlPostgresFactory();
-                        factory.SetConnection(@"server=217.70.189.220;Port=5432;Database=syntaxi;User Id=****;Password=****;POOLING=False;");
-                        */
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Erreur", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        }
                     });
 
                 return this.exportToDatabase;
@@ -273,11 +288,18 @@ namespace editor.ModelView
                 if (this.importFromDatabase == null)
                     this.importFromDatabase = new DelegateCommand(() =>
                     {
-                        SqlOdbcFactory factory = new SqlOdbcFactory();
-                        factory.SetConnection(@"DSN=Syntaxi;");
-                        app.appModel.Import(factory);
-                        ObjectContentList = new ObservableCollection<ObjectContent>(app.Project.ObjectContent);
-                        CurObjectContent = ObjectContentList.FirstOrDefault();
+                        try
+                        {
+                            SqlOdbcFactory factory = new SqlOdbcFactory();
+                            factory.SetConnection(@"DSN=Syntaxi;");
+                            app.appModel.Import(factory);
+                            ObjectContentList = new ObservableCollection<ObjectContent>(app.Project.ObjectContent);
+                            CurObjectContent = ObjectContentList.FirstOrDefault();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Erreur", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        }
                     });
 
                 return this.importFromDatabase;

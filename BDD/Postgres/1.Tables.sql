@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      PostgreSQL 9.x                               */
-/* Created on:     13/08/2015 22:36:16                          */
+/* Created on:     07/09/2015 20:58:17                          */
 /*==============================================================*/
 
 
@@ -30,7 +30,7 @@ create table T_PARAM_CONTENT (
    PARAM_CONTENT_ID     VARCHAR(60)          not null,
    OBJECT_CONTENT_ID    VARCHAR(60)          null,
    PARAMNAME            VARCHAR(60)          not null,
-   PARAMVALUE           VARCHAR(128)         null,
+   PARAMVALUE           TEXT                 null,
    constraint PK_T_PARAM_CONTENT primary key (PARAM_CONTENT_ID)
 );
 

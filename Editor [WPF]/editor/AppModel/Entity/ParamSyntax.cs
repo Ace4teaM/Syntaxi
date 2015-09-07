@@ -341,22 +341,22 @@ namespace AppModel.Entity
                case "ContentRegEx":
                  if(this.ContentRegEx == null)
                    break;
-                 break;
+                 return AppModel.Format.NotEmpty.Validate(this.ContentRegEx.ToString(),ref errorCode);
        
                case "ParamRegEx":
                  if(this.ParamRegEx == null)
                    break;
-                 return AppModel.Format.Name.Validate(this.ParamRegEx.ToString(),ref errorCode);
+                 return AppModel.Format.NotEmpty.Validate(this.ParamRegEx.ToString(),ref errorCode);
        
                case "ParamType":
                  if(this.ParamType == null)
                    break;
-                 break;
+                 return AppModel.Format.NotEmpty.Validate(this.ParamType.ToString(),ref errorCode);
        
                case "GroupName":
                  if(this.GroupName == null)
                    break;
-                 break;
+                 return AppModel.Format.NotEmpty.Validate(this.GroupName.ToString(),ref errorCode);
        
            }
            

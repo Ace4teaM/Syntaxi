@@ -171,6 +171,9 @@
     <Compile Include="View\ParamContentGrid.xaml.cs">
       <DependentUpon>ParamContentGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ParamSyntaxGrid.xaml.cs">
+      <DependentUpon>ParamSyntaxGrid.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\SearchParamsEdit.xaml.cs">
       <DependentUpon>SearchParamsEdit.xaml</DependentUpon>
     </Compile>
@@ -260,6 +263,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ParamContentGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ParamSyntaxGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -376,27 +376,27 @@ namespace AppModel.Entity
                    errorCode = "NOT_NULL_RESTRICTION";
                    return false;
                  }
-                 break;
+                 return AppModel.Format.NotEmpty.Validate(this.ContentRegEx.ToString(),ref errorCode);
        
                case "ParamRegEx":
                  if(this.ParamRegEx == null)
                    break;
-                 break;
+                 return AppModel.Format.NotEmpty.Validate(this.ParamRegEx.ToString(),ref errorCode);
        
                case "ObjectType":
                  if(this.ObjectType == null)
                    break;
-                 return AppModel.Format.Name.Validate(this.ObjectType.ToString(),ref errorCode);
+                 return AppModel.Format.NotEmpty.Validate(this.ObjectType.ToString(),ref errorCode);
        
                case "ObjectDesc":
                  if(this.ObjectDesc == null)
                    break;
-                 break;
+                 return AppModel.Format.NotEmpty.Validate(this.ObjectDesc.ToString(),ref errorCode);
        
                case "GroupName":
                  if(this.GroupName == null)
                    break;
-                 break;
+                 return AppModel.Format.NotEmpty.Validate(this.GroupName.ToString(),ref errorCode);
        
            }
            
