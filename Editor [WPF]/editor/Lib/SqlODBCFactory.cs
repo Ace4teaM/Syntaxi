@@ -55,12 +55,15 @@ namespace Lib
         // Retourne une nouvelle instance de connexion
         public  OdbcConnection GetConnection(bool current=true)
         {
+            // Connexion en cours
             if (current)
             {
-                con = new OdbcConnection(connectionString);
+                if (con == null)
+                    con = new OdbcConnection(connectionString);
 
                 if (con.State != ConnectionState.Open)
                     con.Open();
+
                 return con;
             }
 

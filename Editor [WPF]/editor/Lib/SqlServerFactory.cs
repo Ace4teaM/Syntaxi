@@ -54,12 +54,15 @@ namespace Lib
         // Retourne une nouvelle instance de connexion
         public  SqlConnection GetConnection(bool current=true)
         {
+            // Connexion en cours
             if (current)
             {
-                con = new SqlConnection(connectionString);
+                if (con == null)
+                    con = new SqlConnection(connectionString);
 
                 if (con.State != ConnectionState.Open)
                     con.Open();
+
                 return con;
             }
 

@@ -55,12 +55,15 @@ namespace Lib
         // Retourne une nouvelle instance de connexion
         public  NpgsqlConnection GetConnection(bool current=true)
         {
+            // Connexion en cours
             if (current)
             {
-                con = new NpgsqlConnection(connectionString);
+                if (con == null)
+                    con = new NpgsqlConnection(connectionString);
 
                 if (con.State != ConnectionState.Open)
                     con.Open();
+
                 return con;
             }
 
