@@ -20,7 +20,8 @@ using AppModel.Domain;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
-using System.Data.SqlClient;
+using System.Data.Common;
+using Serial = System.Int32;
 
 namespace AppModel.Entity
 {
@@ -126,14 +127,14 @@ namespace AppModel.Entity
          #endregion // Methods
 
        #region ISerializable
-        // Implement this method to serialize data. The method is called on serialization.
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
+       // Implement this method to serialize data. The method is called on serialization.
+       public void GetObjectData(SerializationInfo info, StreamingContext context)
+       {
             info.AddValue("Id", Id, typeof(String));
             info.AddValue("ObjectType", ObjectType, typeof(String));
             info.AddValue("Filename", Filename, typeof(String));
             info.AddValue("Position", Position, typeof(int));
-                 }
+       }
        #endregion // ISerializable
        
        #region Serialization
@@ -178,7 +179,8 @@ namespace AppModel.Entity
           {
               foreach (var col in this.paramcontent)
                   col.WriteBinary(writer);
-          }}
+          }
+       }
        
        
        /// <summary>
@@ -495,7 +497,7 @@ namespace AppModel.Entity
        // Obtient l'identifiant primaire depuis un curseur SQL
        public void PickIdentity(object _reader)
        {
-          SqlDataReader reader = _reader as SqlDataReader;
+          DbDataReader reader = _reader as DbDataReader;
           if (reader["Object_Content_Id"] != null)
              Id = reader["Object_Content_Id"].ToString();
        }
@@ -503,7 +505,7 @@ namespace AppModel.Entity
        // Obtient les propriétés depuis un curseur SQL
        public void PickProperties(object _reader)
        {
-          SqlDataReader reader = _reader as SqlDataReader;
+          DbDataReader reader = _reader as DbDataReader;
           if (reader["ObjectType"] != null)
              ObjectType = reader["ObjectType"].ToString();
        

@@ -20,6 +20,7 @@ using AppModel.Domain;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
+using Serial = System.Int32;
 
 namespace AppModel.Entity
 {
@@ -99,13 +100,13 @@ namespace AppModel.Entity
          #endregion // Methods
 
        #region ISerializable
-        // Implement this method to serialize data. The method is called on serialization.
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
+       // Implement this method to serialize data. The method is called on serialization.
+       public void GetObjectData(SerializationInfo info, StreamingContext context)
+       {
             info.AddValue("Id", Id, typeof(String));
             info.AddValue("Provider", Provider, typeof(int));
             info.AddValue("ConnectionString", ConnectionString, typeof(String));
-                 }
+       }
        #endregion // ISerializable
        
        #region Serialization
@@ -122,7 +123,8 @@ namespace AppModel.Entity
           // Properties
           writer.Write(Id);
           writer.Write(Provider.Value);
-          writer.Write(ConnectionString);}
+          writer.Write(ConnectionString);
+       }
        
        
        /// <summary>

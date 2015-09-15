@@ -20,6 +20,7 @@ using AppModel.Domain;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
+using Serial = System.Int32;
 
 namespace AppModel.Entity
 {
@@ -108,14 +109,14 @@ namespace AppModel.Entity
          #endregion // Methods
 
        #region ISerializable
-        // Implement this method to serialize data. The method is called on serialization.
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
+       // Implement this method to serialize data. The method is called on serialization.
+       public void GetObjectData(SerializationInfo info, StreamingContext context)
+       {
             info.AddValue("InputDir", InputDir, typeof(String));
             info.AddValue("InputFilter", InputFilter, typeof(String));
             info.AddValue("Recursive", Recursive, typeof(bool));
             info.AddValue("GroupName", GroupName, typeof(string));
-                 }
+       }
        #endregion // ISerializable
        
        #region Serialization
@@ -134,7 +135,8 @@ namespace AppModel.Entity
           writer.Write(InputDir);
           writer.Write(InputFilter);
           writer.Write(Recursive);
-          writer.Write(GroupName);}
+          writer.Write(GroupName);
+       }
        
        
        /// <summary>

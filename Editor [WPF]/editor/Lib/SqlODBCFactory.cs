@@ -332,7 +332,7 @@ namespace Lib
             //...
         }
 
-        public IEnumerable Factory<T>() where T : IEntityPersistent, new() { return new EntityFactory<T>(this); }
+        public IEnumerable Factory<T>(string query = null) where T : IEntityPersistent, new() { return new EntityFactory<T>(this, query); }
 
         public class EntityFactory<T> : IEnumerable where T : IEntityPersistent, new()
         {

@@ -11,7 +11,7 @@ namespace Lib
     {
         string Name { get; }
         IEntityPersistent GetReference(IEntityPersistent e);
-        IEnumerable Factory<T>() where T : IEntityPersistent, new();
+        IEnumerable Factory<T>(string query) where T : IEntityPersistent, new();
         void Commit(IEntityPersistent[] entities);
         List<IEntityPersistent> GetReferences();
         object QueryScalar(string query);

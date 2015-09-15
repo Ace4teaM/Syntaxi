@@ -20,7 +20,8 @@ using AppModel.Domain;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
-using System.Data.SqlClient;
+using System.Data.Common;
+using Serial = System.Int32;
 
 namespace AppModel.Entity
 {
@@ -100,13 +101,13 @@ namespace AppModel.Entity
          #endregion // Methods
 
        #region ISerializable
-        // Implement this method to serialize data. The method is called on serialization.
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
+       // Implement this method to serialize data. The method is called on serialization.
+       public void GetObjectData(SerializationInfo info, StreamingContext context)
+       {
             info.AddValue("Id", Id, typeof(String));
             info.AddValue("ParamName", ParamName, typeof(String));
             info.AddValue("ParamValue", ParamValue, typeof(String));
-                 }
+       }
        #endregion // ISerializable
        
        #region Serialization
@@ -123,7 +124,8 @@ namespace AppModel.Entity
           // Properties
           writer.Write(Id);
           writer.Write(ParamName);
-          writer.Write(ParamValue);}
+          writer.Write(ParamValue);
+       }
        
        
        /// <summary>
@@ -350,7 +352,7 @@ namespace AppModel.Entity
        // Obtient l'identifiant primaire depuis un curseur SQL
        public void PickIdentity(object _reader)
        {
-          SqlDataReader reader = _reader as SqlDataReader;
+          DbDataReader reader = _reader as DbDataReader;
           if (reader["Param_Content_Id"] != null)
              Id = reader["Param_Content_Id"].ToString();
        }
@@ -358,7 +360,7 @@ namespace AppModel.Entity
        // Obtient les propriétés depuis un curseur SQL
        public void PickProperties(object _reader)
        {
-          SqlDataReader reader = _reader as SqlDataReader;
+          DbDataReader reader = _reader as DbDataReader;
           if (reader["ParamName"] != null)
              ParamName = reader["ParamName"].ToString();
        
