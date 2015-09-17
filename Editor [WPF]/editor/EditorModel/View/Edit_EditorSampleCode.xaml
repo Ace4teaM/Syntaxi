@@ -1,0 +1,28 @@
+﻿<!--
+   Vue d'édition de la classe EditorSampleCode
+
+   !!Attention!!
+   Ce code source est généré automatiquement, toutes modifications seront perdues
+-->
+<UserControl x:Class="EditorModel.View.Edit_EditorSampleCode"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
+             xmlns:v="clr-namespace:EditorModel.View" 
+             mc:Ignorable="d" 
+             d:DesignWidth="300">
+    <Grid>
+        <StackPanel Name="itemGroups" Orientation="Vertical">
+            <DockPanel Name="itemGroup_Text">
+               <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,5,0,5"></TextBlock>
+               <TextBox Name="Text" Text="{Binding Path=Text, TargetNullValue='', UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" />
+            </DockPanel>
+            <DockPanel Name="itemGroup_ObjectSyntaxType">
+               <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,5,0,5"></TextBlock>
+               <TextBox Name="ObjectSyntaxType" Text="{Binding Path=ObjectSyntaxType, TargetNullValue='', UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" />
+            </DockPanel>
+         </StackPanel>
+    </Grid>
+</UserControl>

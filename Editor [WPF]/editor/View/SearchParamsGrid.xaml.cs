@@ -20,7 +20,7 @@ namespace editor.View
     /// <summary>
     /// Logique d'interaction pour SearchParamsGrid.xaml
     /// </summary>
-    public partial class SearchParamsGrid : DataGrid
+    public partial class SearchParamsGrid : EditableDataGrid
     {
         public SearchParamsGrid()
         {

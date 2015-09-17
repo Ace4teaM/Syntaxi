@@ -7,7 +7,7 @@ using Lib;
 
 namespace Event
 {
-    public class EntityCreateEvent : IEvent
+    public class EntityChangeEvent : IEvent
     {
         public string Name
         {
@@ -17,7 +17,7 @@ namespace Event
             }
         }
 
-        public EntityCreateEvent(IEntity entity)
+        public EntityChangeEvent(IEntity entity)
         {
             this.Entity = entity;
         }

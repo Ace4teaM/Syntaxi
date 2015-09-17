@@ -66,6 +66,17 @@ namespace AppModel.Entity
          
           public string EntityName { get{ return "Project"; } }
 
+         // clone
+         public IEntity Clone(){
+            Project e = new Project();
+            
+            // Name
+            e.name = this.name;
+            // Version
+            e.version = this.version;
+            return e;
+         }
+
          #region INotifyPropertyChanged
          public event PropertyChangedEventHandler PropertyChanged;
          #endregion // INotifyPropertyChanged
@@ -171,7 +182,13 @@ namespace AppModel.Entity
        #endregion // ISerializable
        
        #region Serialization
-       public void ReadBinary(BinaryReader reader)
+       /// <summary>
+       /// Initialise l'instance depuis les données d'un flux binaire
+       /// </summary>
+       /// <param name="reader">Flux binaire</param>
+       /// <param name="aggregationCallback">Permet d'appliquer des modifications aux entités importées par aggrégation</param>
+       /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
+       public void ReadBinary(BinaryReader reader, EntityCallback aggregationCallback)
        {
           // Properties
           Name =  reader.ReadString();
@@ -185,7 +202,9 @@ namespace AppModel.Entity
                  this.ObjectContent = new Collection<ObjectContent>();
                  for(int i=0;i<size;i++){
                      ObjectContent o = new ObjectContent();
-                     o.ReadBinary(reader);
+                     o.ReadBinary(reader, aggregationCallback);
+                     if (aggregationCallback != null)
+                        aggregationCallback(o);
                      this.AddObjectContent(o);
                  }
              }
@@ -202,7 +221,9 @@ namespace AppModel.Entity
                  this.SearchParams = new Collection<SearchParams>();
                  for(int i=0;i<size;i++){
                      SearchParams o = new SearchParams();
-                     o.ReadBinary(reader);
+                     o.ReadBinary(reader, aggregationCallback);
+                     if (aggregationCallback != null)
+                        aggregationCallback(o);
                      this.AddSearchParams(o);
                  }
              }
@@ -219,7 +240,9 @@ namespace AppModel.Entity
                  this.ObjectSyntax = new Collection<ObjectSyntax>();
                  for(int i=0;i<size;i++){
                      ObjectSyntax o = new ObjectSyntax();
-                     o.ReadBinary(reader);
+                     o.ReadBinary(reader, aggregationCallback);
+                     if (aggregationCallback != null)
+                        aggregationCallback(o);
                      this.AddObjectSyntax(o);
                  }
              }
@@ -236,7 +259,9 @@ namespace AppModel.Entity
                  this.ParamSyntax = new Collection<ParamSyntax>();
                  for(int i=0;i<size;i++){
                      ParamSyntax o = new ParamSyntax();
-                     o.ReadBinary(reader);
+                     o.ReadBinary(reader, aggregationCallback);
+                     if (aggregationCallback != null)
+                        aggregationCallback(o);
                      this.AddParamSyntax(o);
                  }
              }
@@ -253,7 +278,9 @@ namespace AppModel.Entity
                  this.DatabaseSource = new Collection<DatabaseSource>();
                  for(int i=0;i<size;i++){
                      DatabaseSource o = new DatabaseSource();
-                     o.ReadBinary(reader);
+                     o.ReadBinary(reader, aggregationCallback);
+                     if (aggregationCallback != null)
+                        aggregationCallback(o);
                      this.AddDatabaseSource(o);
                  }
              }
@@ -417,11 +444,12 @@ namespace AppModel.Entity
        }
        
        /// <summary>
-       /// Initialise l'instance avec les données de l'élément XML
+       /// Initialise l'instance depuis des données XML
        /// </summary>
        /// <param name="element">Élément contenant les information sur l'objet</param>
+       /// <param name="aggregationCallback">Permet d'appliquer des modifications aux entités importées par aggrégation</param>
        /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
-       public void FromXml(XmlElement element)
+       public void FromXml(XmlElement element, EntityCallback aggregationCallback)
        {
           foreach (XmlElement m in element.ChildNodes)
           {
@@ -455,9 +483,11 @@ namespace AppModel.Entity
                    {
                       foreach (XmlElement c in m.ChildNodes)
                       {
-                         if("ObjectContent" == m.Name){
+                         if("ObjectContent" == c.Name){
                              ObjectContent value = new ObjectContent();
-                             value.FromXml(c);
+                             value.FromXml(c, aggregationCallback);
+                             if (aggregationCallback != null)
+                                aggregationCallback(value);
                              this.AddObjectContent(value);
                          }
                       }
@@ -468,9 +498,11 @@ namespace AppModel.Entity
                    {
                       foreach (XmlElement c in m.ChildNodes)
                       {
-                         if("SearchParams" == m.Name){
+                         if("SearchParams" == c.Name){
                              SearchParams value = new SearchParams();
-                             value.FromXml(c);
+                             value.FromXml(c, aggregationCallback);
+                             if (aggregationCallback != null)
+                                aggregationCallback(value);
                              this.AddSearchParams(value);
                          }
                       }
@@ -481,9 +513,11 @@ namespace AppModel.Entity
                    {
                       foreach (XmlElement c in m.ChildNodes)
                       {
-                         if("ObjectSyntax" == m.Name){
+                         if("ObjectSyntax" == c.Name){
                              ObjectSyntax value = new ObjectSyntax();
-                             value.FromXml(c);
+                             value.FromXml(c, aggregationCallback);
+                             if (aggregationCallback != null)
+                                aggregationCallback(value);
                              this.AddObjectSyntax(value);
                          }
                       }
@@ -494,9 +528,11 @@ namespace AppModel.Entity
                    {
                       foreach (XmlElement c in m.ChildNodes)
                       {
-                         if("ParamSyntax" == m.Name){
+                         if("ParamSyntax" == c.Name){
                              ParamSyntax value = new ParamSyntax();
-                             value.FromXml(c);
+                             value.FromXml(c, aggregationCallback);
+                             if (aggregationCallback != null)
+                                aggregationCallback(value);
                              this.AddParamSyntax(value);
                          }
                       }
@@ -507,9 +543,11 @@ namespace AppModel.Entity
                    {
                       foreach (XmlElement c in m.ChildNodes)
                       {
-                         if("DatabaseSource" == m.Name){
+                         if("DatabaseSource" == c.Name){
                              DatabaseSource value = new DatabaseSource();
-                             value.FromXml(c);
+                             value.FromXml(c, aggregationCallback);
+                             if (aggregationCallback != null)
+                                aggregationCallback(value);
                              this.AddDatabaseSource(value);
                          }
                       }
@@ -619,6 +657,13 @@ namespace AppModel.Entity
           });
        
           return ObjectContent;
+       }
+       
+       // Réinitialise l'identifiant primaire
+       public void RaiseIdentity()
+       {
+          Name = String.Empty;
+          Version = String.Empty;
        }
        
        // Obtient l'identifiant primaire depuis un curseur SQL

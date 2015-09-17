@@ -68,6 +68,21 @@ namespace AppModel.Entity
          
           public string EntityName { get{ return "ObjectContent"; } }
 
+         // clone
+         public IEntity Clone(){
+            ObjectContent e = new ObjectContent();
+            
+            // Id
+            e.id = this.id;
+            // ObjectType
+            e.objecttype = this.objecttype;
+            // Filename
+            e.filename = this.filename;
+            // Position
+            e.position = this.position;
+            return e;
+         }
+
          #region INotifyPropertyChanged
          public event PropertyChangedEventHandler PropertyChanged;
          #endregion // INotifyPropertyChanged
@@ -138,7 +153,13 @@ namespace AppModel.Entity
        #endregion // ISerializable
        
        #region Serialization
-       public void ReadBinary(BinaryReader reader)
+       /// <summary>
+       /// Initialise l'instance depuis les données d'un flux binaire
+       /// </summary>
+       /// <param name="reader">Flux binaire</param>
+       /// <param name="aggregationCallback">Permet d'appliquer des modifications aux entités importées par aggrégation</param>
+       /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
+       public void ReadBinary(BinaryReader reader, EntityCallback aggregationCallback)
        {
           // Properties
           Id =  reader.ReadString();
@@ -154,7 +175,9 @@ namespace AppModel.Entity
                  this.ParamContent = new Collection<ParamContent>();
                  for(int i=0;i<size;i++){
                      ParamContent o = new ParamContent();
-                     o.ReadBinary(reader);
+                     o.ReadBinary(reader, aggregationCallback);
+                     if (aggregationCallback != null)
+                        aggregationCallback(o);
                      this.AddParamContent(o);
                  }
              }
@@ -261,11 +284,12 @@ namespace AppModel.Entity
        }
        
        /// <summary>
-       /// Initialise l'instance avec les données de l'élément XML
+       /// Initialise l'instance depuis des données XML
        /// </summary>
        /// <param name="element">Élément contenant les information sur l'objet</param>
+       /// <param name="aggregationCallback">Permet d'appliquer des modifications aux entités importées par aggrégation</param>
        /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
-       public void FromXml(XmlElement element)
+       public void FromXml(XmlElement element, EntityCallback aggregationCallback)
        {
           foreach (XmlElement m in element.ChildNodes)
           {
@@ -315,9 +339,11 @@ namespace AppModel.Entity
                    {
                       foreach (XmlElement c in m.ChildNodes)
                       {
-                         if("ParamContent" == m.Name){
+                         if("ParamContent" == c.Name){
                              ParamContent value = new ParamContent();
-                             value.FromXml(c);
+                             value.FromXml(c, aggregationCallback);
+                             if (aggregationCallback != null)
+                                aggregationCallback(value);
                              this.AddParamContent(value);
                          }
                       }
@@ -492,6 +518,12 @@ namespace AppModel.Entity
           });
        
           return ParamContent;
+       }
+       
+       // Réinitialise l'identifiant primaire
+       public void RaiseIdentity()
+       {
+          Id = String.Empty;
        }
        
        // Obtient l'identifiant primaire depuis un curseur SQL

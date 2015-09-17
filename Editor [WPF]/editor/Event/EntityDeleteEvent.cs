@@ -7,7 +7,7 @@ using Lib;
 
 namespace Event
 {
-    public class EntityCreateEvent : IEvent
+    public class EntityDeleteEvent : IEvent
     {
         public string Name
         {
@@ -17,11 +17,12 @@ namespace Event
             }
         }
 
-        public EntityCreateEvent(IEntity entity)
+        public EntityDeleteEvent(IEntity entity)
         {
             this.Entity = entity;
         }
 
+        // entité concernée
         public IEntity Entity;
     }
 }

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Event;
 
 namespace Lib
 {
@@ -33,9 +35,9 @@ namespace Lib
             if (e.EditAction == DataGridEditAction.Cancel)
                 return;
 
-            if (e.Row.Item is IEntityPersistent)
+            if (e.Row.Item is IEntity)
             {
-                IEntityPersistent entity = e.Row.Item as IEntityPersistent;
+                IEntity entity = e.Row.Item as IEntity;
                 if (entity.EntityState == EntityState.Added)
                     return;
                 entity.EntityState = EntityState.Modified;
@@ -45,11 +47,17 @@ namespace Lib
         void EditableDataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
         {
             this.EditMode = true;
-
-            if (e.Row.IsNewItem && e.Row.Item is IEntityPersistent)
+            Type t = e.EditingEventArgs.Source.GetType();
+            // NOTE: 
+            // e.Row.IsNewItem vaut toujours True même après la création de la ligne
+            // Pour savoir si l'entité est une nouvelle insertion ou non, l'expression test le membre Factory
+            if (e.Row.IsNewItem && e.Row.Item is IEntityPersistent && (e.Row.Item as IEntityPersistent).Factory == null)
             {
                 IEntityPersistent entity = e.Row.Item as IEntityPersistent;
                 entity.EntityState = EntityState.Added;
+                IEventProcess process = this.DataContext as IEventProcess;
+                if (process!=null)
+                    process.ProcessEvent(this, this, new EntityPreCreateEvent(entity));
             }
         }
 
@@ -57,13 +65,20 @@ namespace Lib
         {
             this.EditMode = false;
 
-            if (e.Row.Item is IEntityPersistent)
+            if (e.EditAction == DataGridEditAction.Cancel)
+                return;
+
+            if (e.Row.Item is IEntity)
             {
-                IEntityPersistent entity = e.Row.Item as IEntityPersistent;
-                //notify
-                ICommand cmd = ViewModelBase.FindParentCommand(this, "EntityChange");
-                if (cmd != null && cmd.CanExecute(entity))
-                    cmd.Execute(entity);
+                IEntity entity = e.Row.Item as IEntity;
+
+                IEventProcess process = this.DataContext as IEventProcess;
+                if (process != null && entity.EntityState == EntityState.Modified)
+                    process.ProcessEvent(this, this, new EntityChangeEvent(entity));
+                if (process != null && entity.EntityState == EntityState.Added)
+                    process.ProcessEvent(this, this, new EntityCreateEvent(entity));
+
+                e.Cancel = false;
             }
         }
 
@@ -75,52 +90,76 @@ namespace Lib
                 {
                     foreach (var item in this.SelectedItems)
                     {
-                        IEntityPersistent entity = item as IEntityPersistent;
+                        IEntity entity = item as IEntity;
                         if (entity != null)
                         {
-                            entity.EntityState = EntityState.Deleted;
-                            //notify
-                            ICommand cmd = ViewModelBase.FindParentCommand(this, "EntityChange");
-                            if (cmd != null && cmd.CanExecute(entity))
-                                cmd.Execute(entity);
+                            EntityDeleteEvent ev = new EntityDeleteEvent(entity);
+
+                            // Demande la supression
+                            IEventProcess process = this.DataContext as IEventProcess;
+                            if (process != null)
+                                process.ProcessEvent(this, this, ev);
+
+                            // Suppression ok ?
+                            if (entity.EntityState != EntityState.Deleted)
+                            {
+                                e.Handled = true;// Annule la suppression
+                                return;
+                            }
                         }
                     }
                 }
                 else
                 {
-                    IEntityPersistent entity = this.SelectedItem as IEntityPersistent;
+                    IEntity entity = this.SelectedItem as IEntity;
                     if (entity != null)
                     {
-                        entity.EntityState = EntityState.Deleted;
-                        //notify
-                        ICommand cmd = ViewModelBase.FindParentCommand(this, "EntityChange");
-                        if (cmd != null && cmd.CanExecute(entity))
-                            cmd.Execute(entity);
+                        EntityDeleteEvent ev = new EntityDeleteEvent(entity);
+
+                        // Demande la supression
+                        IEventProcess process = this.DataContext as IEventProcess;
+                        if (process != null)
+                            process.ProcessEvent(this, this, ev);
+
+                        // Suppression ok ?
+                        if (entity.EntityState != EntityState.Deleted)
+                        {
+                            e.Handled = true;// Annule la suppression
+                            return;
+                        }
                     }
                 }
             }
 
             if (e.Key == Key.C && e.KeyboardDevice.Modifiers == ModifierKeys.Control && this.SelectedItem != null && this.EditMode == false)
             {
-                if (this.SelectedItem != null)
+                EntityCopyPasteEvent ev = new EntityCopyPasteEvent(EntityCopyPasteEventType.Copy);
+
+                if (this.SelectionMode == DataGridSelectionMode.Extended && this.SelectedItems != null)
                 {
-                    IEntityPersistent entity = this.SelectedItem as IEntityPersistent;
-                    if (entity != null)
+                    foreach (IEntity entity in this.SelectedItems)
                     {
-                        //command
-                        ICommand cmd = ViewModelBase.FindParentCommand(this, "EntityCopy");
-                        if (cmd != null && cmd.CanExecute(entity))
-                            cmd.Execute(entity);
+                        ev.Entities.Add(entity);
                     }
+                }
+                else if (this.SelectedItem != null)
+                {
+                    ev.Entities.Add(this.SelectedItem as IEntity);
+                }
+
+                if (ev.IsEmpty() == false)
+                {
+                    IEventProcess process = this.DataContext as IEventProcess;
+                    if (process != null)
+                        process.ProcessEvent(this, this, ev);
                 }
             }
 
             if (e.Key == Key.V && e.KeyboardDevice.Modifiers == ModifierKeys.Control && this.SelectedItem != null && this.EditMode == false)
             {
-                //command
-                ICommand cmd = ViewModelBase.FindParentCommand(this, "EntityPaste");
-                if (cmd != null && cmd.CanExecute(null))
-                    cmd.Execute(null);
+                IEventProcess process = this.DataContext as IEventProcess;
+                if (process != null)
+                    process.ProcessEvent(this, this, new EntityCopyPasteEvent(EntityCopyPasteEventType.Paste));
             }
         }
     }

@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using AppModel.Entity;
-using DesktopApp.Event;
+using Event;
 using EditorModel.Entity;
 using Lib;
 using Microsoft.Win32;
@@ -151,7 +151,7 @@ typedef struct _NP_HANDLE_HEADER{
                 FileStream file = File.Open(EditorDataFilename, FileMode.Open);
                 BinaryReader reader = new BinaryReader(file);
                 EditorStates states = new EditorStates();
-                states.ReadBinary(reader);
+                states.ReadBinary(reader,null);
                 reader.Close();
                 file.Close();
                 this.States = states;

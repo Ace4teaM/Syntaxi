@@ -18,6 +18,7 @@ using Lib;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
+using Serial = System.Int32;
 
 namespace EditorModel.Entity
 {
@@ -35,6 +36,14 @@ namespace EditorModel.Entity
             this.objectsyntaxtype = String.Empty;
          }
          
+         // copie
+         public EditorSampleCode(EditorSampleCode src) : this(){
+            // Text
+            this.text = src.text;
+            // ObjectSyntaxType
+            this.objectsyntaxtype = src.objectsyntaxtype;
+         }
+
          public EditorSampleCode(String text, String objectsyntaxtype) : this(){
             this.text = text;
             this.objectsyntaxtype = objectsyntaxtype;
@@ -42,6 +51,17 @@ namespace EditorModel.Entity
          #endregion // Constructor
          
           public string EntityName { get{ return "EditorSampleCode"; } }
+
+         // clone
+         public IEntity Clone(){
+            EditorSampleCode e = new EditorSampleCode();
+            
+            // Text
+            e.text = this.text;
+            // ObjectSyntaxType
+            e.objectsyntaxtype = this.objectsyntaxtype;
+            return e;
+         }
 
          #region State
         private EntityState entityState;
@@ -76,16 +96,22 @@ namespace EditorModel.Entity
          #endregion // Methods
 
        #region ISerializable
-        // Implement this method to serialize data. The method is called on serialization.
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
+       // Implement this method to serialize data. The method is called on serialization.
+       public void GetObjectData(SerializationInfo info, StreamingContext context)
+       {
             info.AddValue("Text", Text, typeof(String));
             info.AddValue("ObjectSyntaxType", ObjectSyntaxType, typeof(String));
-                 }
+       }
        #endregion // ISerializable
        
        #region Serialization
-       public void ReadBinary(BinaryReader reader)
+       /// <summary>
+       /// Initialise l'instance depuis les données d'un flux binaire
+       /// </summary>
+       /// <param name="reader">Flux binaire</param>
+       /// <param name="aggregationCallback">Permet d'appliquer des modifications aux entités importées par aggrégation</param>
+       /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
+       public void ReadBinary(BinaryReader reader, EntityCallback aggregationCallback)
        {
           // Properties
           Text =  reader.ReadString();
@@ -96,7 +122,8 @@ namespace EditorModel.Entity
        {
           // Properties
           writer.Write(Text);
-          writer.Write(ObjectSyntaxType);}
+          writer.Write(ObjectSyntaxType);
+       }
        
        
        /// <summary>
@@ -153,11 +180,12 @@ namespace EditorModel.Entity
        }
        
        /// <summary>
-       /// Initialise l'instance avec les données de l'élément XML
+       /// Initialise l'instance depuis des données XML
        /// </summary>
        /// <param name="element">Élément contenant les information sur l'objet</param>
+       /// <param name="aggregationCallback">Permet d'appliquer des modifications aux entités importées par aggrégation</param>
        /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
-       public void FromXml(XmlElement element)
+       public void FromXml(XmlElement element, EntityCallback aggregationCallback)
        {
           foreach (XmlElement m in element.ChildNodes)
           {

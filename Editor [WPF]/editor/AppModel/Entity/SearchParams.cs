@@ -64,6 +64,21 @@ namespace AppModel.Entity
          
           public string EntityName { get{ return "SearchParams"; } }
 
+         // clone
+         public IEntity Clone(){
+            SearchParams e = new SearchParams();
+            
+            // InputDir
+            e.inputdir = this.inputdir;
+            // InputFilter
+            e.inputfilter = this.inputfilter;
+            // Recursive
+            e.recursive = this.recursive;
+            // GroupName
+            e.groupname = this.groupname;
+            return e;
+         }
+
          #region INotifyPropertyChanged
          public event PropertyChangedEventHandler PropertyChanged;
          #endregion // INotifyPropertyChanged
@@ -120,7 +135,13 @@ namespace AppModel.Entity
        #endregion // ISerializable
        
        #region Serialization
-       public void ReadBinary(BinaryReader reader)
+       /// <summary>
+       /// Initialise l'instance depuis les données d'un flux binaire
+       /// </summary>
+       /// <param name="reader">Flux binaire</param>
+       /// <param name="aggregationCallback">Permet d'appliquer des modifications aux entités importées par aggrégation</param>
+       /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
+       public void ReadBinary(BinaryReader reader, EntityCallback aggregationCallback)
        {
           // Properties
           InputDir =  reader.ReadString();
@@ -206,11 +227,12 @@ namespace AppModel.Entity
        }
        
        /// <summary>
-       /// Initialise l'instance avec les données de l'élément XML
+       /// Initialise l'instance depuis des données XML
        /// </summary>
        /// <param name="element">Élément contenant les information sur l'objet</param>
+       /// <param name="aggregationCallback">Permet d'appliquer des modifications aux entités importées par aggrégation</param>
        /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
-       public void FromXml(XmlElement element)
+       public void FromXml(XmlElement element, EntityCallback aggregationCallback)
        {
           foreach (XmlElement m in element.ChildNodes)
           {

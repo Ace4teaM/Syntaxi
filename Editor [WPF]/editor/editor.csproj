@@ -123,7 +123,11 @@
     </Compile>
     <Compile Include="EditorModel\Entity\EditorSampleCode.cs" />
     <Compile Include="EditorModel\Entity\EditorStates.cs" />
+    <Compile Include="Event\EntityChangeEvent.cs" />
+    <Compile Include="Event\EntityCopyPasteEvent.cs" />
     <Compile Include="Event\EntityCreateEvent.cs" />
+    <Compile Include="Event\EntityDeleteEvent.cs" />
+    <Compile Include="Event\EntityPreCreateEvent.cs" />
     <Compile Include="Lib\DelegateCommand.cs" />
     <Compile Include="Lib\EditableDataGrid.cs" />
     <Compile Include="Lib\EditWindow.cs" />

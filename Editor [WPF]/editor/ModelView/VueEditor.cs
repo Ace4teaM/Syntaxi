@@ -12,10 +12,11 @@ using EditorModel.Entity;
 using Lib;
 using System.IO;
 using System.Xml;
+using Event;
 
 namespace editor.ModelView
 {
-    class VueEditor : ViewModelBase
+    class VueEditor : ViewModelBase, IEventProcess
     {
         editor.App app = Application.Current as editor.App;
         public VueEditor()
@@ -23,11 +24,83 @@ namespace editor.ModelView
             ListObjectContent();
         }
 
+        //-----------------------------------------------------------------------------------------
+        // Méthodes
+        //-----------------------------------------------------------------------------------------
+        #region Methods
         public void ListObjectContent()
         {
             if (app.Project != null)
                 ObjectContentList = new ObservableCollection<ObjectContent>(app.Project.ObjectContent);
         }
+        public void OnEntityChange(IEntity entity)
+        {
+            if (entity == null)
+                return;
+
+            if (entity.EntityState == EntityState.Added)
+            {
+                if (entity is ObjectContent)
+                {
+                    ObjectContent e = entity as ObjectContent;
+                    // Ajoute au projet en cours
+                    app.Project.AddObjectContent(e);
+                    // Regénére des identifiants uniques pour la base de données
+                    e.Id = Guid.NewGuid().ToString("N");
+                    foreach (var p in e.ParamContent)
+                        p.Id = Guid.NewGuid().ToString("N");
+                    // Ajoute à l'interface
+                    if (this.ObjectContentList.Contains(e) == false)
+                        this.ObjectContentList.Add(e);
+                }
+                if (entity is ParamContent)
+                {
+                    ParamContent e = entity as ParamContent;
+                    CurObjectContent.AddParamContent(e);
+                    e.Id = Guid.NewGuid().ToString("N");
+                }
+                if (entity is DatabaseSource)
+                {
+                    DatabaseSource e = entity as DatabaseSource;
+                    app.Project.AddDatabaseSource(e);
+
+                    if (app.States.SelectedDatabaseSourceId == null)
+                        app.States.SelectedDatabaseSourceId = app.Project.DatabaseSource.First().Id;
+                }
+
+                //OK
+                entity.EntityState = EntityState.Unmodified;
+            }
+
+            if (entity.EntityState == EntityState.Modified)
+            {
+                //OK
+                entity.EntityState = EntityState.Unmodified;
+            }
+
+            if (entity.EntityState == EntityState.Deleted)
+            {
+                if (entity is ObjectContent)
+                {
+                    ObjectContent e = entity as ObjectContent;
+                    app.Project.RemoveObjectContent(e);
+                }
+                if (entity is ParamContent)
+                {
+                    ParamContent e = entity as ParamContent;
+                    CurObjectContent.RemoveParamContent(e);
+                }
+                if (entity is DatabaseSource)
+                {
+                    DatabaseSource e = entity as DatabaseSource;
+                    app.Project.RemoveDatabaseSource(e);
+                }
+
+                //OK
+                entity.EntityState = EntityState.Deleted;
+            }
+        }
+        #endregion
 
         //
         public string ProjectName
@@ -306,191 +379,6 @@ namespace editor.ModelView
             }
         }
         #endregion
-        #region EntityChange
-        private ICommand entityChange;
-        public ICommand EntityChange
-        {
-            get
-            {
-                if (this.entityChange == null)
-                    this.entityChange = new DelegateCommand(() =>
-                    {
-                        IEntityPersistent entity = ((DelegateCommand)this.entityChange).GetParam() as IEntityPersistent;
-                        if (entity == null)
-                            return;
-
-                        if (entity.EntityState == EntityState.Added)
-                        {
-                            if (entity is ObjectContent)
-                            {
-                                ObjectContent e = entity as ObjectContent;
-                                // Ajoute au projet en cours
-                                app.Project.AddObjectContent(e);
-                                // Regénére des identifiants uniques pour la base de données
-                                e.Id = Guid.NewGuid().ToString("N");
-                                foreach(var p in e.ParamContent)
-                                    p.Id = Guid.NewGuid().ToString("N");
-                                // Ajoute à l'interface
-                                if (this.ObjectContentList.Contains(e) == false)
-                                    this.ObjectContentList.Add(e);
-                            }
-                            if (entity is ParamContent)
-                            {
-                                ParamContent e = entity as ParamContent;
-                                CurObjectContent.AddParamContent(e);
-                                e.Id = Guid.NewGuid().ToString("N");
-                            }
-                            if (entity is DatabaseSource)
-                            {
-                                DatabaseSource e = entity as DatabaseSource;
-                                app.Project.AddDatabaseSource(e);
-
-                                if (app.States.SelectedDatabaseSourceId == null)
-                                    app.States.SelectedDatabaseSourceId = app.Project.DatabaseSource.First().Id;
-                            }
-                        }
-
-                        if (entity.EntityState == EntityState.Deleted)
-                        {
-                            if (entity is ObjectContent)
-                            {
-                                ObjectContent e = entity as ObjectContent;
-                                app.Project.RemoveObjectContent(e);
-                            }
-                            if (entity is ParamContent)
-                            {
-                                ParamContent e = entity as ParamContent;
-                                CurObjectContent.RemoveParamContent(e);
-                            }
-                            if (entity is DatabaseSource)
-                            {
-                                DatabaseSource e = entity as DatabaseSource;
-                                app.Project.RemoveDatabaseSource(e);
-                            }
-                        }
-
-                        // accuse de la modification
-                        entity.EntityState = EntityState.Unmodified;
-                    });
-
-                return this.entityChange;
-            }
-        }
-        #endregion
-        #region EntityCopy
-        private ICommand entityCopy;
-        public ICommand EntityCopy
-        {
-            get
-            {
-                if (this.entityCopy == null)
-                    this.entityCopy = new DelegateCommand(() =>
-                    {
-                        IEntity entity = ((DelegateCommand)this.entityCopy).GetParam() as IEntity;
-                        if (entity is IEntitySerializable)
-                        {
-                            IEntitySerializable serial = entity as IEntitySerializable;
-                            /*using (MemoryStream memStream = new MemoryStream())
-                            {
-                                BinaryWriter writer = new BinaryWriter(memStream);
-                                // Serialise le nom de la classe
-                                writer.Write(serial.GetType().Name);
-                                // Serialise les données
-                                serial.WriteBinary(writer);
-                                Clipboard.SetData("Entity", memStream.ToArray());
-                            }
-                            */
-                            string xml = serial.ToXml(null);
-                            Clipboard.SetText(xml);
-                        }
-                    });
-
-                return this.entityCopy;
-            }
-        }
-        #endregion
-        #region EntityPaste
-        private ICommand entityPaste;
-        public ICommand EntityPaste
-        {
-            get
-            {
-                if (this.entityPaste == null)
-                    this.entityPaste = new DelegateCommand(() =>
-                    {
-                        if (Clipboard.ContainsText())
-                        {
-                            // initialise le document XML
-                            XmlDocument doc = new XmlDocument();
-                            string xml = Clipboard.GetText();//Clipboard.GetData("text/xml") as string
-                            if (xml == null)
-                                return;
-                            doc.LoadXml(xml);
-
-                            //obtient le premier élément
-                            XmlNode n = doc.DocumentElement.FirstChild;
-                            while (n != null)
-                            {
-                                if(n.NodeType != XmlNodeType.Element)
-                                {
-                                    n = n.NextSibling;
-                                    continue;
-                                }
-
-                                XmlElement e = n as XmlElement;
-                                IEntity insertEntity = null;
-                                if (e.LocalName == "Project")
-                                {
-                                    Project p = new Project();
-                                    p.EntityState = EntityState.Added;
-                                    p.FromXml(e);
-                                    insertEntity = p;
-                                    Console.WriteLine("import Project");
-                                }
-                                else if (e.LocalName == "ObjectContent")
-                                {
-                                    ObjectContent p = new ObjectContent();
-                                    p.EntityState = EntityState.Added;
-                                    p.FromXml(e);
-                                    insertEntity = p;
-                                    Console.WriteLine("import ObjectContent");
-                                }
-                                else
-                                {
-                                    Console.WriteLine("unknown element " + e.LocalName);
-                                }
-
-                                // Notify l'insertion de la nouvelle entité
-                                if (EntityChange.CanExecute(insertEntity))
-                                    EntityChange.Execute(insertEntity);
-
-                                //suivant
-                                n = n.NextSibling;
-                            }
-
-                        }
-                        /*
-                        if (Clipboard.ContainsData("Entity"))
-                        {
-                            byte[] data = Clipboard.GetData("Entity") as byte[];
-                            if (data == null)
-                                return;
-                            using (MemoryStream memStream = new MemoryStream(data))
-                            {
-                                BinaryReader reader = new BinaryReader(memStream);
-                                // Déserialise le nom de la classe
-                                string type = reader.ReadString();
-                                Console.WriteLine(type);
-                                // Déserialise les données
-                                // serial.ReadBinary(reader);
-                            }
-                        }*/
-                    });
-
-                return this.entityPaste;
-            }
-        }
-        #endregion
         /*#region ApplyChanges
         private ICommand applyChanges;
         public ICommand ApplyChanges
@@ -531,6 +419,144 @@ namespace editor.ModelView
             }
         }
         #endregion*/
+        #endregion
+
+        //-----------------------------------------------------------------------------------------
+        // Evénements
+        //-----------------------------------------------------------------------------------------
+        #region IEventProcess
+        public void ProcessEvent(object from, object _this, IEvent e)
+        {
+            //
+            // Pre-Create
+            // Préprare la création d'une nouvelle entité (avant édition des champs)
+            //
+            if (e is EntityPreCreateEvent)
+            {
+                EntityPreCreateEvent create = e as EntityPreCreateEvent;
+                if (create.Entity is IEntityPersistent)
+                {
+                    IEntityPersistent p = create.Entity as IEntityPersistent;
+                    //Affecte la source de données à la nouvelle entitée
+                    p.Factory = app.appModel.project.Factory;
+                }
+            }
+            //
+            // Create
+            // Crée la nouvelle entité (après édition des champs)
+            //
+            if (e is EntityCreateEvent)
+            {
+                EntityCreateEvent ev = e as EntityCreateEvent;
+                // actualise le model
+                OnEntityChange(ev.Entity);
+            }
+            //
+            // Change
+            // Les données de l'entité son modifiées
+            //
+            if (e is EntityChangeEvent)
+            {
+                EntityChangeEvent ev = e as EntityChangeEvent;
+                // actualise le model
+                OnEntityChange(ev.Entity);
+            }
+            //
+            // Delete
+            // Supprime l'entité 
+            //
+            if (e is EntityDeleteEvent)
+            {
+                EntityDeleteEvent ev = e as EntityDeleteEvent;
+                ev.Entity.EntityState = EntityState.Deleted;
+                // actualise le model
+                OnEntityChange(ev.Entity);
+            }
+            //
+            // Copy/Paste
+            // Copie/Colle l'entité dans le presse-papier
+            //
+            if (e is EntityCopyPasteEvent)
+            {
+                EntityCopyPasteEvent ev = e as EntityCopyPasteEvent;
+                // Copier
+                if (ev.Type == EntityCopyPasteEventType.Copy && ev.IsEmpty() == false)
+                {
+                    XmlDocument doc = new XmlDocument();
+                    doc.AppendChild(doc.CreateElement("root"));
+                    foreach (IEntity entity in ev.Entities)
+                    {
+                        if (entity is IEntitySerializable)
+                        {
+                            IEntitySerializable serial = entity as IEntitySerializable;
+                            serial.ToXml(doc.DocumentElement);
+                        }
+                    }
+                    Clipboard.SetText(doc.InnerXml);
+                }
+                // Coller
+                if (ev.Type == EntityCopyPasteEventType.Paste)
+                {
+                    //string text = Clipboard.GetData("text/xml");
+                    string text = Clipboard.GetText(); // Texte ou XML
+                    if (String.IsNullOrWhiteSpace(text))
+                        return;
+
+                    XmlDocument doc = new XmlDocument();
+                    doc.LoadXml(text);
+                    if (doc.DocumentElement == null)
+                        return;
+
+                    XmlNode cur = doc.DocumentElement.FirstChild;
+                    while (cur != null)
+                    {
+                        if (cur is XmlElement)
+                        {
+                            try
+                            {
+                                // Alloue une instance de l'objet
+                                XmlElement elm = cur as XmlElement;
+                                Type t = Type.GetType("AppModel.Entity." + elm.LocalName);
+                                IEntity entity = Activator.CreateInstance(t) as IEntity;
+
+                                // initialise les données de l'objet
+                                entity.EntityState = EntityState.Added;
+
+                                if (entity is IEntitySerializable)
+                                {
+                                    IEntitySerializable serial = entity as IEntitySerializable;
+                                    serial.FromXml(elm, (aggr) =>
+                                    {
+                                        aggr.EntityState = EntityState.Added;
+                                        if (aggr is IEntityPersistent)
+                                            (aggr as IEntityPersistent).RaiseIdentity();
+                                    });
+                                }
+
+                                if (entity is IEntityPersistent)
+                                {
+                                    IEntityPersistent persistent = entity as IEntityPersistent;
+                                    // attache à la base de données active
+                                    persistent.Factory = app.appModel.project.Factory;
+                                    persistent.RaiseIdentity();
+                                }
+
+                                // liste les objets créés
+                                ev.AddEntity(entity);
+
+                                // actualise le model
+                                OnEntityChange(entity);
+                            }
+                            catch (Exception)
+                            {
+                                continue;
+                            }
+                        }
+                        cur = cur.NextSibling;
+                    }
+                }
+            }
+        }
         #endregion
     }
 }

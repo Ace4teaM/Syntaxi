@@ -137,7 +137,7 @@ namespace AppModel
 
             // Charge le projet
             project = new Project();
-            project.ReadBinary(reader);
+            project.ReadBinary(reader,null);
             reader.Close();
             file.Close();
         }

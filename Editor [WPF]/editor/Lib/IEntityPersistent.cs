@@ -16,10 +16,9 @@ namespace Lib
         Deleted
     }
 
-    public interface IEntityPersistent
+    public interface IEntityPersistent : IEntity
     {
         IEntityFactory Factory { get; set; }
-        EntityState EntityState { get; set; }
         string TableName { get; }
         
         void Insert(string add_params = "", string add_values = "");
@@ -29,6 +28,7 @@ namespace Lib
 
         string[] GetPrimaryIdentifier();
         bool CompareIdentifier(IEntityPersistent e);
+        void RaiseIdentity();
         void PickIdentity(object reader);
         void PickProperties(object reader);
         

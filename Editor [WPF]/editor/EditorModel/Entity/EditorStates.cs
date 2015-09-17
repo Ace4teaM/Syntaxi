@@ -18,6 +18,7 @@ using Lib;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
+using Serial = System.Int32;
 
 namespace EditorModel.Entity
 {
@@ -38,6 +39,14 @@ namespace EditorModel.Entity
             this.selecteddatabasesourceid = String.Empty;
          }
          
+         // copie
+         public EditorStates(EditorStates src) : this(){
+            // Version
+            this.version = src.version;
+            // SelectedDatabaseSourceId
+            this.selecteddatabasesourceid = src.selecteddatabasesourceid;
+         }
+
          public EditorStates(String version, String selecteddatabasesourceid) : this(){
             this.version = version;
             this.selecteddatabasesourceid = selecteddatabasesourceid;
@@ -45,6 +54,17 @@ namespace EditorModel.Entity
          #endregion // Constructor
          
           public string EntityName { get{ return "EditorStates"; } }
+
+         // clone
+         public IEntity Clone(){
+            EditorStates e = new EditorStates();
+            
+            // Version
+            e.version = this.version;
+            // SelectedDatabaseSourceId
+            e.selecteddatabasesourceid = this.selecteddatabasesourceid;
+            return e;
+         }
 
          #region State
         private EntityState entityState;
@@ -88,16 +108,22 @@ namespace EditorModel.Entity
          #endregion // Methods
 
        #region ISerializable
-        // Implement this method to serialize data. The method is called on serialization.
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
+       // Implement this method to serialize data. The method is called on serialization.
+       public void GetObjectData(SerializationInfo info, StreamingContext context)
+       {
             info.AddValue("Version", Version, typeof(String));
             info.AddValue("SelectedDatabaseSourceId", SelectedDatabaseSourceId, typeof(String));
-                 }
+       }
        #endregion // ISerializable
        
        #region Serialization
-       public void ReadBinary(BinaryReader reader)
+       /// <summary>
+       /// Initialise l'instance depuis les données d'un flux binaire
+       /// </summary>
+       /// <param name="reader">Flux binaire</param>
+       /// <param name="aggregationCallback">Permet d'appliquer des modifications aux entités importées par aggrégation</param>
+       /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
+       public void ReadBinary(BinaryReader reader, EntityCallback aggregationCallback)
        {
           // Properties
           Version =  reader.ReadString();
@@ -111,7 +137,9 @@ namespace EditorModel.Entity
                  this.EditorSampleCode = new Collection<EditorSampleCode>();
                  for(int i=0;i<size;i++){
                      EditorSampleCode o = new EditorSampleCode();
-                     o.ReadBinary(reader);
+                     o.ReadBinary(reader, aggregationCallback);
+                     if (aggregationCallback != null)
+                        aggregationCallback(o);
                      this.AddEditorSampleCode(o);
                  }
              }
@@ -134,7 +162,8 @@ namespace EditorModel.Entity
           {
               foreach (var col in this.editorsamplecode)
                   col.WriteBinary(writer);
-          }}
+          }
+       }
        
        
        /// <summary>
@@ -202,11 +231,12 @@ namespace EditorModel.Entity
        }
        
        /// <summary>
-       /// Initialise l'instance avec les données de l'élément XML
+       /// Initialise l'instance depuis des données XML
        /// </summary>
        /// <param name="element">Élément contenant les information sur l'objet</param>
+       /// <param name="aggregationCallback">Permet d'appliquer des modifications aux entités importées par aggrégation</param>
        /// <remarks>Seuls les éléments existants dans le noeud Xml son importés dans l'objet</remarks>
-       public void FromXml(XmlElement element)
+       public void FromXml(XmlElement element, EntityCallback aggregationCallback)
        {
           foreach (XmlElement m in element.ChildNodes)
           {
@@ -240,9 +270,11 @@ namespace EditorModel.Entity
                    {
                       foreach (XmlElement c in m.ChildNodes)
                       {
-                         if("EditorSampleCode" == m.Name){
+                         if("EditorSampleCode" == c.Name){
                              EditorSampleCode value = new EditorSampleCode();
-                             value.FromXml(c);
+                             value.FromXml(c, aggregationCallback);
+                             if (aggregationCallback != null)
+                                aggregationCallback(value);
                              this.AddEditorSampleCode(value);
                          }
                       }

@@ -5,11 +5,11 @@ using System.Xml;
 
 namespace Lib
 {
-    public interface IEntitySerializable
+    public interface IEntitySerializable : IEntity
     {
-        void ReadBinary(BinaryReader reader);
+        void ReadBinary(BinaryReader reader, EntityCallback aggregationCallback);
         void WriteBinary(BinaryWriter writer);
-        void FromXml(XmlElement element);
+        void FromXml(XmlElement element, EntityCallback aggregationCallback);
         string ToXml(XmlElement parent);
     }
 }
