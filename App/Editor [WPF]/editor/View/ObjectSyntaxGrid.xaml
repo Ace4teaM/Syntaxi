@@ -1,0 +1,20 @@
+﻿<local:EditableDataGrid x:Class="editor.View.ObjectSyntaxGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Lib"
+             mc:Ignorable="d" 
+             d:DesignHeight="283" d:DesignWidth="655"
+          AutoGenerateColumns="False">
+    <DataGrid.ContextMenu>
+        <ContextMenu>
+            <MenuItem x:Name="PropertiesMenuItem" Header="Propriétés" Click="PropertiesMenuItem_Click"></MenuItem>
+        </ContextMenu>
+    </DataGrid.ContextMenu>
+    <DataGrid.Columns>
+        <DataGridTextColumn Width="120" Header="Groupe" Binding="{Binding GroupName, UpdateSourceTrigger=LostFocus}"></DataGridTextColumn>
+        <DataGridTextColumn Width="120" Header="Type" Binding="{Binding ObjectType, UpdateSourceTrigger=LostFocus}"></DataGridTextColumn>
+        <DataGridTextColumn Width="*" Header="Description" Binding="{Binding ObjectDesc, UpdateSourceTrigger=LostFocus}"></DataGridTextColumn>
+    </DataGrid.Columns>
+</local:EditableDataGrid>

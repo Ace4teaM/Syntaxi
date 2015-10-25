@@ -4,11 +4,11 @@
 /*==============================================================*/
 
 
-drop table if exists T_OBJECT_CONTENT;
+drop cascade table if exists T_OBJECT_CONTENT;
 
-drop table if exists T_PARAM_CONTENT;
+drop  cascade table if exists T_PARAM_CONTENT;
 
-drop table if exists T_PROJECT;
+drop  cascade table if exists T_PROJECT;
 
 /*==============================================================*/
 /* Table: T_OBJECT_CONTENT                                      */

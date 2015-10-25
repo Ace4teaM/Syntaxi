@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{24D80F52-74E6-4323-BAC2-FBECAFA0E53E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AppModel</RootNamespace>
+    <AssemblyName>AppModel</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppModel\Model.cs" />
+    <Compile Include="AppModel\Domain\DatabaseProvider.cs" />
+    <Compile Include="AppModel\Entity\DatabaseSource.cs" />
+    <Compile Include="AppModel\Entity\ObjectContent.cs" />
+    <Compile Include="AppModel\Entity\ObjectSyntax.cs" />
+    <Compile Include="AppModel\Entity\ParamContent.cs" />
+    <Compile Include="AppModel\Entity\ParamSyntax.cs" />
+    <Compile Include="AppModel\Entity\Project.cs" />
+    <Compile Include="AppModel\Entity\SearchParams.cs" />
+    <Compile Include="AppModel\Format\Bool.cs" />
+    <Compile Include="AppModel\Format\Guid.cs" />
+    <Compile Include="AppModel\Format\Integer.cs" />
+    <Compile Include="AppModel\Format\Mail.cs" />
+    <Compile Include="AppModel\Format\Name.cs" />
+    <Compile Include="AppModel\Format\NotEmpty.cs" />
+    <Compile Include="AppModel\Format\Numeric.cs" />
+    <Compile Include="AppModel\Format\PrefixeParam.cs" />
+    <Compile Include="AppModel\Format\StringParam.cs" />
+    <Compile Include="AppModel\Interface\IAppModel.cs" />
+    <Compile Include="Event\EntityChangeEvent.cs" />
+    <Compile Include="Event\EntityCopyPasteEvent.cs" />
+    <Compile Include="Event\EntityCreateEvent.cs" />
+    <Compile Include="Event\EntityDeleteEvent.cs" />
+    <Compile Include="Event\EntityPreCreateEvent.cs" />
+    <Compile Include="Event\EntityPreUpdateEvent.cs" />
+    <Compile Include="Event\EntityUpdateEvent.cs" />
+    <Compile Include="Event\ModelChangeEvent.cs" />
+    <Compile Include="Lib\EntitiesModel.cs" />
+    <Compile Include="Lib\EntityReferences.cs" />
+    <Compile Include="Lib\EventManager.cs" />
+    <Compile Include="Lib\IEntity.cs" />
+    <Compile Include="Lib\IEntityFactory.cs" />
+    <Compile Include="Lib\IEntityPersistent.cs" />
+    <Compile Include="Lib\IEntitySerializable.cs" />
+    <Compile Include="Lib\IEntityValidable.cs" />
+    <Compile Include="Lib\IEvent.cs" />
+    <Compile Include="Lib\IEventManager.cs" />
+    <Compile Include="Lib\IEventProcess.cs" />
+    <Compile Include="Lib\IModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
