@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      Microsoft SQL Server 2012                    */
-/* Created on:     30/08/2015 13:43:08                          */
+/* Created on:     28/10/2015 18:32:37                          */
 /*==============================================================*/
 
 
@@ -43,12 +43,12 @@ go
 /* Table: T_OBJECT_CONTENT                                      */
 /*==============================================================*/
 create table T_OBJECT_CONTENT (
-   NAME                 varchar(64)          null,
-   VERSION              varchar(16)          null,
-   OBJECT_CONTENT_ID    varchar(60)          not null,
-   OBJECTTYPE           varchar(60)          not null,
-   FILENAME             varchar(128)         not null,
-   FILEPOSITION         int                  not null,
+   NAME                 VARCHAR(64)          null,
+   VERSION              VARCHAR(16)          null,
+   OBJECT_CONTENT_ID    VARCHAR(60)          not null,
+   OBJECTTYPE           VARCHAR(60)          not null,
+   FILENAME             VARCHAR(128)         not null,
+   FILEPOSITION         integer              not null,
    constraint PK_T_OBJECT_CONTENT primary key nonclustered (OBJECT_CONTENT_ID)
 )
 go
@@ -57,10 +57,10 @@ go
 /* Table: T_PARAM_CONTENT                                       */
 /*==============================================================*/
 create table T_PARAM_CONTENT (
-   PARAM_CONTENT_ID     varchar(60)          not null,
-   OBJECT_CONTENT_ID    varchar(60)          null,
-   PARAMNAME            varchar(60)          not null,
-   PARAMVALUE           varchar(128)         null,
+   PARAM_CONTENT_ID     VARCHAR(60)          not null,
+   OBJECT_CONTENT_ID    VARCHAR(60)          null,
+   PARAMNAME            VARCHAR(60)          not null,
+   PARAMVALUE           TEXT                 null,
    constraint PK_T_PARAM_CONTENT primary key nonclustered (PARAM_CONTENT_ID)
 )
 go
@@ -69,8 +69,8 @@ go
 /* Table: T_PROJECT                                             */
 /*==============================================================*/
 create table T_PROJECT (
-   NAME                 varchar(64)          not null,
-   VERSION              varchar(16)          not null,
+   NAME                 VARCHAR(64)          not null,
+   VERSION              VARCHAR(16)          not null,
    constraint PK_T_PROJECT primary key nonclustered (NAME, VERSION)
 )
 go

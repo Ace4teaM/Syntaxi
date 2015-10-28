@@ -26,6 +26,18 @@ typedef struct _NP_HANDLE_HEADER{
 	char* lock_data;
 }NP_HANDLE_HEADER;
 
+/**
+	En-tete d'un handle 2
+*/
+typedef struct _NP_HANDLE_HEADER2{
+	ushort chunk_count;
+	ushort chunk_size;
+	size_t data_size;
+	NP_HANDLE_INDICE* index;
+	char* data;
+	char* lock_data;
+}NP_HANDLE_HEADER2;
+
 ushort    npInitHandle(ushort handle_count,ushort handle_size);
 NP_HANDLE npFreeHandle();
 NP_HANDLE npCreateHandle(void* data,size_t size);

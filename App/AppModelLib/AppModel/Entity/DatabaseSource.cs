@@ -349,7 +349,7 @@ namespace AppModel.Entity
                    errorCode = "NOT_NULL_RESTRICTION";
                    return false;
                  }
-                 return AppModel.Format.Name.Validate(this.Id.ToString(),ref errorCode);
+                 break;
        
                case "Provider":
                  if(this.Provider == null)

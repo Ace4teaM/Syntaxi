@@ -8,12 +8,12 @@ go
 
 create view V_FUNCTIONS as
 select
-	o.ID,
-	o.FILENAME,
-	o.position,
+	o.Object_Content_id as id,
+	o.[Filename],
+	o.FilePosition,
 	n.value as name
 	from T_OBJECT_CONTENT o
-	cross apply(select top(1) PARAMVALUE as value from T_PARAM_CONTENT where PARAMNAME = 'name' and ID = o.ID) n
+	cross apply(select top(1) PARAMVALUE as value from T_PARAM_CONTENT where PARAMNAME = 'name' and Object_content_id = o.Object_Content_id) n
 	where o.OBJECTTYPE = 'function'
 ;
 go
