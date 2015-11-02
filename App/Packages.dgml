@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph GraphDirection="LeftToRight" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="AppModel" Category="Projet" Bounds="508.141666666667,0,75.9033333333333,25.96" Label="AppModel" />
+    <Node Id="Extended.Wpf.Toolkit 2.5" Category="Package" Bounds="0,55.96,150.186666666667,25.96" Label="Extended.Wpf.Toolkit 2.5" />
+    <Node Id="Npgsql 3.0.0" Category="Package" Bounds="181.063333333334,55.96,86.06,25.96" Label="Npgsql 3.0.0" />
+    <Node Id="WPFFolderBrowser 1.0.2" Category="Package" Bounds="297.443333333333,55.96,147.3,25.96" Label="WPFFolderBrowser 1.0.2" />
+    <Node Id="WPFToolkit 3.5.50211.1" Category="Package" Bounds="475.265,55.96,141.656666666667,25.96" Label="WPFToolkit 3.5.50211.1" />
+    <Node Id="WpfApp" Category="Projet" Bounds="339.16,0,63.8666666666667,25.96" Label="WpfApp" />
+  </Nodes>
+  <Links>
+    <Link Source="WpfApp" Target="Extended.Wpf.Toolkit 2.5" Category="Package installé" Bounds="152.594299316406,19.017126083374,186.565704345703,35.2710018157959" />
+    <Link Source="WpfApp" Target="Npgsql 3.0.0" Category="Package installé" Bounds="266.601348876953,24.8738193511963,73.2483825683594,27.8842220306396" />
+    <Link Source="WpfApp" Target="WPFFolderBrowser 1.0.2" Category="Package installé" Bounds="371.093322753906,25.9599990844727,0,21" />
+    <Link Source="WpfApp" Target="WPFToolkit 3.5.50211.1" Category="Package installé" Bounds="403.017944335938,23.1885795593262,93.9114990234375,30.030216217041" />
+  </Links>
+  <Categories>
+    <Category Id="Package" />
+    <Category Id="Package installé" />
+    <Category Id="Projet" />
+  </Categories>
+  <Properties>
+    <Property Id="Bounds" DataType="System.Windows.Rect" />
+    <Property Id="Expression" DataType="System.String" />
+    <Property Id="GraphDirection" DataType="Microsoft.VisualStudio.Diagrams.Layout.LayoutOrientation" />
+    <Property Id="GroupLabel" DataType="System.String" />
+    <Property Id="IsEnabled" DataType="System.Boolean" />
+    <Property Id="Label" Label="Étiquette" Description="Étiquette affichable d'un objet pouvant être annoté" DataType="System.String" />
+    <Property Id="TargetType" DataType="System.Type" />
+    <Property Id="Value" DataType="System.String" />
+    <Property Id="ValueLabel" DataType="System.String" />
+  </Properties>
+  <Styles>
+    <Style TargetType="Node" GroupLabel="Projet" ValueLabel="True">
+      <Condition Expression="HasCategory('Projet')" />
+      <Setter Property="Background" Value="Blue" />
+    </Style>
+  </Styles>
+</DirectedGraph>
