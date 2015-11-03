@@ -20,6 +20,10 @@ namespace Lib
         /// </summary>
         ICollection<IEntity> Objs { get; }
         /// <summary>
+        /// Liste des associationd
+        /// </summary>
+        ICollection<IEntityAssociation> Assoc { get; }
+        /// <summary>
         /// Clone le model et les entités qu'il contient
         /// </summary>
         /// <returns></returns>

@@ -2,7 +2,7 @@
    Extension de la classe d'entité ObjectContent
 
    !!Attention!!
-   Ce code source est généré automatiquement, toutes modifications seront perdues
+   Ce code source est généré automatiquement, toute modification sera perdue
    
 */
 
@@ -162,6 +162,7 @@ namespace AppModel.Entity
              result += "Position = " + Position + Environment.NewLine;
              return result;
          }
+         
 
          #endregion // Methods
 
@@ -409,9 +410,6 @@ namespace AppModel.Entity
        {
           
        
-          if(name == "Project")
-             return LoadProject();
-       
           if(name == "ParamContent")
              return LoadParamContent();
        
@@ -430,11 +428,6 @@ namespace AppModel.Entity
           
           string query = "INSERT INTO T_OBJECT_CONTENT ([Object_Content_Id], [ObjectType], [Filename], [FilePosition]$add_params$) VALUES( " + Factory.ParseType(this.Id) + ", " + Factory.ParseType(this.ObjectType) + ", " + Factory.ParseType(this.Filename) + ", " + Factory.ParseType(this.Position) + "$add_values$)";
        
-          // Association Project
-          if(Project != null){
-             add_params += ", [Name], [Version]";
-             add_values += ", "+Factory.ParseType(Project.Name)+", "+Factory.ParseType(Project.Version)+"";
-          }
        
           query = query.Replace("$add_params$", add_params);
           query = query.Replace("$add_values$", add_values);
@@ -447,70 +440,17 @@ namespace AppModel.Entity
        {
              string query = "UPDATE T_OBJECT_CONTENT SET [ObjectType] = "+Factory.ParseType(this.ObjectType)+", [Filename] = "+Factory.ParseType(this.Filename)+", [FilePosition] = "+Factory.ParseType(this.Position)+"$add_params$ WHERE [Object_Content_Id] = "+Factory.ParseType(this.Id)+"";
        
-          // Association Project
-          if(Project != null){
-             add_params += ", [Name] = "+Factory.ParseType(Project.Name)+", [Version] = "+Factory.ParseType(Project.Version)+"";
-          }
        
           query = query.Replace("$add_params$", add_params);
           
           return Factory.Query(query);
        }
        
-       // Project(0,1) <-> (0,*)ObjectContent
-       public Project LoadProject()
-       {
-          
-          string query = "SELECT [Name], [Version] FROM T_OBJECT_CONTENT WHERE [Object_Content_Id] = "+Factory.ParseType(this.Id)+"";
-          String Name = "";
-       
-          String Version = "";
-       
-          bool ok = true;
-          Project project = null;
-           
-          Factory.Query(query, reader =>
-          {
-              if (reader.Read())
-              {
-                 if (reader["Name"] != null)
-                   Name = reader["Name"].ToString();
-                else
-                   ok = false;
-                 if (reader["Version"] != null)
-                   Version = reader["Version"].ToString();
-                else
-                   ok = false;
-              }
-              return 0;
-          });
-       
-          if (ok == false)
-              return null;
-       
-          // obtient l'objet de reference
-          project = (from p in Factory.GetReferences().OfType<Project>() where p.Name == Name&& p.Version == Version select p).FirstOrDefault();
-          if ( project == null)
-          {
-              project = new Project();
-              project.Factory = this.Factory;
-              project.Name = Name;
-              project.Version = Version;
-              project = Factory.GetReference(project) as Project;//mise en cache
-          }
-       
-          // Recharge les données depuis la BDD
-          project.Load();
-       
-          return Project = project;
-       }
-       
        // ObjectContent(0,1) <-> (0,*)ParamContent
+       
        public IEnumerable<ParamContent> LoadParamContent()
        {
-          
           string query = "SELECT [Param_Content_Id] FROM T_PARAM_CONTENT WHERE [Object_Content_Id] = "+Factory.ParseType(this.Id)+"";
-       
        
           Factory.Query(query, reader =>
           {

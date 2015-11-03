@@ -2,7 +2,7 @@
    Extension de la classe d'entité ParamContent
 
    !!Attention!!
-   Ce code source est généré automatiquement, toutes modifications seront perdues
+   Ce code source est généré automatiquement, toute modification sera perdue
    
 */
 
@@ -122,6 +122,7 @@ namespace AppModel.Entity
              result += "ParamValue = " + ParamValue + Environment.NewLine;
              return result;
          }
+         
 
          #endregion // Methods
 
@@ -294,9 +295,6 @@ namespace AppModel.Entity
        {
           
        
-          if(name == "ObjectContent")
-             return LoadObjectContent();
-       
           return null;
        }
        
@@ -312,11 +310,6 @@ namespace AppModel.Entity
           
           string query = "INSERT INTO T_PARAM_CONTENT ([Param_Content_Id], [ParamName], [ParamValue]$add_params$) VALUES( " + Factory.ParseType(this.Id) + ", " + Factory.ParseType(this.ParamName) + ", " + Factory.ParseType(this.ParamValue) + "$add_values$)";
        
-          // Association ObjectContent
-          if(ObjectContent != null){
-             add_params += ", [Object_Content_Id]";
-             add_values += ", "+Factory.ParseType(ObjectContent.Id)+"";
-          }
        
           query = query.Replace("$add_params$", add_params);
           query = query.Replace("$add_values$", add_values);
@@ -329,55 +322,10 @@ namespace AppModel.Entity
        {
              string query = "UPDATE T_PARAM_CONTENT SET [ParamName] = "+Factory.ParseType(this.ParamName)+", [ParamValue] = "+Factory.ParseType(this.ParamValue)+"$add_params$ WHERE [Param_Content_Id] = "+Factory.ParseType(this.Id)+"";
        
-          // Association ObjectContent
-          if(ObjectContent != null){
-             add_params += ", [Object_Content_Id] = "+Factory.ParseType(ObjectContent.Id)+"";
-          }
        
           query = query.Replace("$add_params$", add_params);
           
           return Factory.Query(query);
-       }
-       
-       // ObjectContent(0,1) <-> (0,*)ParamContent
-       public ObjectContent LoadObjectContent()
-       {
-          
-          string query = "SELECT [Object_Content_Id] FROM T_PARAM_CONTENT WHERE [Param_Content_Id] = "+Factory.ParseType(this.Id)+"";
-          String Id = "";
-       
-          bool ok = true;
-          ObjectContent objectcontent = null;
-           
-          Factory.Query(query, reader =>
-          {
-              if (reader.Read())
-              {
-                 if (reader["Id"] != null)
-                   Id = reader["Object_Content_Id"].ToString();
-                else
-                   ok = false;
-              }
-              return 0;
-          });
-       
-          if (ok == false)
-              return null;
-       
-          // obtient l'objet de reference
-          objectcontent = (from p in Factory.GetReferences().OfType<ObjectContent>() where p.Id == Id select p).FirstOrDefault();
-          if ( objectcontent == null)
-          {
-              objectcontent = new ObjectContent();
-              objectcontent.Factory = this.Factory;
-              objectcontent.Id = Id;
-              objectcontent = Factory.GetReference(objectcontent) as ObjectContent;//mise en cache
-          }
-       
-          // Recharge les données depuis la BDD
-          objectcontent.Load();
-       
-          return ObjectContent = objectcontent;
        }
        
        

@@ -2,7 +2,7 @@
    Extension de la classe d'entité DatabaseSource
 
    !!Attention!!
-   Ce code source est généré automatiquement, toutes modifications seront perdues
+   Ce code source est généré automatiquement, toute modification sera perdue
    
 */
 
@@ -121,6 +121,7 @@ namespace AppModel.Entity
              result += "ConnectionString = " + ConnectionString + Environment.NewLine;
              return result;
          }
+         
 
          #endregion // Methods
 

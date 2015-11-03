@@ -15,6 +15,8 @@ using System.Globalization;
 using System.Reflection;
 using System.Collections.ObjectModel;
 using Lib;
+
+using EditorModel.Association;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;

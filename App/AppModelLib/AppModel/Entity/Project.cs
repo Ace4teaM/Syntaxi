@@ -2,7 +2,7 @@
    Extension de la classe d'entité Project
 
    !!Attention!!
-   Ce code source est généré automatiquement, toutes modifications seront perdues
+   Ce code source est généré automatiquement, toute modification sera perdue
    
 */
 
@@ -249,6 +249,7 @@ namespace AppModel.Entity
              result += "Version = " + Version + Environment.NewLine;
              return result;
          }
+         
 
          #endregion // Methods
 
@@ -713,11 +714,10 @@ namespace AppModel.Entity
        }
        
        // Project(0,1) <-> (0,*)ObjectContent
+       
        public IEnumerable<ObjectContent> LoadObjectContent()
        {
-          
           string query = "SELECT [Object_Content_Id] FROM T_OBJECT_CONTENT WHERE [Name] = "+Factory.ParseType(this.Name)+"and [Version] = "+Factory.ParseType(this.Version)+"";
-       
        
           Factory.Query(query, reader =>
           {

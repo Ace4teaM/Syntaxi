@@ -15,6 +15,8 @@ using System.Globalization;
 using System.Reflection;
 using System.Collections.ObjectModel;
 using Lib;
+
+using EditorModel.Association;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
@@ -88,14 +90,6 @@ namespace EditorModel.Entity
          #endregion // Fields
 
          #region Associations
-
-         //
-         // EditorStates
-         // 
-
-         protected EditorStates editorstates;
-         public virtual EditorStates EditorStates { get{ return editorstates; } set{ editorstates = value; } }
-
          #endregion // Associations
 
          #region Methods

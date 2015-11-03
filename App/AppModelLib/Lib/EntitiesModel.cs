@@ -9,13 +9,16 @@ namespace Lib
     public class EntitiesModel : EventManager, IModel
     {
         protected IDictionary<int, IEntity> entities;//liste des objets et des clés correspondantes
+        protected List<IEntityAssociation> associations;//liste des objets et des clés correspondantes
         protected int curKey = 0;// clé en cours
 
         public ICollection<IEntity> Objs { get { return entities.Values; } }
+        public ICollection<IEntityAssociation> Assoc { get { return associations; } }
 
         public EntitiesModel()
         {
             entities = new Dictionary<int, IEntity>();
+            associations = new List<IEntityAssociation>();
         }
 
         ///
@@ -84,6 +87,13 @@ namespace Lib
                 entity.Model = null;
                 //this.NotifyEvent(new EntityChangeEvent(new EntityRemoveEvent(entity), entity, this));
             }
+
+            // Supprime les associations
+            List<IEntityAssociation> tmp = this.Assoc.Where(p => p.A == entity || p.B == entity).ToList();
+            foreach (var a in tmp)
+            {
+                this.Assoc.Remove(a);
+            }
         }
 
         public void Remove(IEntity entity)
@@ -94,6 +104,13 @@ namespace Lib
                 entities.Remove(key);
                 entity.Model = null;
                 //this.NotifyEvent(new EntityChangeEvent(new EntityRemoveEvent(entity), entity, this));
+            }
+
+            // Supprime les associations
+            List<IEntityAssociation> tmp = this.Assoc.Where(p => p.A == entity || p.B == entity).ToList();
+            foreach (var a in tmp)
+            {
+                this.Assoc.Remove(a);
             }
         }
 

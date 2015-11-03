@@ -2,7 +2,7 @@
    Extension de la classe d'entité SearchParams
 
    !!Attention!!
-   Ce code source est généré automatiquement, toutes modifications seront perdues
+   Ce code source est généré automatiquement, toute modification sera perdue
    
 */
 
@@ -130,6 +130,7 @@ namespace AppModel.Entity
              result += "GroupName = " + GroupName + Environment.NewLine;
              return result;
          }
+         
 
          #endregion // Methods
 
