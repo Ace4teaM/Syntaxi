@@ -161,7 +161,7 @@ namespace app
                     case "toxml":
                         //ExportObjectsAsXML(options.outputFile);
                         break;
-                    // Exporte les données
+                    // Affiche les données
                     case "print":
                         PrintObjects();
                         break;
