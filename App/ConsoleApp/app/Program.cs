@@ -141,11 +141,11 @@ namespace app
                         appModel.project = new Project(options.title, options.version);
                         appModel.project.Model = appModel;
                         break;
-                    // Réinitialise le projet
+                    // Ajoute des objets de syntaxes standard C++
                     case "add_cpp_syntax":
                         appModel.AddCppSyntax();
                         break;
-                    // Réinitialise le projet
+                    // Importe des objets de syntaxes depuis une arborescence de fichiers
                     case "import_syntax":
                         appModel.ImportSyntaxDirectory(options.syntaxDir);
                         break;
@@ -157,7 +157,7 @@ namespace app
                     case "scan":
                         ScanObjects(ProjectFilePath(options.inputProjectFile));
                         break;
-                    // Exporte les données
+                    // Exporte les données dans un fichier XML
                     case "toxml":
                         //ExportObjectsAsXML(options.outputFile);
                         break;
